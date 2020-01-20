@@ -1,7 +1,9 @@
 <template>
   <div id="app">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <img alt="Matchup logo" src="../src/assets/matchuplogo.png">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
+      <router-link to="/">Login</router-link> |
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
