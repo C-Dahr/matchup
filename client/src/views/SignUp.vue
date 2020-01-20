@@ -1,12 +1,12 @@
 <template>
-  <div class="login">
-    <h1><b>Login</b></h1>
+  <div class="signup">
+    <h1><b>Sign Up</b></h1>
     <div class="d-flex justify-content-center">
-      <form action="" method="post" id="login-form">
+      <form action="" method="post" id="signup-form">
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username:</label>
               <input class="form-control" type="text"
-              name="fullname" required placeholder="Enter Username"/>
+              name="username" required placeholder="Enter Username"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
@@ -15,13 +15,25 @@
                  name="password" required placeholder="Enter Password"/>
                 <span class="Error"></span>
             </div>
+            <div class="form-group d-flex justify-content-left">
+              <label class="form-label">Confirm Password:</label>
+              <input class="form-control" type="password"
+                 name="passwordConfirm" required placeholder="Confirm Password"/>
+                <span class="Error"></span>
+            </div>
+            <div class="form-group d-flex justify-content-left">
+              <label class="form-label">Challonge API Key</label>
+              <input class="form-control" type="password"
+                 name="apikey" required placeholder="Enter Challonge API Key"/>
+                <span class="Error"></span>
+            </div>
+            <h4>Generate or find an existing API key for Challonge <b-link href="https://challonge.com/settings/developer">here</b-link></h4>
             <div class="form-group d-flex justify-content-center">
                 <input class="btn btn-primary" type="submit"
-                 value="Sign in" id="login-submit"/>
+                 value="Create An Account" id="signup-submit"/>
             </div>
         </form>
       </div>
-      <h2>Don't have an account? <router-link to="/signup">Sign Up</router-link></h2>
   </div>
 </template>
 
@@ -29,7 +41,7 @@
 
 
 export default {
-  name: 'Login',
+  name: 'SignUp',
   components: {},
 };
 
