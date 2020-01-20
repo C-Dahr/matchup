@@ -19,11 +19,20 @@ export default {
 
 </script>
 <style>
+
+.navbar-brand {
+    position: relative;
+    background: url(./assets/matchuplogo_outline.png);
+    width: 170px;
+    left: 15px;
+    background-size: contain;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: white;
 }
 </style>

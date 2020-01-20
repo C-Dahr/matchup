@@ -29,6 +29,14 @@
 
 <style>
 
+.navbar-brand {
+    position: relative;
+    background: url(../assets/matchuplogo_outline.png);
+    width: 170px;
+    left: 15px;
+    background-size: contain;
+}
+
 #navbar-main {
     background-color: #0066FF;
 }
