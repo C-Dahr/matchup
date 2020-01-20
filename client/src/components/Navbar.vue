@@ -1,15 +1,15 @@
 <template>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-sm" id="navbar-main">
         <!-- Brand -->
-        <a class="navbar-brand" href="#"></a>
+        <a class="navbar-brand" href="/"></a>
 
         <!-- Links -->
         <ul class="navbar-nav">
             <li class="nav-item">
-            <a class="nav-link" href="#">Link 1</a>
+            <a class="nav-link" href="/login">Login</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="#">Link 2</a>
+            <a class="nav-link" href="/about">About</a>
             </li>
 
             <!-- Dropdown -->
@@ -26,3 +26,14 @@
         </ul>
     </nav>
 </template>
+
+<style>
+
+#navbar-main {
+    background-color: #0066FF;
+}
+
+.nav-link {
+    color: white;
+}
+</style>
