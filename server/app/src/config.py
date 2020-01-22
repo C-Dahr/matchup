@@ -23,9 +23,9 @@ class ProductionConfig(Config):
   SQLALCHEMY_DATABASE_URI = 'postgres://postgres:postgres@localhost/dev'
 
 config_by_name = dict(
-    dev=DevelopmentConfig,
-    test=TestingConfig,
-    prod=ProductionConfig
+  dev=DevelopmentConfig,
+  test=TestingConfig,
+  prod=ProductionConfig
 )
 
 key = Config.SECRET_KEY

@@ -38,8 +38,8 @@ class TestProductionConfig(TestCase):
   def test_app_is_production(self):
     self.assertTrue(app.config['DEBUG'] is False)
     self.assertTrue(
-        app.config['SQLALCHEMY_DATABASE_URI'] == 'postgres://postgres:postgres@localhost/dev'
+      app.config['SQLALCHEMY_DATABASE_URI'] == 'postgres://postgres:postgres@localhost/dev'
     )
 
 if __name__ == '__main__':
-    unittest.main()
+  unittest.main()
