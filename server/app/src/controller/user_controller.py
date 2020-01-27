@@ -3,7 +3,6 @@ from ..model.user import UserSchema
 from ..model.user import User
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
-from functools import wraps
 import jwt
 
 api = Namespace('user', description='user related operations')
