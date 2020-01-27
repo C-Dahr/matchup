@@ -1,10 +1,11 @@
 from .. import db, ma
 from ..model.user import UserSchema
 from ..model.user import User
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from flask_restplus import Resource, Namespace
 
-from project.server import bcrypt, db
+import jwt
+import datetime
 
 api = Namespace('auth', description='auth related functionality')
 
@@ -16,21 +17,15 @@ users_schema = UserSchema(many=True)
 class LoginController(Resource):
     @api.doc('user login')
     def post(self):
-        post_username = request.json['username']
-        post_password = request.json['password']
+        auth = request.authorization
+        username = auth.username
+        password = auth.password
         user = User.query.filter_by(
-                username=post_username
+                username=username
             ).first()
-        if user and bcrypt.check_password_hash(
-                user.password, post_password
-        ):
-            auth_token = user.encode_auth_token(user.id)
+        if user and user.password == password:
+            auth_token = jwt.encode({'id' : user.id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, 'my_secret_key')
             if auth_token:
-                responseObject = {
-                    'status': 'success',
-                    'message': 'Successfully logged in.',
-                    'auth_token': auth_token.decode()
-                }
-                return make_response(jsonify(responseObject)), 200
+                return jsonify({'token' : auth_token.decode('UTF-8')})
         else:
             api.abort(404, 'User does not exist.')

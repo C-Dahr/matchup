@@ -3,6 +3,8 @@ from ..model.user import UserSchema
 from ..model.user import User
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
+from functools import wraps
+import jwt
 
 api = Namespace('user', description='user related operations')
 
@@ -10,10 +12,26 @@ api = Namespace('user', description='user related operations')
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
+def token_required():
+  token = None
+  if 'x-access-token' in request.headers:
+    token = request.headers['x-access-token']
+
+  if not token:
+    api.abort(401, 'Token is missing!')
+
+  try: 
+    data = jwt.decode(token, 'my_secret_key')
+    current_user = User.query.filter_by(id=data['id']).first()
+  except:
+    api.abort(401, 'Invalid token!')
+  return current_user
+
 @api.route('')
 class UserListController(Resource):
   @api.doc('list of users')
   def get(self):
+    current_user = token_required()
     users = User.query.all()
     return users_schema.jsonify(users)
   
