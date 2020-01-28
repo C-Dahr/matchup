@@ -10,10 +10,6 @@ import datetime
 
 api = Namespace('auth', description='auth related functionality')
 
-# init schemas
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
-
 @api.route('')
 class LoginController(Resource):
     @api.doc('user login')
@@ -21,9 +17,7 @@ class LoginController(Resource):
         auth = request.authorization
         username = auth.username
         password = auth.password
-        user = User.query.filter_by(
-                username=username
-            ).first()
+        user = User.query.filter_by(username=username).first()
         if user:
             if check_password_hash(user.password, password):
                 auth_token = jwt.encode({'id' : user.id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, 'my_secret_key')
