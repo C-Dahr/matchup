@@ -13,6 +13,7 @@ class User(db.Model):
     self.email = email
     self.api_key = api_key
 
+
 class UserSchema(ma.Schema):
   class Meta:
     fields = ('id', 'username', 'email', 'api_key')

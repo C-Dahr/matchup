@@ -3,14 +3,12 @@ from ..model.user import UserSchema
 from ..model.user import User
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
-import jwt
 
 api = Namespace('user', description='user related operations')
 
 # init schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
-
 
 @api.route('')
 class UserListController(Resource):
