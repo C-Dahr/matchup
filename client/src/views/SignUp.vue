@@ -1,6 +1,6 @@
 <template>
   <div class="signup">
-    <div class="title">
+    <div class="form-title">
       <p>Sign Up</p>
     </div>
     <div class="d-flex justify-content-center">
@@ -57,12 +57,13 @@ export default {
 
 <style>
 
-#login-submit {
+#signup-submit {
   width: 50%;
   background-color: #0066FF;
 }
-#login-form {
+#signup-form {
   width: 30%;
+  min-width: 300px;
 }
 
 </style>

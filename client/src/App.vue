@@ -27,7 +27,7 @@ export default {
   text-align: center;
   color: white;
 }
-.title {
+.form-title {
   font-weight: bold;
   font-size: 3em;
   padding: 1em;

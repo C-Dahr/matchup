@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="title">
+    <div class="form-title">
       <p>Login</p>
     </div>
     <div class="d-flex justify-content-center">
@@ -45,6 +45,7 @@ export default {
 }
 #login-form {
   width: 30%;
+  min-width: 300px;
 }
 
 
