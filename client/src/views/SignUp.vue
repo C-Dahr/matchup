@@ -50,10 +50,6 @@
 
 export default {
   name: 'SignUp',
-  components: {},
 };
 
 </script>
-
-<style>
-</style>
