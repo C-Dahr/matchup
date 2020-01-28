@@ -3,6 +3,7 @@ from ..model.user import UserSchema
 from ..model.user import User
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
+from werkzeug.security import generate_password_hash
 
 api = Namespace('user', description='user related operations')
 
@@ -21,10 +22,11 @@ class UserListController(Resource):
   def post(self):
     username = request.json['username']
     password = request.json['password']
+    hashed_password = generate_password_hash(password, method='sha256')
     email = request.json['email']
     api_key = request.json['api_key']
 
-    new_user = User(username, password, email, api_key)
+    new_user = User(username, hashed_password, email, api_key)
     db.session.add(new_user)
     db.session.commit()
     return user_schema.jsonify(new_user)
