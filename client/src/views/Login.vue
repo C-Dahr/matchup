@@ -4,7 +4,7 @@
       <p>Login</p>
     </div>
     <div class="d-flex justify-content-center">
-      <form action="" method="post" id="login-form">
+      <form action="" method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username:</label>
               <input class="form-control" type="text"
@@ -18,12 +18,12 @@
                 <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-center">
-                <input class="btn btn-primary" type="submit"
-                 value="Sign in" id="login-submit"/>
+                <input class="btn btn-primary account-form-submit" type="submit"
+                 value="Sign in"/>
             </div>
         </form>
       </div>
-      <h2>Don't have an account? <router-link to="/signup">Sign Up</router-link></h2>
+      <h3>Don't have an account? <router-link to="/signup">Sign Up</router-link></h3>
   </div>
 </template>
 
@@ -38,15 +38,4 @@ export default {
 </script>
 
 <style>
-
-#login-submit {
-  width: 50%;
-  background-color: #0066FF;
-}
-#login-form {
-  width: 30%;
-  min-width: 300px;
-}
-
-
 </style>

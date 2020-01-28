@@ -4,7 +4,7 @@
       <p>Sign Up</p>
     </div>
     <div class="d-flex justify-content-center">
-      <form action="" method="post" id="signup-form">
+      <form action="" method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username:</label>
               <input class="form-control" type="text"
@@ -37,8 +37,8 @@
             </div>
             <h4>Generate or find an existing API key for Challonge <b-link href="https://challonge.com/settings/developer" target="_blank">here</b-link></h4>
             <div class="form-group d-flex justify-content-center">
-                <input class="btn btn-primary" type="submit"
-                 value="Create An Account" id="signup-submit"/>
+                <input class="btn btn-primary account-form-submit" type="submit"
+                 value="Create Account"/>
             </div>
         </form>
       </div>
@@ -56,14 +56,4 @@ export default {
 </script>
 
 <style>
-
-#signup-submit {
-  width: 50%;
-  background-color: #0066FF;
-}
-#signup-form {
-  width: 30%;
-  min-width: 300px;
-}
-
 </style>
