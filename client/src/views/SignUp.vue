@@ -1,6 +1,8 @@
 <template>
   <div class="signup">
-    <h1><b>Sign Up</b></h1>
+    <div class="title">
+      <p>Sign Up</p>
+    </div>
     <div class="d-flex justify-content-center">
       <form action="" method="post" id="signup-form">
             <div class="form-group d-flex justify-content-left">
@@ -55,21 +57,9 @@ export default {
 
 <style>
 
-h1 {
-  padding: 1em;
-}
-.form-label {
-  width: 10em;
-  font-size: 1.25em;
-}
 #login-submit {
   width: 50%;
   background-color: #0066FF;
-}
-.form-group {
-  display: flex;
-  align-items: center;
-  padding: 0.5em;
 }
 #login-form {
   width: 30%;

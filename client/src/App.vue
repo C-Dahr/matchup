@@ -20,19 +20,25 @@ export default {
 </script>
 <style>
 
-.navbar-brand {
-    position: relative;
-    background: url(./assets/matchuplogo_outline.png);
-    width: 170px;
-    left: 15px;
-    background-size: contain;
-}
-
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: white;
+}
+.title {
+  font-weight: bold;
+  font-size: 3em;
+  padding: 1em;
+}
+.form-group {
+  display: flex;
+  align-items: center;
+  padding: 0.5em;
+}
+.form-label {
+  width: 10em;
+  font-size: 1.25em;
 }
 </style>
