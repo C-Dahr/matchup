@@ -41,4 +41,12 @@ export default {
   width: 10em;
   font-size: 1.25em;
 }
+.account-form-submit {
+  width: 50%;
+  background-color: #0066FF !important;
+}
+.account-form {
+  width: 30%;
+  min-width: 300px;
+}
 </style>
