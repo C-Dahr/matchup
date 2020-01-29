@@ -38,7 +38,7 @@
             <h4>Generate or find an existing API key for Challonge <b-link href="https://challonge.com/settings/developer" target="_blank">here</b-link></h4>
             <div class="form-group d-flex justify-content-center">
                 <input class="btn btn-primary" type="submit"
-                 value="Create An Account" id="signup-submit"/>
+                 value="Create Account" id="signup-submit"/>
             </div>
         </form>
       </div>
