@@ -8,7 +8,7 @@ import json
 
 BASE_URL = 'http://localhost:5000/user'
 
-class TestUserCrudOperations(TestCase):
+class TestCreateUser(TestCase):
   def create_app(self):
     app.config.from_object('app.src.config.TestingConfig')
     return app
@@ -17,12 +17,14 @@ class TestUserCrudOperations(TestCase):
     test_user = User('testuser', 'password', 'test@gmail.com', 'challonge123')
     self.test_user = test_user
 
-    db.drop_all()
     db.create_all()
     db.session.add(self.test_user)
     db.session.commit()
 
-  
+  def tearDown(self):
+    db.session.remove()
+    db.drop_all()
+
   def test_create_user(self):
     new_user = {
       'username': 'newuser',
@@ -39,12 +41,20 @@ class TestUserCrudOperations(TestCase):
     self.assertEqual(new_user['username'], user_returned['username'], user_from_db.username)
     self.assertEqual(user_returned['id'], user_from_db.id)
 
-
-  # def test_create_invalid_user(self):
-  #   # create a user without specifying a username
+class TestDeleteUser(TestCase):
+  def create_app(self):
+    app.config.from_object('app.src.config.TestingConfig')
+    return app
   
-  # def test_create_user_username_already_exists(self):
-  #   # create a user with a username of "testuser"
+  def setUp(self):
+    test_user = User('testuser', 'password', 'test@gmail.com', 'challonge123')
+    self.test_user = test_user
+
+    db.drop_all()
+    db.create_all()
+    db.session.add(self.test_user)
+    db.session.commit()
+  
 
 
   # def test_delete_user(self):
