@@ -39,9 +39,28 @@ class TestCreateUser(BaseTestCaseClass):
     user_returned = json.loads(response.data)
     # get user from db
     user_from_db = User.query.get(user_returned['id'])
-    
     self.assertEqual(new_user['username'], user_returned['username'], user_from_db.username)
     self.assertEqual(user_returned['id'], user_from_db.id)
+  
+  def test_create_user_missing_field(self):
+    new_user = {
+      'password': 'pass345',
+      'email': 'new@hotmail.com',
+      'api_key': 'AaBbCc987'
+    }
+    response = self.client.post(BASE_URL, json=new_user)
+    self.assert400(response)
+
+  def test_create_user_username_already_exists(self):
+    new_user = {
+      'username': 'testuser',
+      'password': 'pass345',
+      'email': 'new@hotmail.com',
+      'api_key': 'AaBbCc987'
+    }
+    response = self.client.post(BASE_URL, json=new_user)
+    self.assert_status(response, 409)
+
 
 class TestDeleteUser(BaseTestCaseClass):
   def test_delete_user(self):
@@ -54,13 +73,10 @@ class TestDeleteUser(BaseTestCaseClass):
     user_from_db = User.query.get(user_id)
     self.assertEqual(user_from_db, None)
 
-
-  # def test_delete_user(self):
-  #   # delete the test user from the database
-
-
-  # def test_delete_user_doesnt_exist(self):
-  #   # delete a user using an invalid id
+  def test_delete_user_doesnt_exist(self):
+    user_id = 69 # invalid id (nice)
+    response = self.client.delete(BASE_URL + '/' + str(user_id))
+    self.assert404(response)
 
 
   # def test_update_user(self):
