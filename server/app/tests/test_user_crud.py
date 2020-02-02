@@ -8,7 +8,7 @@ import json
 
 BASE_URL = 'http://localhost:5000/user'
 
-class TestCreateUser(TestCase):
+class BaseTestCaseClass(TestCase):
   def create_app(self):
     app.config.from_object('app.src.config.TestingConfig')
     return app
@@ -26,6 +26,7 @@ class TestCreateUser(TestCase):
     db.session.remove()
     db.drop_all()
 
+class TestCreateUser(BaseTestCaseClass):
   def test_create_user(self):
     new_user = {
       'username': 'newuser',
@@ -42,20 +43,7 @@ class TestCreateUser(TestCase):
     self.assertEqual(new_user['username'], user_returned['username'], user_from_db.username)
     self.assertEqual(user_returned['id'], user_from_db.id)
 
-class TestDeleteUser(TestCase):
-  def create_app(self):
-    app.config.from_object('app.src.config.TestingConfig')
-    return app
-  
-  def setUp(self):
-    test_user = User('testuser', 'password', 'test@gmail.com', 'challonge123')
-    self.test_user = test_user
-
-    db.drop_all()
-    db.create_all()
-    db.session.add(self.test_user)
-    db.session.commit()
-  
+class TestDeleteUser(BaseTestCaseClass):
   def test_delete_user(self):
     user_id = self.test_user.id
     response = self.client.delete(BASE_URL + '/' + str(user_id))
