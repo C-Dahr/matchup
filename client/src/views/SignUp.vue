@@ -4,7 +4,7 @@
       <p>Sign Up</p>
     </div>
     <div class="d-flex justify-content-center">
-      <form action="" method="post" class="account-form">
+      <form @submit="onSubmit" action="/" method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username:</label>
               <input class="form-control" type="text"
@@ -32,7 +32,7 @@
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge API Key:</label>
               <input class="form-control" type="password"
-                 name="apikey" required placeholder="Enter Challonge API Key"/>
+                 name="api_key" required placeholder="Enter Challonge API Key"/>
                 <span class="Error"></span>
             </div>
             <h4>Generate or find an existing API key for Challonge <b-link href="https://challonge.com/settings/developer" target="_blank">here</b-link></h4>
@@ -46,10 +46,36 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 
 export default {
+  data() {
+    return {
+      signUpForm: {
+        username:'',
+        email:'',
+        password:'',
+        api_key:'',
+      }
+    }
+  },
   name: 'SignUp',
+  methods: {
+    onSubmit(evt){
+      evt.preventDefault();
+      const payload = {
+        username: this.signUpForm.username,
+        email: this.signUpForm.email,
+        password: this.signUpForm.password,
+        api_key: this.signUpForm.api_key,
+      };
+      this.createUser(payload);
+    },
+    createUser(payload){
+      const path = 'http://localhost:5000/user';
+      axios.post(path, payload)
+    }
+  }
 };
 
 </script>
