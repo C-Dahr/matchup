@@ -17,6 +17,7 @@ class TestCreateUser(TestCase):
     test_user = User('testuser', 'password', 'test@gmail.com', 'challonge123')
     self.test_user = test_user
 
+    db.drop_all()
     db.create_all()
     db.session.add(self.test_user)
     db.session.commit()
@@ -55,6 +56,15 @@ class TestDeleteUser(TestCase):
     db.session.add(self.test_user)
     db.session.commit()
   
+  def test_delete_user(self):
+    user_id = self.test_user.id
+    response = self.client.delete(BASE_URL + '/' + str(user_id))
+    user_returned = json.loads(response.data)
+    # check correct user was removed
+    self.assertEqual(user_id, user_returned['id'])
+    # check that user was removed from database
+    user_from_db = User.query.get(user_id)
+    self.assertEqual(user_from_db, None)
 
 
   # def test_delete_user(self):
