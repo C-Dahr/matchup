@@ -129,15 +129,22 @@ class TestUpdateUser(BaseTestCaseClass):
     self.assert_status(response, 409)
 
 
+class TestGetUsers(BaseTestCaseClass):
+  def test_get_user_by_id(self):
+    response = self.client.get(BASE_URL + '/' + str(self.test_user.id))
+    user_returned = json.loads(response.data)
+    self.assertEqual(self.test_user.username, user_returned['username'])
 
+  def test_get_user_by_invalid_id(self):
+    user_id = 69
+    response = self.client.get(BASE_URL + '/'+ str(user_id))
+    self.assert404(response)
 
-  # def test_get_user_by_id(self):
-
-
-  # def test_get_user_by_invalid_id(self):
-
-
-  # def test_get_users(self):
+  def test_get_users(self):
+    response = self.client.get(BASE_URL)
+    users_returned = json.loads(response.data)
+    self.assertTrue(len(users_returned) == 1)
+    self.assertEqual(self.test_user.username, users_returned[0]['username'])
 
 if __name__ == '__main__':
   unittest.main()
