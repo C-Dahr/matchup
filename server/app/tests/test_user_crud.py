@@ -7,6 +7,7 @@ from app.src.model.user import User
 import json
 
 BASE_URL = 'http://localhost:5000/user'
+invalid_id = 69 # (nice)
 
 class BaseTestCaseClass(TestCase):
   def create_app(self):
@@ -75,7 +76,7 @@ class TestDeleteUser(BaseTestCaseClass):
     self.assertEqual(user_from_db, None)
 
   def test_delete_user_doesnt_exist(self):
-    user_id = 69 # invalid id (nice)
+    user_id = invalid_id
     response = self.client.delete(BASE_URL + '/' + str(user_id))
     self.assert404(response)
 
@@ -97,7 +98,7 @@ class TestUpdateUser(BaseTestCaseClass):
     self.assertEqual(user_from_db, self.test_user)
 
   def test_update_user_doesnt_exist(self):
-    user_id = 69 # invalid id (nice)
+    user_id = invalid_id
     new_info = {
       'username': 'testuser',
       'password': 'pass345',
@@ -136,7 +137,7 @@ class TestGetUsers(BaseTestCaseClass):
     self.assertEqual(self.test_user.username, user_returned['username'])
 
   def test_get_user_by_invalid_id(self):
-    user_id = 69
+    user_id = invalid_id
     response = self.client.get(BASE_URL + '/'+ str(user_id))
     self.assert404(response)
 
