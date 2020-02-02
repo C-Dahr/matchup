@@ -57,13 +57,19 @@ class UserController(Resource):
     if not user:
       api.abort(404, user_not_found)
     
-    user.username = request.json['username']
-    user.password = request.json['password']
-    user.email = request.json['email']
-    user.api_key = request.json['api_key']
-
-    db.session.commit()
-    return user_schema.jsonify(user)
+    try:
+      user.username = request.json['username']
+      user.password = request.json['password']
+      user.email = request.json['email']
+      user.api_key = request.json['api_key']
+      db.session.commit()
+      return user_schema.jsonify(user)
+    except KeyError as e:
+      message = f'Missing field on user entity: {e.args[0]}'
+      api.abort(400, message)
+    except IntegrityError as e:
+      message = e.args[0].split('\n')[1]
+      api.abort(409, message)
 
   @api.doc('delete a user')
   def delete(self, id):

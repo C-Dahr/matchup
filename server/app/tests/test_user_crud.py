@@ -26,6 +26,7 @@ class BaseTestCaseClass(TestCase):
     db.session.remove()
     db.drop_all()
 
+
 class TestCreateUser(BaseTestCaseClass):
   def test_create_user(self):
     new_user = {
@@ -79,17 +80,55 @@ class TestDeleteUser(BaseTestCaseClass):
     self.assert404(response)
 
 
-  # def test_update_user(self):
-  #   # update the testuser
-  #   # get the user in the database, confirm they are equal
+class TestUpdateUser(BaseTestCaseClass):
+  def test_update_user(self):
+    user_id = self.test_user.id
+    new_info = {
+      'username': 'testuser',
+      'password': 'pass345',
+      'email': 'updated@email.ca',
+      'api_key': 'AaBbCc987'
+    }
+    response = self.client.put(BASE_URL + '/' + str(user_id), json=new_info)
+    user_returned = json.loads(response.data)
+    self.assertEqual(new_info['email'], user_returned['email'])
+    # get the user in the database, confirm they are equal
+    user_from_db = User.query.get(user_id)
+    self.assertEqual(user_from_db, self.test_user)
 
-  # def test_update_user_doesnt_exist(self):
-  #   # update user with an invalid id
+  def test_update_user_doesnt_exist(self):
+    user_id = 69 # invalid id (nice)
+    new_info = {
+      'username': 'testuser',
+      'password': 'pass345',
+      'email': 'updated@email.ca',
+      'api_key': 'AaBbCc987'
+    }
+    response = self.client.put(BASE_URL + '/' + str(user_id), json=new_info)
+    self.assert404(response)
 
   
-  # def test_update_user_username_already_exists(self):
-  #   # add a new user
-  #   # try to update that user's username to "test_user"
+  def test_update_user_username_already_exists(self):
+    # add a new user
+    new_user = {
+      'username': 'newuser',
+      'password': 'pass345',
+      'email': 'new@hotmail.com',
+      'api_key': 'AaBbCc987'
+    }
+    response = self.client.post(BASE_URL, json=new_user)
+    user_returned = json.loads(response.data)
+    # try to update that user's username to "testuser"
+    new_info = {
+      'username': 'testuser',
+      'password': 'pass345',
+      'email': 'new@hotmail.com',
+      'api_key': 'AaBbCc987'
+    }
+    response = self.client.put(BASE_URL + '/' + str(user_returned['id']), json=new_info)
+    self.assert_status(response, 409)
+
+
 
 
   # def test_get_user_by_id(self):
