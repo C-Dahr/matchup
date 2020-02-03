@@ -49,8 +49,8 @@ export default {
       };
       this.loginUser(payload);
     },
-    createUser(payload) {
-      const path = 'http://localhost:5000/user';
+    loginUser(payload) {
+      const path = 'http://localhost:5000/auth';
       axios.post(path, payload)
         .then(() => {
           this.$router.push('/');
