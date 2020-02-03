@@ -21,6 +21,7 @@ marshmallow-sqlalchemy==0.21.0
 more-itertools==8.1.0
 psycopg2-binary==2.8.4
 PyJWT==1.4.2
+pychal
 pyrsistent==0.15.7
 python-dateutil==2.8.1
 python-editor==1.0.4
