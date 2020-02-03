@@ -72,7 +72,7 @@ export default {
       this.updateUser(payload);
     },
     updateUser(payload) {
-      const path = 'http://localhost:5000/auth';// TODO: Fix this path to the user instead of auth
+      const path = 'http://localhost:5000/user/$<id>';
       axios.put(path, payload)
         .then(() => {
           this.$router.push('/');
