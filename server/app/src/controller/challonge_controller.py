@@ -6,6 +6,7 @@ from flask_restplus import Resource, Namespace
 
 import challonge
 import jwt
+from app.src.config import key
 
 api = Namespace('challonge', description='challonge related functionality')
 
@@ -18,9 +19,9 @@ class BracketController(Resource):
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
         if not token:
-            api.abort(404, 'No user signed in.')
+            api.abort(401, 'No user signed in.')
         # decode token and get user
-        data = jwt.decode(token, 'my_secret_key')
+        data = jwt.decode(token, key)
         current_user = User.query.filter_by(id=data['id']).first()
         if not current_user:
             api.abort(404, 'Invalid token.')
