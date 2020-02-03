@@ -4,7 +4,7 @@
       <p>Sign Up</p>
     </div>
     <div class="d-flex justify-content-center">
-      <form @submit="onSubmit" action="/" method="post" class="account-form">
+      <form @submit="onSubmit"  method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username:</label>
               <input class="form-control" type="text"
@@ -52,16 +52,16 @@ export default {
   data() {
     return {
       signUpForm: {
-        username:'',
-        email:'',
-        password:'',
-        api_key:'',
-      }
-    }
+        username: '',
+        email: '',
+        password: '',
+        api_key: '',
+      },
+    };
   },
   name: 'SignUp',
   methods: {
-    onSubmit(evt){
+    onSubmit(evt) {
       evt.preventDefault();
       const payload = {
         username: this.signUpForm.username,
@@ -71,11 +71,19 @@ export default {
       };
       this.createUser(payload);
     },
-    createUser(payload){
+    createUser(payload) {
       const path = 'http://localhost:5000/user';
       axios.post(path, payload)
-    }
-  }
+        .then(() => {
+          this.$router.push('/');
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error);
+        });
+      // this.$router.push('/');
+    },
+  },
 };
 
 </script>
