@@ -7,7 +7,7 @@ from app.src.model.user import User
 import json
 
 BASE_URL = 'http://localhost:5000/user'
-invalid_id = 69 # (nice)
+invalid_id = 69 # nice
 
 class BaseTestCaseClass(TestCase):
   def create_app(self):
@@ -15,7 +15,7 @@ class BaseTestCaseClass(TestCase):
     return app
   
   def setUp(self):
-    test_user = User('testuser', 'password', 'test@gmail.com', 'challonge123')
+    test_user = User('testuser', 'password', 'test@gmail.com', 'testuser', 'challonge123')
     self.test_user = test_user
 
     db.drop_all()
@@ -34,6 +34,7 @@ class TestCreateUser(BaseTestCaseClass):
       'username': 'newuser',
       'password': 'pass345',
       'email': 'new@hotmail.com',
+      'challonge_username': 'newuser',
       'api_key': 'AaBbCc987'
     }
     # send request
@@ -48,6 +49,7 @@ class TestCreateUser(BaseTestCaseClass):
     new_user = {
       'password': 'pass345',
       'email': 'new@hotmail.com',
+      'challonge_username': 'newuser',
       'api_key': 'AaBbCc987'
     }
     response = self.client.post(BASE_URL, json=new_user)
@@ -58,6 +60,7 @@ class TestCreateUser(BaseTestCaseClass):
       'username': 'testuser',
       'password': 'pass345',
       'email': 'new@hotmail.com',
+      'challonge_username': 'newuser',
       'api_key': 'AaBbCc987'
     }
     response = self.client.post(BASE_URL, json=new_user)
@@ -88,6 +91,7 @@ class TestUpdateUser(BaseTestCaseClass):
       'username': 'testuser',
       'password': 'pass345',
       'email': 'updated@email.ca',
+      'challonge_username': 'testuser',
       'api_key': 'AaBbCc987'
     }
     response = self.client.put(BASE_URL + '/' + str(user_id), json=new_info)
@@ -103,6 +107,7 @@ class TestUpdateUser(BaseTestCaseClass):
       'username': 'testuser',
       'password': 'pass345',
       'email': 'updated@email.ca',
+      'challonge_username': 'testuser',
       'api_key': 'AaBbCc987'
     }
     response = self.client.put(BASE_URL + '/' + str(user_id), json=new_info)
@@ -115,6 +120,7 @@ class TestUpdateUser(BaseTestCaseClass):
       'username': 'newuser',
       'password': 'pass345',
       'email': 'new@hotmail.com',
+      'challonge_username': 'newuser',
       'api_key': 'AaBbCc987'
     }
     response = self.client.post(BASE_URL, json=new_user)
@@ -124,6 +130,7 @@ class TestUpdateUser(BaseTestCaseClass):
       'username': 'testuser',
       'password': 'pass345',
       'email': 'new@hotmail.com',
+      'challonge_username': 'newuser',
       'api_key': 'AaBbCc987'
     }
     response = self.client.put(BASE_URL + '/' + str(user_returned['id']), json=new_info)
