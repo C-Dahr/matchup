@@ -26,9 +26,10 @@ class UserListController(Resource):
       username = request.json['username']
       password = request.json['password']
       hashed_password = generate_password_hash(password, method='sha256')
+      challonge_username = request.json['challonge_username']
       email = request.json['email']
       api_key = request.json['api_key']
-      new_user = User(username, hashed_password, email, api_key)
+      new_user = User(username, hashed_password, email, challonge_username, api_key)
       db.session.add(new_user)
       db.session.commit()
       return user_schema.jsonify(new_user)
@@ -60,6 +61,7 @@ class UserController(Resource):
     try:
       user.username = request.json['username']
       user.password = request.json['password']
+      user.challonge_username = request.json['challonge_username']
       user.email = request.json['email']
       user.api_key = request.json['api_key']
       db.session.commit()
