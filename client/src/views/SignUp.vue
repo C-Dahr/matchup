@@ -30,6 +30,12 @@
                 <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
+              <label class="form-label">Challonge Username:</label>
+              <input class="form-control" type="text"
+              name="challonge_username" required placeholder="Enter Challonge Username"/>
+              <span class="Error"></span>
+            </div>
+            <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge API Key:</label>
               <input class="form-control" type="password"
                  name="api_key" required placeholder="Enter Challonge API Key"/>
@@ -55,6 +61,7 @@ export default {
         username: '',
         email: '',
         password: '',
+        challonge_username: '',
         api_key: '',
       },
     };
@@ -67,6 +74,7 @@ export default {
         username: this.signUpForm.username,
         email: this.signUpForm.email,
         password: this.signUpForm.password,
+        challonge_username: this.signUpForm.challonge_username,
         api_key: this.signUpForm.api_key,
       };
       this.createUser(payload);
