@@ -14,7 +14,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
   DEBUG = True
   TESTING = True
-  SQLALCHEMY_DATABASE_URI = 'postgres://postgres:postgres@localhost/dev'
+  SQLALCHEMY_DATABASE_URI = 'postgres://postgres:postgres@localhost/test'
   PRESERVE_CONTEXT_ON_EXCEPTION = False
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
