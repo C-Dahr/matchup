@@ -22,7 +22,6 @@ class UserListController(Resource):
   
   @api.doc('add a new user')
   def post(self):
-    import pdb; pdb.set_trace()
     try:
       username = request.json['username']
       password = request.json['password']
