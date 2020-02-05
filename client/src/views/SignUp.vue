@@ -8,19 +8,22 @@
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username:</label>
               <input class="form-control" type="text"
-              name="username" required placeholder="Enter Username"/>
+              name="username" v-model="signUpForm.username"
+              required placeholder="Enter Username"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Email:</label>
               <input class="form-control" type="text"
-              name="email" required placeholder="Enter Email"/>
+              name="email" v-model="signUpForm.email"
+              required placeholder="Enter Email"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Password:</label>
               <input class="form-control" type="password"
-                 name="password" required placeholder="Enter Password"/>
+                 name="password" v-model="signUpForm.password"
+                 required placeholder="Enter Password"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
@@ -32,13 +35,15 @@
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge Username:</label>
               <input class="form-control" type="text"
-              name="challonge_username" required placeholder="Enter Challonge Username"/>
+              name="challonge_username" v-model="signUpForm.challonge_username"
+              required placeholder="Enter Challonge Username"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge API Key:</label>
               <input class="form-control" type="password"
-                 name="api_key" required placeholder="Enter Challonge API Key"/>
+                 name="api_key" v-model="signUpForm.api_key"
+                 required placeholder="Enter Challonge API Key"/>
                 <span class="Error"></span>
             </div>
             <h4>Generate or find an existing API key for Challonge <b-link href="https://challonge.com/settings/developer" target="_blank">here</b-link></h4>
