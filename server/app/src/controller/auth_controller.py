@@ -23,7 +23,7 @@ class LoginController(Resource):
       if check_password_hash(user.password, password):
         auth_token = jwt.encode({'id' : user.id}, key)
         if auth_token:
-          return jsonify({token' : auth_token.decode('UTF-8')})
+          return jsonify({'token' : auth_token.decode('UTF-8')})
         else:
           api.abort(500, 'Token could not be generated.')
       else:

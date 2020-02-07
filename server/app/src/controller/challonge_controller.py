@@ -23,7 +23,7 @@ class BracketController(Resource):
     data = jwt.decode(token, key)
     current_user = User.query.filter_by(id=data['id']).first()
     if not current_user:
-        api.abort(404, 'Invalid token.')
+        api.abort(401, 'Invalid token.')
 
     try:
         # set the credentials for interfacing with challonge
