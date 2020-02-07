@@ -4,6 +4,7 @@ from flask_testing import TestCase
 from flask import Flask
 from app.src.config import basedir
 from app.src.model.user import User
+from werkzeug.security import generate_password_hash
 import json
 import base64
 
@@ -17,13 +18,19 @@ class BaseTestCase(TestCase):
     return app
 
   def setUp(self):
-    test_user = User('testuser', 'password', 'test@gmail.com', 'matchuptesting', challonge_api_key)
+    password = generate_password_hash('password')
+    test_user = User('testuser', password, 'test@gmail.com', 'matchuptesting', challonge_api_key)
     self.test_user = test_user
 
     db.drop_all()
     db.create_all()
     db.session.add(self.test_user)
     db.session.commit()
+
+    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
+    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
+    returned = json.loads(response.data)
+    self.tk = returned['token']
 
 
   def tearDown(self):
@@ -32,16 +39,7 @@ class BaseTestCase(TestCase):
 
 class TestCredentials(BaseTestCase):
   def test_valid_credentials(self):
-    data = '"testuser" : "password"'
-    data = base64.b64encode(data.encode("utf-8"))
-    datastr = str(data, 'utf-8')
-    datastr = 'Basic ' + datastr
-    self.headers = {'Content-Type': 'application/json', 'Authorization': datastr}
-    response = self.client.post(LOGIN_URL, headers=self.headers)
-    token = json.loads(response.data)
-    token = token['token']
-    self.headers = {'Content-Type': 'application/json', 'x-access-token': token}
-    response = self.client.get(BASE_URL, json={"username": "matchuptesting"}, headers=self.headers)
+    response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': self.tk})
     self.assert200(response)
 
   #def test_invalid_credentials(self):
