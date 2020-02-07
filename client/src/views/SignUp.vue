@@ -3,6 +3,12 @@
     <div class="form-title">
       <p>Sign Up</p>
     </div>
+    <div class="form-error-list" v-if="errors.length">
+      <b>Please correct the following error(s):</b>
+      <ul class="form-error">
+        <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+      </ul>
+    </div>
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit"  method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
@@ -29,7 +35,8 @@
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Confirm Password:</label>
               <input class="form-control" type="password"
-                 name="passwordConfirm" required placeholder="Confirm Password"/>
+                 name="passwordConfirm" v-model="signUpForm.confirm_password"
+                 required placeholder="Confirm Password"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
@@ -62,10 +69,12 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      errors: [],
       signUpForm: {
         username: '',
         email: '',
         password: '',
+        confirm_password: '',
         challonge_username: '',
         api_key: '',
       },
@@ -75,14 +84,21 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
-      const payload = {
-        username: this.signUpForm.username,
-        email: this.signUpForm.email,
-        password: this.signUpForm.password,
-        challonge_username: this.signUpForm.challonge_username,
-        api_key: this.signUpForm.api_key,
-      };
-      this.createUser(payload);
+      this.errors = [];
+      if (this.signUpForm.password !== this.signUpForm.confirm_password) {
+        this.signUpForm.password = '';
+        this.signUpForm.confirm_password = '';
+        this.errors.push('Passwords do not match');
+      } else {
+        const payload = {
+          username: this.signUpForm.username,
+          email: this.signUpForm.email,
+          password: this.signUpForm.password,
+          challonge_username: this.signUpForm.challonge_username,
+          api_key: this.signUpForm.api_key,
+        };
+        this.createUser(payload);
+      }
     },
     createUser(payload) {
       const path = 'http://localhost:5000/user';

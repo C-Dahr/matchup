@@ -40,6 +40,16 @@ export default {
 .form-label {
   width: 10em;
   font-size: 1.25em;
+  text-align: right;
+  margin-right: 1em;
+}
+.form-error-list {
+  font-size: 1.5em;
+  color: rgb(253, 72, 72);
+}
+.form-error {
+  text-align: center;
+  list-style-position: inside;
 }
 .account-form-submit {
   width: 50%;
