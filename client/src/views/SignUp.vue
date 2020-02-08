@@ -4,7 +4,6 @@
       <p>Sign Up</p>
     </div>
     <div class="form-error-list" v-if="errors.length">
-      <b>Please correct the following error(s):</b>
       <ul class="form-error">
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>

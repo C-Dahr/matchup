@@ -46,6 +46,7 @@ export default {
 .form-error-list {
   font-size: 1.5em;
   color: rgb(253, 72, 72);
+  font-weight: bold;
 }
 .form-error {
   text-align: center;
