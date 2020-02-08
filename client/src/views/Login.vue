@@ -54,7 +54,7 @@ export default {
     loginUser(payload) {
       const path = 'http://localhost:5000/auth';
       const token = Buffer.from(`${payload.username}:${payload.password}`, 'utf8').toString('base64');
-      axios.post(path, { headers: { Authorization: `Basic ${token}` } })
+      axios.post(path, '', { headers: { Authorization: `Basic ${token}` } })
         .then(() => {
           this.$router.push('/home');
         })
