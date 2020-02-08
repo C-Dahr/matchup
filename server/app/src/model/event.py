@@ -1,15 +1,16 @@
 from .. import db, ma
+from flask import jsonify
 
 class Event(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   event_name = db.Column(db.String(100), unique=True)
-  list_of_players = db.Column(db.JSON) # not sure how to save a list of players
-  user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # foreign key to user table
-  brackets = db.Column(db.JSON) # list of ids (maybe use json?)
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+  players = db.Column(db.JSON)
+  brackets = db.Column(db.JSON)
 
 
-  def __init__(self, event_name, user_id, list_of_players, brackets):
+  def __init__(self, event_name, user_id, players, brackets):
     self.event_name = event_name
     self.user_id = user_id
-    self.list_of_players = list_of_players
+    self.players = players
     self.brackets = brackets
