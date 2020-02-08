@@ -14,3 +14,7 @@ class Event(db.Model):
     self.players = players
     self.brackets = brackets
     self.matches = []
+
+class EventSchema(ma.Schema):
+  class Meta:
+    fields = ('event_name', 'user_id', 'players', 'brackets', 'matches')
