@@ -17,7 +17,6 @@ class User(db.Model):
     self.challonge_username = challonge_username
     self.api_key = api_key
 
-
 class UserSchema(ma.Schema):
   class Meta:
     fields = ('id', 'username', 'email', 'challonge_username', 'api_key')

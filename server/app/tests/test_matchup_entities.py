@@ -43,11 +43,13 @@ class TestCreateEntities(BaseTestCase):
     player2 = Player(2, "Rice", [bracket.id], [4])
     # create a match between those players
     match = Match(1, player1.id, player2.id, 1, bracket.id, bracket.game_name)
+    match.priority = 7
     # create an event 
     bracket_json = bracket_schema.jsonify(bracket)
     players_json = players_schema.jsonify([player1, player2])
 
     event = Event("The Guard 22", self.test_user.id, players_json.json, bracket_json.json)
+    event.matches = [match]
     db.session.add(event)
     db.session.commit()
     event_from_db = Event.query.get(event.id)
