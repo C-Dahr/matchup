@@ -110,10 +110,7 @@ export default {
           if (error.response.status === 409) {
             this.errors.push('Username already exists');
           }
-          // eslint-disable-next-line
-          console.log(error);
         });
-      // this.$router.push('/');
     },
   },
 };
