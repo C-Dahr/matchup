@@ -4,7 +4,7 @@
       <p>Login</p>
     </div>
     <div class="d-flex justify-content-center">
-      <form action="" method="post" class="account-form">
+      <form @submit="onSubmit" method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username:</label>
               <input class="form-control" type="text"
@@ -53,9 +53,10 @@ export default {
     },
     loginUser(payload) {
       const path = 'http://localhost:5000/auth';
-      axios.post(path, payload)
+      const token = Buffer.from(`${payload.username}:${payload.password}`, 'utf8').toString('base64');
+      axios.post(path, { headers: { authorization: `Bearer ${token}` } })
         .then(() => {
-          this.$router.push('/');
+          this.$router.push('/home');
         })
         .catch((error) => {
           // eslint-disable-next-line
