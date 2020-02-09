@@ -28,6 +28,8 @@ class BracketController(Resource):
     try:
         # set the credentials for interfacing with challonge
         challonge.set_credentials(current_user.challonge_username, current_user.api_key)
+        #tests that the credentials will allow return values
+        challonge.tournaments.index()
     except Exception as e:
         api.abort(401, 'Invalid credentials.')
     
