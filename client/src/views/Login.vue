@@ -62,7 +62,9 @@ export default {
       const path = 'http://localhost:5000/auth';
       const token = Buffer.from(`${payload.username}:${payload.password}`, 'utf8').toString('base64');
       axios.post(path, '', { headers: { Authorization: `Basic ${token}` } })
-        .then(() => {
+        .then((response) => {
+          const newToken = response.data;
+          this.$store.commit('updateUserToken', newToken);
           this.$router.push('/home');
         })
         .catch((error) => {
