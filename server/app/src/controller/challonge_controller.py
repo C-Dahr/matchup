@@ -16,22 +16,22 @@ class BracketController(Resource):
   def get(self):
     # check header for auth token
     if 'x-access-token' in request.headers:
-        token = request.headers['x-access-token']
+      token = request.headers['x-access-token']
     if not token:
-        api.abort(401, 'No user signed in.')
+      api.abort(401, 'No user signed in.')
     # decode token and get user
     data = jwt.decode(token, key)
     current_user = User.query.filter_by(id=data['id']).first()
     if not current_user:
-        api.abort(401, 'Invalid token.')
+      api.abort(401, 'Invalid token.')
 
     try:
-        # set the credentials for interfacing with challonge
-        challonge.set_credentials(current_user.challonge_username, current_user.api_key)
-        #tests that the credentials will allow return values
-        challonge.tournaments.index()
+      # set the credentials for interfacing with challonge
+      challonge.set_credentials(current_user.challonge_username, current_user.api_key)
+      #tests that the credentials will allow return values
+      challonge.tournaments.index()
     except Exception as e:
-        api.abort(401, 'Invalid credentials.')
+      api.abort(401, 'Invalid credentials.')
     
     # index returns a list of the user's tournaments
     tournaments = challonge.tournaments.index()
