@@ -20,18 +20,15 @@ class BaseTestCase(TestCase):
   def setUp(self):
     password = generate_password_hash('password')
     test_user = User('testuser', password, 'test@gmail.com', 'matchuptesting', challonge_api_key)
+    test_bad_user = User('baduser', password, 'badtest@gmail.com', 'matchup', challonge_api_key)
+    self.test_bad_user = test_bad_user
     self.test_user = test_user
 
     db.drop_all()
     db.create_all()
     db.session.add(self.test_user)
+    db.session.add(self.test_bad_user)
     db.session.commit()
-
-    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
-    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
-    returned = json.loads(response.data)
-    self.tk = returned['token']
-
 
   def tearDown(self):
     db.session.remove()
@@ -39,9 +36,21 @@ class BaseTestCase(TestCase):
 
 class TestCredentials(BaseTestCase):
   def test_valid_credentials(self):
-    response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': self.tk})
+    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
+    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
+    returned = json.loads(response.data)
+    tk = returned['token']
+    response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': tk})
     self.assert200(response)
 
-  #def test_invalid_credentials(self):
+  def test_invalid_credentials(self):
+    invalid_credentials = base64.b64encode(b'baduser:password').decode('utf-8')
+    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + invalid_credentials})
+    returned = json.loads(response.data)
+    tk = returned['token']
+    response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': tk})
+    self.assert401(response)
+
+
 
 
