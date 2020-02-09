@@ -45,4 +45,4 @@ class TestLogin(BaseTestCase):
   def test_user_does_not_exist(self):
     invalid_credentials = base64.b64encode(b'taylerharvey:password').decode('utf-8')
     response = self.client.post(BASE_URL, headers={'Authorization': 'Basic ' + invalid_credentials})
-    self.assert404(response, 'User could not be found.')
+    self.assert401(response, 'User could not be found.')
