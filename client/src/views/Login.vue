@@ -3,6 +3,12 @@
     <div class="form-title">
       <p>Login</p>
     </div>
+    <div class="form-error-list d-flex
+    justify-content-center" v-if="errors.length">
+      <ul class="form-error form-group d-flex justify-content-center">
+        <div v-for="error in errors" v-bind:key="error">{{ error }}</div>
+      </ul>
+    </div>
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit" method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
@@ -35,6 +41,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      errors: [],
       loginForm: {
         username: '',
         password: '',
@@ -59,8 +66,9 @@ export default {
           this.$router.push('/home');
         })
         .catch((error) => {
-          // eslint-disable-next-line
-          console.log(error);
+          if (error.response.status === 404) {
+            this.errors.push('Login Failed');
+          }
         });
     },
   },
