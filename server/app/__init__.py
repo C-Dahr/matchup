@@ -3,6 +3,8 @@ from flask import Blueprint
 
 from .src.controller.user_controller import api as user_api
 from .src.controller.auth_controller import api as auth_api
+from .src.controller.challonge_controller import api as challonge_api
+
 
 blueprint = Blueprint('api', __name__)
 
@@ -14,3 +16,4 @@ api = Api(blueprint,
 
 api.add_namespace(user_api, path='/user')
 api.add_namespace(auth_api, path='/auth')
+api.add_namespace(challonge_api, path='/challonge')
