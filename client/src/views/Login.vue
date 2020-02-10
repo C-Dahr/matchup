@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
   data() {
@@ -56,20 +55,16 @@ export default {
         username: this.loginForm.username,
         password: this.loginForm.password,
       };
-      this.loginUser(payload);
+      this.login(payload);
     },
-    loginUser(payload) {
-      const path = 'http://localhost:5000/auth';
-      const token = Buffer.from(`${payload.username}:${payload.password}`, 'utf8').toString('base64');
-      axios.post(path, '', { headers: { Authorization: `Basic ${token}` } })
-        .then((response) => {
-          const newToken = response.data;
-          this.$store.commit('updateUserToken', newToken);
+    login(payload) {
+      this.$store.dispatch('login', payload)
+        .then(() => {
           this.$router.push('/home');
         })
         .catch((error) => {
           if (error.response.status === 404) {
-            this.errors.push('Login Failed');
+            this.errors.push('Username/Password Incorrect');
           }
         });
     },

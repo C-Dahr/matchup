@@ -6,9 +6,13 @@
         <!-- Links -->
         <ul class="navbar-nav">
             <li class="nav-item">
-            <a class="nav-link" href="/">Login</a>
+            <a class="nav-link" v-if="!isLoggedIn" href="/">Login</a>
             </li>
-
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+            <a class="nav-link" @click="logout" v-if="isLoggedIn" href="/">Logout</a>
+            </li>
         </ul>
     </nav>
 </template>
@@ -17,6 +21,17 @@
 
 export default {
   name: 'Navbar',
+  computed: {
+    isLoggedIn() { return this.$store.getters.isLoggedIn; },
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
+        .then(() => {
+          this.$router.push('/');
+        });
+    },
+  },
 };
 
 </script>
