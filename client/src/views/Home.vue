@@ -7,6 +7,7 @@
 <script>
 
 export default {
+  name: 'home',
   computed: {
     token() {
       return this.$store.state.userToken;
