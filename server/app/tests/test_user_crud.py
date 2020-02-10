@@ -9,7 +9,7 @@ import json
 BASE_URL = 'http://localhost:5000/user'
 invalid_id = 69 # nice
 
-class BaseTestCaseClass(TestCase):
+class BaseTestCase(TestCase):
   def create_app(self):
     app.config.from_object('app.src.config.TestingConfig')
     return app
@@ -28,7 +28,7 @@ class BaseTestCaseClass(TestCase):
     db.drop_all()
 
 
-class TestCreateUser(BaseTestCaseClass):
+class TestCreateUser(BaseTestCase):
   def test_create_user(self):
     new_user = {
       'username': 'newuser',
@@ -67,7 +67,7 @@ class TestCreateUser(BaseTestCaseClass):
     self.assert_status(response, 409)
 
 
-class TestDeleteUser(BaseTestCaseClass):
+class TestDeleteUser(BaseTestCase):
   def test_delete_user(self):
     user_id = self.test_user.id
     response = self.client.delete(BASE_URL + '/' + str(user_id))
@@ -84,7 +84,7 @@ class TestDeleteUser(BaseTestCaseClass):
     self.assert404(response)
 
 
-class TestUpdateUser(BaseTestCaseClass):
+class TestUpdateUser(BaseTestCase):
   def test_update_user(self):
     user_id = self.test_user.id
     new_info = {
@@ -137,7 +137,7 @@ class TestUpdateUser(BaseTestCaseClass):
     self.assert_status(response, 409)
 
 
-class TestGetUsers(BaseTestCaseClass):
+class TestGetUsers(BaseTestCase):
   def test_get_user_by_id(self):
     response = self.client.get(BASE_URL + '/' + str(self.test_user.id))
     user_returned = json.loads(response.data)
