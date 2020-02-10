@@ -7,39 +7,35 @@ import store from '../store';
 
 Vue.use(VueRouter);
 
-const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters.isLoggedIn) {
-    next();
-    return;
-  }
-  next('/');
-};
-
-const ifAuthenticated = (to, from, next) => {
-  if (store.getters.isLoggedIn) {
-    next();
-    return;
-  }
-  next('/home');
-};
-
 const routes = [
   {
     path: '/',
     name: 'login',
     component: Login,
-    beforeEnter: ifNotAuthenticated,
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+    meta: {
+      requiresAuth: false,
+    },
   },
   {
     path: '/signup',
     name: 'signup',
     component: SignUp,
+    meta: {
+      requiresAuth: false,
+    },
   },
   {
     path: '/home',
     name: 'home',
     component: Home,
-    beforeEnter: ifAuthenticated,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
@@ -47,6 +43,24 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next();
+      return;
+    }
+    next('/login');
+  } else if (to.matched.some(record => !record.meta.requiresAuth)) {
+    if (!store.getters.isLoggedIn) {
+      next();
+      return;
+    }
+    next('/home');
+  } else {
+    next();
+  }
 });
 
 export default router;

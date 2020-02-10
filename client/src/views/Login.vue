@@ -63,7 +63,8 @@ export default {
           this.$router.push('/home');
         })
         .catch((error) => {
-          if (error.response.status === 404) {
+          this.errors = [];
+          if (error.response.status === 401) {
             this.errors.push('Username/Password Incorrect');
           }
         });
