@@ -30,17 +30,18 @@ class BaseTestCase(TestCase):
     db.session.add(self.test_bad_user)
     db.session.commit()
 
+    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
+    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
+    returned = json.loads(response.data)
+    self.tk_valid_user = returned['token']
+
   def tearDown(self):
     db.session.remove()
     db.drop_all()
 
 class TestCredentials(BaseTestCase):
   def test_valid_credentials(self):
-    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
-    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
-    returned = json.loads(response.data)
-    tk = returned['token']
-    response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': tk})
+    response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': self.tk_valid_user})
     self.assert200(response)
 
   def test_invalid_credentials(self):

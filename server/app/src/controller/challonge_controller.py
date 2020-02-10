@@ -10,7 +10,7 @@ from app.src.config import key
 
 api = Namespace('challonge', description='challonge related functionality')
 
-def getUser():
+def get_user_from_auth_header(request):
   # check header for auth token
   if 'x-access-token' in request.headers:
     token = request.headers['x-access-token']
@@ -27,7 +27,7 @@ def getUser():
 class BracketController(Resource):
   @api.doc('get brackets')
   def get(self):
-    current_user = getUser()
+    current_user = get_user_from_auth_header(request)
     try:
       # set the credentials for interfacing with challonge
       challonge.set_credentials(current_user.challonge_username, current_user.api_key)
