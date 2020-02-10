@@ -51,7 +51,3 @@ class TestCredentials(BaseTestCase):
     tk = returned['token']
     response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': tk})
     self.assert401(response)
-
-
-
-

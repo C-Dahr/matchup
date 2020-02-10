@@ -27,6 +27,6 @@ class LoginController(Resource):
         else:
           api.abort(500, 'Token could not be generated.')
       else:
-          api.abort(401, 'Incorrect password.')
+        api.abort(401, 'Incorrect password.')
     else:
       api.abort(401, 'User could not be found.')
