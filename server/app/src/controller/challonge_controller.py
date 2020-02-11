@@ -10,6 +10,7 @@ from app.src.config import key
 
 api = Namespace('challonge', description='challonge related functionality')
 
+#helper method(s)
 def get_user_from_auth_header(request):
   # check header for auth token
   if 'x-access-token' in request.headers:
@@ -23,7 +24,7 @@ def get_user_from_auth_header(request):
   except jwt.DecodeError as e:
     api.abort(401, 'Invalid token.')
   if not current_user:
-      api.abort(401, 'Invalid token.')
+      api.abort(404, 'User does not exist.')
   return current_user
 
 @api.route('')
