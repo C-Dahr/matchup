@@ -48,6 +48,24 @@ class EventController(Resource):
       api.abort(400, message)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
+
+@api.route('/<id>/players')
+class EventPlayerController(Resource):
+  @api.doc('get a list of players for an event from the event\'s brackets')
+  def get(self):
+    # if list of players is undefined, generate a new list
+    # else, return the list
+    
+    # get event from the db given the id
+    # iterate over the list of brackets
+      # grab list of players
+      # add to list of set of players
+    # get list of players in both brackets (union of both sets)
+    # get list of players in only bracket 1 (bracket 1 - players in both)
+    # get list of players in only bracket 2 (bracket 2 - players in both)
+    # return list of set of brackets [both, bracket 1, bracket 2]
+
+
     
 def get_brackets_from_request(brackets_from_request):
   list_of_brackets = []
