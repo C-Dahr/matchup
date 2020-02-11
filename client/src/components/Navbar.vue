@@ -8,8 +8,6 @@
             <li class="nav-item">
             <a class="nav-link" v-if="!isLoggedIn" href="/login">Login</a>
             </li>
-        </ul>
-        <ul class="navbar-nav">
             <li class="nav-item">
             <a class="nav-link" @click="logout" v-if="isLoggedIn" href="/login">Logout</a>
             </li>
