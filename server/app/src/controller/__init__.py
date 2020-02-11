@@ -2,7 +2,7 @@ import jwt
 from ..model.user import User
 from app.src.config import key
 
-#helper method(s)
+# helper method(s)
 def get_user_from_auth_header(request, api):
   # check header for auth token
   if 'x-access-token' in request.headers:
