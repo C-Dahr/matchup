@@ -3,18 +3,26 @@
     <div class="form-title">
       <p>Login</p>
     </div>
+    <div class="form-error-list d-flex
+    justify-content-center" v-if="errors.length">
+      <ul class="form-error form-group d-flex justify-content-center">
+        <div v-for="error in errors" v-bind:key="error">{{ error }}</div>
+      </ul>
+    </div>
     <div class="d-flex justify-content-center">
-      <form action="" method="post" class="account-form">
+      <form @submit="onSubmit" method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Username</label>
               <input class="form-control" type="text"
-              name="fullname" required placeholder="Enter Username"/>
+              name="username" v-model="loginForm.username"
+              required placeholder="Enter Username"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Password</label>
               <input class="form-control" type="password"
-                 name="password" required placeholder="Enter Password"/>
+                 name="password" v-model="loginForm.password"
+                 required placeholder="Enter Password"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-center">
@@ -29,9 +37,39 @@
 
 <script>
 
-
 export default {
+  data() {
+    return {
+      errors: [],
+      loginForm: {
+        username: '',
+        password: '',
+      },
+    };
+  },
   name: 'Login',
+  methods: {
+    onSubmit(evt) {
+      evt.preventDefault();
+      const payload = {
+        username: this.loginForm.username,
+        password: this.loginForm.password,
+      };
+      this.login(payload);
+    },
+    login(payload) {
+      this.$store.dispatch('login', payload)
+        .then(() => {
+          this.$router.push('/home');
+        })
+        .catch((error) => {
+          this.errors = [];
+          if (error.response.status === 401) {
+            this.errors.push('Username/Password Incorrect');
+          }
+        });
+    },
+  },
 };
 
 </script>
