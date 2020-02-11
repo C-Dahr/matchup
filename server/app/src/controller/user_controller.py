@@ -69,7 +69,7 @@ class UserController(Resource):
     
     try:
       user.username = request.json['username']
-      user.password = request.json['password']
+      user.password = generate_password_hash(request.json['password'])
       user.challonge_username = request.json['challonge_username']
       user.email = request.json['email']
       user.api_key = request.json['api_key']
@@ -90,5 +90,12 @@ class UserController(Resource):
     db.session.delete(user)
     db.session.commit()
     return user_schema.jsonify(user)
+
+@api.route('/all')
+class UserListController(Resource):
+  @api.doc('list of users')
+  def get(self):
+    users = User.query.all()
+    return users_schema.jsonify(users)
 
 user_not_found = 'User not found.'
