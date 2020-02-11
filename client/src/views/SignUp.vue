@@ -11,45 +11,48 @@
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit"  method="post" class="account-form">
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Username:</label>
+              <label class="form-label">Username <span class="required-star">*</span></label>
               <input class="form-control" type="text"
               name="username" v-model="signUpForm.username"
               required placeholder="Enter Username"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Email:</label>
+              <label class="form-label">Email <span class="required-star">*</span></label>
               <input class="form-control" type="text"
               name="email" v-model="signUpForm.email"
               required placeholder="Enter Email"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Password:</label>
+              <label class="form-label">Password <span class="required-star">*</span></label>
               <input class="form-control" type="password"
                  name="password" v-model="signUpForm.password"
                  required placeholder="Enter Password"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Confirm Password:</label>
+              <label class="form-label">
+                Confirm Password
+                <span class="required-star">*</span>
+              </label>
               <input class="form-control" type="password"
                  name="passwordConfirm" v-model="signUpForm.confirm_password"
                  required placeholder="Confirm Password"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Challonge Username:</label>
+              <label class="form-label">Challonge Username</label>
               <input class="form-control" type="text"
               name="challonge_username" v-model="signUpForm.challonge_username"
-              required placeholder="Enter Challonge Username"/>
+              placeholder="Enter Challonge Username"/>
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Challonge API Key:</label>
+              <label class="form-label">Challonge API Key</label>
               <input class="form-control" type="password"
                  name="api_key" v-model="signUpForm.api_key"
-                 required placeholder="Enter Challonge API Key"/>
+                 placeholder="Enter Challonge API Key"/>
                 <span class="Error"></span>
             </div>
             <h4>Generate or find an existing API key for Challonge <b-link href="https://challonge.com/settings/developer" target="_blank">here</b-link></h4>
@@ -115,3 +118,13 @@ export default {
 };
 
 </script>
+
+<style>
+
+span.required-star {
+  display: inline;
+  float: right;
+  color: red;
+}
+
+</style>

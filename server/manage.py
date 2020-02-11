@@ -16,6 +16,7 @@ manager.add_command('db', MigrateCommand)
 @manager.command
 def run():
     app.run()
+    db.create_all()
 
 @manager.command
 def test():
