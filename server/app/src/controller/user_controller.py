@@ -5,6 +5,7 @@ from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
+from app.src.controller import get_user_from_auth_header
 
 import jwt
 from app.src.config import key
@@ -14,23 +15,6 @@ api = Namespace('user', description='user related operations')
 # init schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
-
-#helper method(s)
-def get_user_from_auth_header(request):
-  # check header for auth token
-  if 'x-access-token' in request.headers:
-    token = request.headers['x-access-token']
-  if not token:
-    api.abort(401, 'No user signed in.')
-  # decode token and get user
-  try:
-    data = jwt.decode(token, key)
-    current_user = User.query.filter_by(id=data['id']).first()
-  except jwt.DecodeError as e:
-    api.abort(401, 'Invalid token.')
-  if not current_user:
-      api.abort(404, 'User does not exist.')
-  return current_user
 
 @api.route('')
 class UserController(Resource):
@@ -56,14 +40,14 @@ class UserController(Resource):
 
   @api.doc('get a user')
   def get(self):
-    user = get_user_from_auth_header(request)
+    user = get_user_from_auth_header(request, api)
     if not user:
       api.abort(404, user_not_found)
     return user_schema.jsonify(user)
     
   @api.doc('update a user')
   def put(self):
-    user = get_user_from_auth_header(request)
+    user = get_user_from_auth_header(request, api)
     if not user:
       api.abort(404, user_not_found)
     
@@ -84,7 +68,7 @@ class UserController(Resource):
 
   @api.doc('delete a user')
   def delete(self):
-    user = get_user_from_auth_header(request)
+    user = get_user_from_auth_header(request, api)
     if not user:
       api.abort(404, user_not_found)
     db.session.delete(user)
