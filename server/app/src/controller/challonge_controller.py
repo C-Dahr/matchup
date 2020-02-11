@@ -17,10 +17,13 @@ def get_user_from_auth_header(request):
   if not token:
     api.abort(401, 'No user signed in.')
   # decode token and get user
-  data = jwt.decode(token, key)
-  current_user = User.query.filter_by(id=data['id']).first()
-  if not current_user:
+  try:
+    data = jwt.decode(token, key)
+    current_user = User.query.filter_by(id=data['id']).first()
+  except jwt.DecodeError as e:
     api.abort(401, 'Invalid token.')
+  if not current_user:
+      api.abort(401, 'Invalid token.')
   return current_user
 
 @api.route('')
