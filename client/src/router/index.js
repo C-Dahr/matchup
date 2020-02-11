@@ -13,7 +13,7 @@ const routes = [
     name: 'login',
     component: Login,
     meta: {
-      requiresNoAuth: true,
+      requiresNotLoggedIn: true,
     },
   },
   {
@@ -21,7 +21,7 @@ const routes = [
     name: 'login',
     component: Login,
     meta: {
-      requiresNoAuth: true,
+      requiresNotLoggedIn: true,
     },
   },
   {
@@ -29,7 +29,7 @@ const routes = [
     name: 'signup',
     component: SignUp,
     meta: {
-      requiresNoAuth: true,
+      requiresNotLoggedIn: true,
     },
   },
   {
@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
       return;
     }
     next('/login');
-  } else if (to.matched.some(record => record.meta.requiresNoAuth)) {
+  } else if (to.matched.some(record => record.meta.requiresNotLoggedIn)) {
     if (!store.getters.isLoggedIn) {
       next();
       return;
