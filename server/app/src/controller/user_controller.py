@@ -7,9 +7,6 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
 from app.src.controller import get_user_from_auth_header
 
-import jwt
-from app.src.config import key
-
 api = Namespace('user', description='user related operations')
 
 # init schemas

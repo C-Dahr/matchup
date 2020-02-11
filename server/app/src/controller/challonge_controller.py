@@ -4,10 +4,9 @@ from ..model.user import User
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from app.src.controller import get_user_from_auth_header
+from requests.exceptions import HTTPError
 
 import challonge
-import jwt
-from app.src.config import key
 
 api = Namespace('challonge', description='challonge related functionality')
 
@@ -22,7 +21,7 @@ class BracketController(Resource):
       # index returns a list of the user's tournaments
       tournaments = challonge.tournaments.index()
       return jsonify({'tournaments' : tournaments})
-    except Exception as e:
+    except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
 
 
