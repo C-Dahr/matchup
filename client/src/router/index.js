@@ -12,13 +12,16 @@ const routes = [
     path: '/',
     name: 'login',
     component: Login,
+    meta: {
+      requiresNoAuth: true,
+    },
   },
   {
     path: '/login',
     name: 'login',
     component: Login,
     meta: {
-      requiresAuth: false,
+      requiresNoAuth: true,
     },
   },
   {
@@ -26,7 +29,7 @@ const routes = [
     name: 'signup',
     component: SignUp,
     meta: {
-      requiresAuth: false,
+      requiresNoAuth: true,
     },
   },
   {
@@ -52,15 +55,14 @@ router.beforeEach((to, from, next) => {
       return;
     }
     next('/login');
-  } else if (to.matched.some(record => !record.meta.requiresAuth)) {
+  } else if (to.matched.some(record => record.meta.requiresNoAuth)) {
     if (!store.getters.isLoggedIn) {
       next();
       return;
     }
     next('/home');
-  } else {
-    next();
   }
+  next();
 });
 
 export default router;
