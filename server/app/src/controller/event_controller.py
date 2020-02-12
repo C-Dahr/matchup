@@ -27,10 +27,8 @@ class EventController(Resource):
     try:
       event_name = request.json['event_name']
       brackets_from_request = request.json['brackets']
-      import pdb; pdb.set_trace()
       list_of_brackets = get_brackets_from_request(brackets_from_request)
-      brackets_json = brackets_schema.jsonify(list_of_brackets)
-
+      brackets_json = brackets_schema.jsonify(list_of_brackets).json
       event = Event(event_name, current_user.id, brackets_json)
       db.session.add(event)
       db.session.commit()
@@ -39,7 +37,6 @@ class EventController(Resource):
       message = f'Missing field: {e.args[0]}'
       api.abort(400, message)
     except Exception as e:
-      
       api.abort(400, 'halp')
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
