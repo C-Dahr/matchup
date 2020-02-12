@@ -37,7 +37,7 @@ class BaseTestCase(TestCase):
 class TestCreateEntities(BaseTestCase):
   def test_set_up_event(self):
     # create a bracket
-    bracket = Bracket(1, "challonge", "Melee", 4, 15)
+    bracket = Bracket(1, "challonge", "Melee", 4)
     # create 2 players
     player1 = Player(1, "DieHard", [bracket.id], [2])
     player2 = Player(2, "Rice", [bracket.id], [4])
