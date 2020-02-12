@@ -97,5 +97,3 @@ class TestCreateEvent(BaseTestCase):
     response = self.client.post(BASE_URL, json=event_data, headers=self.headers)
     # pychallonge throws a 401 if it doesn't receive anything back
     self.assert401(response)
-
-  

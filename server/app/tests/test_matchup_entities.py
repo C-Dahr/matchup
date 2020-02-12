@@ -48,9 +48,10 @@ class TestCreateEntities(BaseTestCase):
     bracket_json = bracket_schema.jsonify(bracket)
     players_json = players_schema.jsonify([player1, player2])
 
-    event = Event("The Guard 22", self.test_user.id, players_json.json, bracket_json.json)
+    event = Event("The Guard 22", self.test_user.id, bracket_json.json)
+    event.players = players_json.json
     event.matches = [match]
     db.session.add(event)
     db.session.commit()
-    event_from_db = Event.query.get(event.id)
+    event_from_db = Event.query.get({'event_name': event.event_name, 'user_id': event.user_id})
     self.assertEquals(event, event_from_db)
