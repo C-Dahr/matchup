@@ -36,8 +36,6 @@ class EventController(Resource):
     except KeyError as e:
       message = f'Missing field: {e.args[0]}'
       api.abort(400, message)
-    except Exception as e:
-      api.abort(400, 'halp')
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
     
