@@ -8,7 +8,6 @@ from app.src.model.event import Event
 from werkzeug.security import generate_password_hash
 import json
 import base64
-import pdb
 
 BASE_URL = 'http://localhost:5000/event'
 LOGIN_URL = 'http://localhost:5000/auth'
