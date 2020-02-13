@@ -37,7 +37,7 @@ class BaseTestCase(TestCase):
 class TestCreateEntities(BaseTestCase):
   def test_set_up_event(self):
     # create a bracket
-    bracket = Bracket(1, "challonge", "Melee", 4, 15)
+    bracket = Bracket(1, "challonge", "Melee", 4)
     # create 2 players
     player1 = Player(1, "DieHard", [bracket.id], [2])
     player2 = Player(2, "Rice", [bracket.id], [4])
@@ -48,9 +48,10 @@ class TestCreateEntities(BaseTestCase):
     bracket_json = bracket_schema.jsonify(bracket)
     players_json = players_schema.jsonify([player1, player2])
 
-    event = Event("The Guard 22", self.test_user.id, players_json.json, bracket_json.json)
+    event = Event("The Guard 22", self.test_user.id, bracket_json.json)
+    event.players = players_json.json
     event.matches = [match]
     db.session.add(event)
     db.session.commit()
-    event_from_db = Event.query.get(event.id)
+    event_from_db = Event.query.get({'event_name': event.event_name, 'user_id': event.user_id})
     self.assertEquals(event, event_from_db)
