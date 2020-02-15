@@ -45,6 +45,9 @@ const routes = [
     path: '/editprofile',
     name: 'editprofile',
     component: EditProfile,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
