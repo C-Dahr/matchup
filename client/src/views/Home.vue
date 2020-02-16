@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    Welcome {{ token }}
+    Welcome {{ username }}
   </div>
 </template>
 
@@ -9,8 +9,8 @@
 export default {
   name: 'home',
   computed: {
-    token() {
-      return this.$store.state.userToken;
+    username() {
+      return this.$store.state.username;
     },
   },
 };
