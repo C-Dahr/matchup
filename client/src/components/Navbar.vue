@@ -4,7 +4,7 @@
       <a class="navbar-brand" href="/"></a>
 
       <!-- Links -->
-      <ul class="navbar-nav ml-auto d-lg-flex align-items-center">
+      <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a class="nav-link" v-if="!isLoggedIn" href="/login">Login</a>
         </li>
@@ -58,6 +58,7 @@ export default {
 
 .navbar .nav-link {
     color: white;
+    font-size: 1.25em;
     padding-top: 0;
     padding-bottom: 0;
     text-align: right;
