@@ -83,6 +83,20 @@ export default {
     };
   },
   name: 'EditProfile',
+  created() {
+    const path = 'http://localhost:5000/user';
+    const token = localStorage.getItem('user-token');
+    axios.get(path, { headers: { 'x-access-token': token } })
+      .then((response) => {
+        this.editProfileForm.username = response.data.username;
+        this.editProfileForm.email = response.data.email;
+        this.editProfileForm.challonge_username = response.data.challonge_username;
+        this.editProfileForm.api_key = response.data.api_key;
+      })
+      .catch(() => {
+        this.errors.push('uh oh');
+      });
+  },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
