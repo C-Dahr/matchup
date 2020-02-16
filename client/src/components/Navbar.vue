@@ -4,12 +4,18 @@
         <a class="navbar-brand" href="/"></a>
 
         <!-- Links -->
-        <ul class="navbar-nav">
+        <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-            <a class="nav-link" v-if="!isLoggedIn" href="/login">Login</a>
+              <a class="nav-link" v-if="!isLoggedIn" href="/login">Login</a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" @click="logout" v-if="isLoggedIn" href="/login">Logout</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" @click="logout" v-if="isLoggedIn" href="/login">Logout</a>
+              <a class="nav-link" v-if="isLoggedIn">
+                <font-awesome-icon icon="user-circle" size="2x"/>
+                <div>{{ username }}</div>
+              </a>
             </li>
         </ul>
     </nav>
@@ -21,6 +27,7 @@ export default {
   name: 'Navbar',
   computed: {
     isLoggedIn() { return this.$store.getters.isLoggedIn; },
+    username() { return this.$store.state.username; },
   },
   methods: {
     logout() {
@@ -51,4 +58,9 @@ export default {
 .nav-link {
     color: white;
 }
+
+.navbar-nav {
+  padding-right: 1em;
+}
+
 </style>
