@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Login from '../views/Login.vue';
 import SignUp from '../views/SignUp.vue';
 import Home from '../views/Home.vue';
+import CreateEvent from '../views/CreateEvent.vue';
 import store from '../store';
 import EditProfile from '../views/EditProfile.vue';
 
@@ -45,6 +46,14 @@ const routes = [
     path: '/editprofile',
     name: 'editprofile',
     component: EditProfile,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/createEvent',
+    name: 'createEvent',
+    component: CreateEvent,
     meta: {
       requiresAuth: true,
     },
