@@ -1,17 +1,23 @@
 <template>
     <nav class="navbar navbar-expand-sm" id="navbar-main">
-        <!-- Brand -->
-        <a class="navbar-brand" href="/"></a>
+      <!-- Brand -->
+      <a class="navbar-brand" href="/"></a>
 
-        <!-- Links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-            <a class="nav-link" v-if="!isLoggedIn" href="/login">Login</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" @click="logout" v-if="isLoggedIn" href="/login">Logout</a>
-            </li>
-        </ul>
+      <!-- Links -->
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" v-if="!isLoggedIn" href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <div id="welcome-msg" v-if="isLoggedIn">Welcome, {{ username }}</div>
+          <a class="nav-link" @click="logout" v-if="isLoggedIn" href="/login">Sign out</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="profile" v-if="isLoggedIn">
+            <font-awesome-icon icon="user-circle" size="3x"/>
+          </a>
+        </li>
+      </ul>
     </nav>
 </template>
 
@@ -21,6 +27,7 @@ export default {
   name: 'Navbar',
   computed: {
     isLoggedIn() { return this.$store.getters.isLoggedIn; },
+    username() { return this.$store.state.username; },
   },
   methods: {
     logout() {
@@ -42,13 +49,30 @@ export default {
     width: 170px;
     left: 15px;
     background-size: contain;
+    padding: 0;
 }
 
 #navbar-main {
     background-color: #0066FF;
 }
 
-.nav-link {
+.navbar .nav-link {
     color: white;
+    font-size: 1.25em;
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: right;
+}
+
+.navbar-nav {
+  padding-right: 1em;
+}
+
+.nav-item {
+  padding-right: 1em;
+}
+
+#welcome-msg {
+  font-size: 1.5em;
 }
 </style>

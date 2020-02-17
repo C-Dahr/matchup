@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     status: '',
+    username: localStorage.getItem('username') || '',
     userToken: localStorage.getItem('user-token') || '',
   },
   getters: {
@@ -38,13 +39,17 @@ export default new Vuex.Store({
         axios.post(path, '', { headers: { Authorization: `Basic ${headerInfo}` } })
           .then((response) => {
             const { token } = response.data;
+            localStorage.setItem('username', user.username);
+            this.state.username = user.username;
             localStorage.setItem('user-token', token);
+            this.state.userToken = token;
             axios.defaults.headers.common.authorization = token;
             commit('auth_success', token);
             resolve(response);
           })
           .catch((err) => {
             commit('auth_error');
+            localStorage.removeItem('username');
             localStorage.removeItem('user-token');
             reject(err);
           });
@@ -53,6 +58,7 @@ export default new Vuex.Store({
     logout({ commit }) {
       return new Promise((resolve) => {
         commit('logout');
+        localStorage.removeItem('username');
         localStorage.removeItem('user-token');
         delete axios.defaults.headers.common.authorization;
         resolve();
