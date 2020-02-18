@@ -25,23 +25,6 @@
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Password <span class="required-star">*</span></label>
-              <input class="form-control" type="password"
-                 name="password" v-model="editProfileForm.password"
-                 required placeholder="Enter Password"/>
-                <span class="Error"></span>
-            </div>
-            <div class="form-group d-flex justify-content-left">
-              <label class="form-label">
-                Confirm Password
-                <span class="required-star">*</span>
-              </label>
-              <input class="form-control" type="password"
-                 name="passwordConfirm" v-model="editProfileForm.confirm_password"
-                 required placeholder="Confirm Password"/>
-                <span class="Error"></span>
-            </div>
-            <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge Username</label>
               <input class="form-control" type="text"
               name="challonge_username" v-model="editProfileForm.challonge_username"
@@ -75,8 +58,6 @@ export default {
       editProfileForm: {
         username: '',
         email: '',
-        password: '',
-        confirm_password: '',
         challonge_username: '',
         api_key: '',
       },
@@ -101,20 +82,13 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.errors = [];
-      if (this.editProfileForm.password !== this.editProfileForm.confirm_password) {
-        this.editProfileForm.password = '';
-        this.editProfileForm.confirm_password = '';
-        this.errors.push('Passwords do not match');
-      } else {
-        const payload = {
-          username: this.editProfileForm.username,
-          email: this.editProfileForm.email,
-          password: this.editProfileForm.password,
-          challonge_username: this.editProfileForm.challonge_username,
-          api_key: this.editProfileForm.api_key,
-        };
-        this.updateUser(payload);
-      }
+      const payload = {
+        username: this.editProfileForm.username,
+        email: this.editProfileForm.email,
+        challonge_username: this.editProfileForm.challonge_username,
+        api_key: this.editProfileForm.api_key,
+      };
+      this.updateUser(payload);
     },
     updateUser(payload) {
       const path = 'http://localhost:5000/user';

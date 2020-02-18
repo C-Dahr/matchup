@@ -100,7 +100,6 @@ class TestUpdateUser(BaseTestCase):
     user_id = self.test_user.id
     new_info = {
       'username': 'testuser',
-      'password': 'pass345',
       'email': 'updated@email.ca',
       'challonge_username': 'testuser',
       'api_key': 'AaBbCc987'
@@ -115,7 +114,6 @@ class TestUpdateUser(BaseTestCase):
   def test_update_user_doesnt_exist(self):
     new_info = {
       'username': 'testuser',
-      'password': 'pass345',
       'email': 'updated@email.ca',
       'challonge_username': 'testuser',
       'api_key': 'AaBbCc987'
@@ -138,7 +136,6 @@ class TestUpdateUser(BaseTestCase):
     # try to update that user's username to "testuser"
     new_info = {
       'username': 'testuser',
-      'password': 'pass345',
       'email': 'new@hotmail.com',
       'challonge_username': 'newuser',
       'api_key': 'AaBbCc987'
