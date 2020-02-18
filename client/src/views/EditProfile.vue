@@ -61,13 +61,13 @@ export default {
         challonge_username: '',
         api_key: '',
       },
+      token: localStorage.getItem('user-token'),
     };
   },
   name: 'EditProfile',
   created() {
     const path = 'http://localhost:5000/user';
-    const token = localStorage.getItem('user-token');
-    axios.get(path, { headers: { 'x-access-token': token } })
+    axios.get(path, { headers: { 'x-access-token': this.token } })
       .then((response) => {
         this.editProfileForm.username = response.data.username;
         this.editProfileForm.email = response.data.email;
@@ -92,9 +92,9 @@ export default {
     },
     updateUser(payload) {
       const path = 'http://localhost:5000/user';
-      axios.put(path, payload)
+      axios.put(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
-          this.$router.push('/');
+          this.$router.push('/home');
         })
         .catch((error) => {
           if (error.response.status === 409) {
