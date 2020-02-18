@@ -23,18 +23,8 @@
                         <h3 class="card-title">Bracket One</h3>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Select Bracket</label>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
-                                id="dropdownMenuButton" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                    Bracket
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
-                            </div>
+                            <b-form-select v-model="eventForm.brackets[0].bracket_id"
+                            :options="options"></b-form-select>
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
@@ -50,18 +40,8 @@
                         <h3 class="card-title">Bracket Two</h3>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Select Bracket</label>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
-                                id="dropdownMenuButton" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                    Bracket
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
-                            </div>
+                            <b-form-select v-model="eventForm.brackets[1].bracket_id"
+                            :options="options"></b-form-select>
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
@@ -102,9 +82,25 @@ export default {
           },
         ],
       },
+      tournaments: [],
+      options: [],
+      token: localStorage.getItem('user-token'),
     };
   },
   name: 'CreateEvent',
+  created() {
+    const path = 'http://localhost:5000/challonge';
+    axios.get(path, { headers: { 'x-access-token': this.token } })
+      .then((response) => {
+        this.tournaments = response.data.tournaments;
+        this.tournaments.forEach(
+          tournament => this.options.push({ value: tournament.id, text: tournament.name }),
+        );
+      })
+      .catch(() => {
+        this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
+      });
+  },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
@@ -126,7 +122,7 @@ export default {
     },
     createEvent(payload) {
       const path = 'http://localhost:5000/event';
-      axios.post(path, payload)
+      axios.post(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
           this.$router.push('/');
         })
