@@ -58,7 +58,7 @@
             <h4>Generate or find an existing API key for Challonge <b-link href="https://challonge.com/settings/developer" target="_blank">here</b-link></h4>
             <div class="form-group d-flex justify-content-center">
                 <input class="btn btn-primary account-form-submit" type="submit"
-                 value="Create Account"/>
+                 value="Save Changes"/>
             </div>
         </form>
       </div>
@@ -113,7 +113,7 @@ export default {
           challonge_username: this.editProfileForm.challonge_username,
           api_key: this.editProfileForm.api_key,
         };
-        this.createUser(payload);
+        this.updateUser(payload);
       }
     },
     updateUser(payload) {
