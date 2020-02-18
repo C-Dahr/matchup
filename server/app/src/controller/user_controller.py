@@ -50,7 +50,6 @@ class UserController(Resource):
     
     try:
       user.username = request.json['username']
-      user.password = generate_password_hash(request.json['password'])
       user.challonge_username = request.json['challonge_username']
       user.email = request.json['email']
       user.api_key = request.json['api_key']

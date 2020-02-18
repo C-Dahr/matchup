@@ -5,12 +5,13 @@
 
       <!-- Links -->
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" v-if="!isLoggedIn" href="/login">Login</a>
+        <li class="nav-item" v-if="!isLoggedIn">
+          <a class="nav-link" href="/login">Login</a>
         </li>
-        <li class="nav-item">
-          <div id="welcome-msg" v-if="isLoggedIn">Welcome, {{ username }}</div>
-          <a class="nav-link" @click="logout" v-if="isLoggedIn" href="/login">Sign out</a>
+        <li class="nav-item" v-if="isLoggedIn">
+          <div id="welcome-msg" >Welcome, {{ username }}</div>
+          <a class="nav-link" @click="logout" href="/login">Sign Out</a>
+          <a class="nav-link" href="/editprofile">Edit Profile</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="profile" v-if="isLoggedIn">
