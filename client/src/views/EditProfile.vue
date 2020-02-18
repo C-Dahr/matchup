@@ -98,7 +98,9 @@ export default {
         })
         .catch((error) => {
           if (error.response.status === 409) {
-            this.errors.push('Username already exists');
+            const field = error.response.data.message.includes('username') ? 'Username' : 'Email';
+            const message = `${field} already exists`;
+            this.errors.push(message);
           }
         });
     },
