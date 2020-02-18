@@ -82,7 +82,7 @@ export default {
         this.editProfileForm.api_key = response.data.api_key;
       })
       .catch(() => {
-        this.errors.push('uh oh');
+        this.errors.push('Error loading profile info');
       });
   },
   methods: {
