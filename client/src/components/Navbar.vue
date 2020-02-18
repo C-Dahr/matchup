@@ -11,7 +11,7 @@
         <li class="nav-item" v-if="isLoggedIn">
           <div id="welcome-msg" >Welcome, {{ username }}</div>
           <a class="nav-link" @click="logout" href="/login">Sign Out</a>
-          <a class="nav-link" @click="logout" href="/editprofile">Edit Profile</a>
+          <a class="nav-link" href="/editprofile">Edit Profile</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="profile" v-if="isLoggedIn">
