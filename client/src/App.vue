@@ -60,8 +60,5 @@ export default {
   width: 30%;
   min-width: 300px;
 }
-.event-form {
-  width: 30%;
-  min-width: 300px;
-}
+
 </style>
