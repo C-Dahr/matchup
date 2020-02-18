@@ -3,6 +3,9 @@
     <div class="form-title">
       <p>Edit Profile</p>
     </div>
+    <div>
+      <p id="success-message">Updated Successfully</p>
+    </div>
     <div class="form-error-list" v-if="errors.length">
       <ul class="form-error">
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
@@ -42,6 +45,10 @@
             <div class="form-group d-flex justify-content-center">
                 <input class="btn btn-primary account-form-submit" type="submit"
                  value="Save Changes"/>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <input class="btn btn-secondary cancel-btn" type="button"
+                 value="Cancel" @click="cancel"/>
             </div>
         </form>
       </div>
@@ -92,11 +99,13 @@ export default {
     },
     updateUser(payload) {
       const path = 'http://localhost:5000/user';
+      const successMessageEl = document.getElementById('success-message');
       axios.put(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
-          this.$router.push('/home');
+          successMessageEl.style.display = 'block';
         })
         .catch((error) => {
+          successMessageEl.style.display = 'none';
           if (error.response.status === 409) {
             const field = error.response.data.message.includes('username') ? 'Username' : 'Email';
             const message = `${field} already exists`;
@@ -104,7 +113,26 @@ export default {
           }
         });
     },
+    cancel(evt) {
+      evt.preventDefault();
+      this.$router.push('/home');
+    },
   },
 };
 
 </script>
+
+<style scoped>
+
+#success-message {
+  font-size: 1.5em;
+  color: rgb(9, 205, 0);
+  font-weight: bold;
+  display: none;
+}
+
+.cancel-btn {
+  width: 50%;
+}
+
+</style>
