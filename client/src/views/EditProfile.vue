@@ -1,5 +1,5 @@
 <template>
-  <div class="signup">
+  <div class="editprofile">
     <div class="form-title">
       <p>Edit Profile</p>
     </div>
