@@ -105,21 +105,24 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.errors = [];
-      this.errors.push(this.eventForm.brackets[0].bracket_id);
-      const payload = {
-        event_name: this.eventForm.event_name,
-        brackets: [
-          {
-            bracket_id: this.eventForm.brackets[0].bracket_id,
-            number_of_setups: this.eventForm.brackets[0].number_of_setups,
-          },
-          {
-            bracket_id: this.eventForm.brackets[1].bracket_id,
-            number_of_setups: this.eventForm.brackets[1].number_of_setups,
-          },
-        ],
-      };
-      this.createEvent(payload);
+      if (this.eventForm.brackets[0].bracket_id === this.eventForm.brackets[1].bracket_id) {
+        this.errors.push('Can not choose the same bracket twice');
+      } else {
+        const payload = {
+          event_name: this.eventForm.event_name,
+          brackets: [
+            {
+              bracket_id: this.eventForm.brackets[0].bracket_id,
+              number_of_setups: this.eventForm.brackets[0].number_of_setups,
+            },
+            {
+              bracket_id: this.eventForm.brackets[1].bracket_id,
+              number_of_setups: this.eventForm.brackets[1].number_of_setups,
+            },
+          ],
+        };
+        this.createEvent(payload);
+      }
     },
     createEvent(payload) {
       const path = 'http://localhost:5000/event';
