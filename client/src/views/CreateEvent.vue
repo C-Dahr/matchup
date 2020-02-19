@@ -105,16 +105,17 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.errors = [];
+      this.errors.push(this.eventForm.brackets[0].bracket_id);
       const payload = {
-        event_name: this.event_name,
+        event_name: this.eventForm.event_name,
         brackets: [
           {
-            bracket_id: this.brackets[0].bracket_id,
-            number_of_setups: this.brackets[0].number_of_setups,
+            bracket_id: this.eventForm.brackets[0].bracket_id,
+            number_of_setups: this.eventForm.brackets[0].number_of_setups,
           },
           {
-            bracket_id: this.brackets[1].bracket_id,
-            number_of_setups: this.brackets[1].number_of_setups,
+            bracket_id: this.eventForm.brackets[1].bracket_id,
+            number_of_setups: this.eventForm.brackets[1].number_of_setups,
           },
         ],
       };
@@ -124,7 +125,7 @@ export default {
       const path = 'http://localhost:5000/event';
       axios.post(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
-          this.$router.push('/');
+          this.$router.push('/home');
         })
         .catch((error) => {
           if (error.response.status === 400) {
