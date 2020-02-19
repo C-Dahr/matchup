@@ -18,7 +18,7 @@
               <span class="Error"></span>
             </div>
             <div class="card-deck">
-                <div class="card border-light " text-white>
+                <div class="card border-light">
                     <div class="card-body">
                         <h3 class="card-title">Bracket One</h3>
                         <div class="form-group d-flex justify-content-left">
@@ -29,7 +29,7 @@
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
                             <input class="form-control" type="text"
-                            name="setups1" v-model="eventForm.brackets[0].number_of_setups"
+                            v-model="eventForm.brackets[0].number_of_setups"
                             required placeholder="Enter Number of Setups"/>
                             <span class="Error"></span>
                         </div>
@@ -46,7 +46,7 @@
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
                             <input class="form-control" type="text"
-                            name="setups1" v-model="eventForm.brackets[1].number_of_setups"
+                            v-model="eventForm.brackets[1].number_of_setups"
                             required placeholder="Enter Number of Setups"/>
                             <span class="Error"></span>
                         </div>
@@ -54,7 +54,7 @@
                 </div>
             </div>
             <div class="form-group d-flex justify-content-center">
-                <input class="btn btn-primary btn-lg account-form-submit" type="submit"
+                <input class="btn btn-primary btn-lg event-form-submit" type="submit"
                  value="Next"/>
             </div>
         </form>
@@ -84,7 +84,7 @@ export default {
       },
       tournaments: [],
       options: [],
-      token: localStorage.getItem('user-token'),
+      token: this.$store.getters.getToken,
     };
   },
   name: 'CreateEvent',
@@ -142,7 +142,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .card {
     background-color: #0066FF !important;
     width: 30rem;
@@ -163,7 +163,7 @@ export default {
     width: auto;
 }
 }
-.account-form-submit {
+.event-form-submit {
   width: 30%;
   background-color: #0066FF !important;
   align-content: center;
