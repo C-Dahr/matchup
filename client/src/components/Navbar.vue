@@ -2,7 +2,7 @@
   <div>
     <b-navbar toggleable="lg" id="navbar-main">
       <b-navbar-brand  href="/"></b-navbar-brand>
-      <b-navbar-nav class="ml-auto" id="navbar-right">
+      <b-navbar-nav v-if="isLoggedIn" class="ml-auto" id="navbar-right">
         <b-collapse id="nav-collapse" is-nav>
           <b-nav-text id="welcome-msg">Welcome, {{ username }}</b-nav-text>
         </b-collapse>
@@ -68,6 +68,12 @@ export default {
 
 .navbar-collapse.collapse {
   padding: 0;
+}
+
+.navbar-nav>li>.dropdown-menu {
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
+  max-width: 50px;
 }
 
 </style>
