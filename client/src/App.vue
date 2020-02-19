@@ -60,4 +60,5 @@ export default {
   width: 30%;
   min-width: 300px;
 }
+
 </style>
