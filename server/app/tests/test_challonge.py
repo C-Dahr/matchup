@@ -5,12 +5,13 @@ from flask import Flask
 from app.src.config import basedir
 from app.src.model.user import User
 from werkzeug.security import generate_password_hash
+from app.src.controller import xor_crypt_string
 import json
 import base64
 
 BASE_URL = 'http://localhost:5000/challonge'
 LOGIN_URL = 'http://localhost:5000/auth'
-challonge_api_key = 'lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN'
+challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
 
 class BaseTestCase(TestCase):  
   def create_app(self):

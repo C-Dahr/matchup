@@ -6,6 +6,7 @@ from flask_restplus import Resource, Namespace
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
 from app.src.controller import get_user_from_auth_header
+from app.src.controller import xor_crypt_string
 
 api = Namespace('user', description='user related operations')
 
@@ -23,7 +24,7 @@ class UserController(Resource):
       hashed_password = generate_password_hash(password, method='sha256')
       challonge_username = request.json['challonge_username']
       email = request.json['email']
-      api_key = request.json['api_key']
+      api_key = xor_crypt_string(request.json['api_key'], encode=True)
       new_user = User(username, hashed_password, email, challonge_username, api_key)
       db.session.add(new_user)
       db.session.commit()
@@ -52,7 +53,7 @@ class UserController(Resource):
       user.username = request.json['username']
       user.challonge_username = request.json['challonge_username']
       user.email = request.json['email']
-      user.api_key = request.json['api_key']
+      user.api_key = xor_crypt_string(request.json['api_key'], encode=True)
       db.session.commit()
       return user_schema.jsonify(user)
     except KeyError as e:
