@@ -7,6 +7,7 @@ from ..model.event import Event, EventSchema
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from requests.exceptions import HTTPError
+from app.src.controller import xor_crypt_string
 import challonge
 import jwt
 
@@ -20,7 +21,7 @@ class EventController(Resource):
   @api.doc('create a new event')
   def post(self):
     current_user = get_user_from_auth_header(request, api)
-    challonge.set_credentials(current_user.challonge_username, current_user.api_key)
+    challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
 
     try:
       event_name = request.json['event_name']

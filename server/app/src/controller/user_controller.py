@@ -53,7 +53,7 @@ class UserController(Resource):
       user.username = request.json['username']
       user.challonge_username = request.json['challonge_username']
       user.email = request.json['email']
-      user.api_key = request.json['api_key']
+      user.api_key = xor_crypt_string(request.json['api_key'], encode=True)
       db.session.commit()
       return user_schema.jsonify(user)
     except KeyError as e:

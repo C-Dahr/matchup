@@ -6,12 +6,13 @@ from app.src.config import basedir
 from app.src.model.user import User
 from app.src.model.event import Event
 from werkzeug.security import generate_password_hash
+from app.src.controller import xor_crypt_string
 import json
 import base64
 
 BASE_URL = 'http://localhost:5000/event'
 LOGIN_URL = 'http://localhost:5000/auth'
-challonge_api_key = 'lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN'
+challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
 bracket_1_id = 8061588
 bracket_2_id = 8061653
 
