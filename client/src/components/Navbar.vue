@@ -1,25 +1,21 @@
 <template>
-    <nav class="navbar navbar-expand-sm" id="navbar-main">
-      <!-- Brand -->
-      <a class="navbar-brand" href="/"></a>
-
-      <!-- Links -->
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item" v-if="!isLoggedIn">
-          <a class="nav-link" href="/login">Login</a>
-        </li>
-        <li class="nav-item" v-if="isLoggedIn">
-          <div id="welcome-msg" >Welcome, {{ username }}</div>
-          <a class="nav-link" @click="logout" href="/login">Sign Out</a>
-          <a class="nav-link" href="/editprofile">Edit Profile</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="profile" v-if="isLoggedIn">
-            <font-awesome-icon icon="user-circle" size="3x"/>
-          </a>
-        </li>
-      </ul>
-    </nav>
+  <div>
+    <b-navbar toggleable="lg" id="navbar-main">
+      <b-navbar-brand  href="/"></b-navbar-brand>
+      <b-navbar-nav class="ml-auto" id="navbar-right">
+        <b-collapse id="nav-collapse" is-nav>
+          <b-nav-text id="welcome-msg">Welcome, {{ username }}</b-nav-text>
+        </b-collapse>
+        <b-nav-item-dropdown right>
+          <template v-slot:button-content>
+            <font-awesome-icon icon="user-circle" size="3x" style="color: white;"/>
+          </template>
+          <b-dropdown-item href="/editprofile">Profile</b-dropdown-item>
+          <b-dropdown-item @click="logout" href="/login">Sign Out</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+    </b-navbar>
+  </div>
 </template>
 
 <script>
@@ -54,26 +50,24 @@ export default {
 }
 
 #navbar-main {
-    background-color: #0066FF;
-}
-
-.navbar .nav-link {
-    color: white;
-    font-size: 1.25em;
-    padding-top: 0;
-    padding-bottom: 0;
-    text-align: right;
-}
-
-.navbar-nav {
-  padding-right: 1em;
-}
-
-.nav-item {
-  padding-right: 1em;
+  background-color: #0066FF;
 }
 
 #welcome-msg {
+  color: white;
   font-size: 1.5em;
 }
+
+#navbar-right {
+  padding-right: 2em;
+}
+
+.dropdown-toggle::after {
+  content: none !important;
+}
+
+.navbar-collapse.collapse {
+  padding: 0;
+}
+
 </style>
