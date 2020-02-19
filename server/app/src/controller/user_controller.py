@@ -6,25 +6,13 @@ from flask_restplus import Resource, Namespace
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
 from app.src.controller import get_user_from_auth_header
-from app.src.config import key
-from itertools import cycle
-import base64
+from app.src.controller import xor_crypt_string
 
 api = Namespace('user', description='user related operations')
 
 # init schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
-
-# xor encrypt/decrypt
-def xor_crypt_string(data, encode = False, decode = False):
-   if decode:
-      data = base64.decodestring(data)
-   xored = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(data, cycle(key)))
-   
-   if encode:
-      return base64.encodestring(xored).strip()
-   return xored
 
 @api.route('')
 class UserController(Resource):

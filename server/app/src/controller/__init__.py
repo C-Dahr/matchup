@@ -1,6 +1,8 @@
 import jwt
 from ..model.user import User
 from app.src.config import key
+from itertools import cycle
+import base64
 
 # helper method(s)
 def get_user_from_auth_header(request, api):
@@ -16,5 +18,17 @@ def get_user_from_auth_header(request, api):
   except jwt.DecodeError as e:
     api.abort(401, 'Invalid token.')
   if not current_user:
-      api.abort(404, 'User does not exist.')
+    api.abort(404, 'User does not exist.')
   return current_user
+
+# xor encrypt/decrypt
+def xor_crypt_string(data, encode = False, decode = False):
+  if decode: 
+    data = base64.decodestring(data.encode('utf-8'))
+    data = data.decode('utf-8')
+  xored = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(data, cycle(key)))
+   
+  if encode:
+    x = base64.encodestring(xored.encode('utf-8')).strip()
+    return x.decode('utf-8')
+  return xored
