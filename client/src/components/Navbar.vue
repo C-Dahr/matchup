@@ -59,14 +59,9 @@ export default {
   font-size: 1.5em;
 }
 
-.navbar-collapse.collapse {
-  padding: 0;
-}
-
 .navbar-nav>li>.dropdown-menu {
   border-top-left-radius: 5px !important;
   border-top-right-radius: 5px !important;
-  max-width: 50px;
 }
 
 @media only screen and (max-width: 600px) {
