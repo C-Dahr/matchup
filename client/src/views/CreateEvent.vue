@@ -7,6 +7,7 @@
       <ul class="form-error">
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>
+      <p v-if="link === true">Generate or find an existing API key for Challonge <b-link class="text-warning" href="https://challonge.com/settings/developer" target="_blank">here</b-link></p>
     </div>
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit" method="post" class="event-form">
@@ -28,7 +29,8 @@
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
-                            <input class="form-control" type="text"
+                            <input class="form-control" type="number"
+                            min="0" oninput="validity.valid||(value='')"
                             v-model="eventForm.brackets[0].number_of_setups"
                             required placeholder="Enter Number of Setups"/>
                             <span class="Error"></span>
@@ -45,7 +47,8 @@
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
-                            <input class="form-control" type="text"
+                            <input class="form-control" type="number"
+                            min="0" oninput="validity.valid||(value='')"
                             v-model="eventForm.brackets[1].number_of_setups"
                             required placeholder="Enter Number of Setups"/>
                             <span class="Error"></span>
@@ -85,6 +88,7 @@ export default {
       tournaments: [],
       options: [],
       token: this.$store.getters.getToken,
+      link: false,
     };
   },
   name: 'CreateEvent',
@@ -99,13 +103,17 @@ export default {
       })
       .catch(() => {
         this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
+        this.link = true;
       });
   },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
       this.errors = [];
-      if (this.eventForm.brackets[0].bracket_id === this.eventForm.brackets[1].bracket_id) {
+      if (this.eventForm.brackets[0].bracket_id === ''
+       || this.eventForm.brackets[1].bracket_id === '') {
+        this.errors.push('Brackets must be selected');
+      } else if (this.eventForm.brackets[0].bracket_id === this.eventForm.brackets[1].bracket_id) {
         this.errors.push('Can not choose the same bracket twice');
       } else {
         const payload = {
@@ -168,6 +176,9 @@ export default {
   background-color: #0066FF !important;
   align-content: center;
   margin-top: 10px;
+}
+.text-warning {
+    text-decoration: underline;
 }
 #event-input {
   max-width: 800px;

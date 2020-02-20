@@ -50,7 +50,9 @@ export default {
 }
 .form-error {
   text-align: center;
+  list-style: none;
   list-style-position: inside;
+  padding: 0;
 }
 .account-form-submit {
   width: 50%;
