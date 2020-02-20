@@ -48,6 +48,7 @@
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
                             <input class="form-control" type="number"
+                            min="0" oninput="validity.valid||(value='')"
                             v-model="eventForm.brackets[1].number_of_setups"
                             required placeholder="Enter Number of Setups"/>
                             <span class="Error"></span>
@@ -182,6 +183,5 @@ export default {
 #event-input {
   max-width: 800px;
 }
-
 
 </style>
