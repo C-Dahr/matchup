@@ -68,8 +68,10 @@ export default {
         challonge_username: '',
         api_key: '',
       },
-      token: localStorage.getItem('user-token'),
     };
+  },
+  computed: {
+    token() { return this.$store.state.userToken; },
   },
   name: 'EditProfile',
   created() {
@@ -107,7 +109,7 @@ export default {
         .catch((error) => {
           successMessageEl.style.display = 'none';
           if (error.response.status === 409) {
-            const field = error.response.data.message.includes('username') ? 'Username' : 'Email';
+            const field = this.getFieldForErrorMessage(error.response.data.message);
             const message = `${field} already exists`;
             this.errors.push(message);
           }

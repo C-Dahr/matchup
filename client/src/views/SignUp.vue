@@ -110,7 +110,9 @@ export default {
         })
         .catch((error) => {
           if (error.response.status === 409) {
-            this.errors.push('Username already exists');
+            const field = this.getFieldForErrorMessage(error.response.data.message);
+            const message = `${field} already exists`;
+            this.errors.push(message);
           }
         });
     },
