@@ -68,8 +68,10 @@ export default {
         challonge_username: '',
         api_key: '',
       },
-      token: localStorage.getItem('user-token'),
     };
+  },
+  computed: {
+    token() { return this.$store.state.userToken; },
   },
   name: 'EditProfile',
   created() {
