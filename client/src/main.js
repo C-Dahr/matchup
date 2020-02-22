@@ -20,6 +20,17 @@ Vue.use(IconsPlugin);
 
 Vue.config.productionTip = false;
 
+Vue.mixin({
+  methods: {
+    getFieldForErrorMessage(message) {
+      let field = message.substring(message.indexOf('(') + 1, message.indexOf(')'));
+      field = field.replace('_', ' ');
+      field = field.charAt(0).toUpperCase() + field.slice(1);
+      return field;
+    },
+  },
+});
+
 new Vue({
   router,
   store,

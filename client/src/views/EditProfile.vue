@@ -58,13 +58,6 @@
 <script>
 import axios from 'axios';
 
-function getFieldForErrorMessage(message) {
-  let field = message.substring(message.indexOf('(') + 1, message.indexOf(')'));
-  field = field.replace('_', ' ');
-  field = field.charAt(0).toUpperCase() + field.slice(1);
-  return field;
-}
-
 export default {
   data() {
     return {
@@ -116,7 +109,7 @@ export default {
         .catch((error) => {
           successMessageEl.style.display = 'none';
           if (error.response.status === 409) {
-            const field = getFieldForErrorMessage(error.response.data.message);
+            const field = this.getFieldForErrorMessage(error.response.data.message);
             const message = `${field} already exists`;
             this.errors.push(message);
           }
