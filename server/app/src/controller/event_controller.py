@@ -4,6 +4,7 @@ from app.src.config import key
 from ..model.user import User, UserSchema
 from ..model.bracket import Bracket, BracketSchema
 from ..model.event import Event, EventSchema
+from..model.player import Player, PlayerSchema
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from requests.exceptions import HTTPError
@@ -16,6 +17,7 @@ api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
 brackets_schema = BracketSchema(many=True)
+player_schema = PlayerSchema(many=True)
 
 @api.route('')
 class EventController(Resource):
@@ -26,10 +28,20 @@ class EventController(Resource):
 
     try:
       event_name = request.json['event_name']
+      # get the brackets from the request, create bracket objects and store them in a list
       brackets_from_request = request.json['brackets']
       list_of_brackets = get_brackets_from_request(brackets_from_request)
+      # for each bracket get the list of players from challonge, create player objects and store them in a dictionary
+      players_by_bracket = {}
+      for bracket in list_of_brackets:
+        players_by_bracket[bracket.id] = get_players_from_bracket(bracket.id)
+        bracket.number_of_players =  len(players_by_bracket[bracket.id])
+      # compare the players in each bracket and return a list of players that appear in both
+      players_in_both_brackets = get_players_in_both_brackets(players_by_bracket)
+      # create the event
+      players_json = player_schema.jsonify(players_in_both_brackets).json
       brackets_json = brackets_schema.jsonify(list_of_brackets).json
-      event = Event(event_name, current_user.id, brackets_json)
+      event = Event(event_name, current_user.id, brackets_json, players_json)
       db.session.add(event)
       db.session.commit()
       return event_schema.jsonify(event)
@@ -71,3 +83,27 @@ def get_brackets_from_request(brackets_from_request):
                           bracket['number_of_setups'])
     list_of_brackets.append(new_bracket)
   return list_of_brackets
+
+def get_players_from_bracket(bracket_id):
+  list_of_player_objects = []
+  # this call to challonge returns a list of dictionaries
+  list_of_participants = challonge.participants.index(bracket_id)
+  for index in range(len(list_of_participants)):
+    new_player = Player(list_of_participants[index]['id'], list_of_participants[index]['name'], bracket_id, list_of_participants[index]['seed'])
+    list_of_player_objects.append(new_player)
+  return list_of_player_objects
+
+def get_players_in_both_brackets(players_by_bracket):
+  list_of_players = []
+  keys = list(players_by_bracket.keys())
+  players_in_bracket1 = players_by_bracket[keys[0]]
+  players_in_bracket2 = players_by_bracket[keys[1]]
+  # compare each player in bracket 1 to each player in bracket 2 by name only
+  for b1 in players_in_bracket1:
+    for b2 in players_in_bracket2:
+      if b1.name == b2.name:
+        list_of_players.append(b1)
+  return list_of_players
+
+    
+  
