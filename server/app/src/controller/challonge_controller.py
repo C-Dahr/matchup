@@ -1,6 +1,7 @@
 from .. import db, ma
 from ..model.user import UserSchema, User
 from ..model.event import Event
+from ..service.match_service import get_highest_priority_matches
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from app.src.controller import get_user_from_auth_header
@@ -33,9 +34,8 @@ class MatchController(Resource):
     event = Event.query.get({'event_name': event_name, 'user_id': current_user.id})
     try:
       challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
-      brackets = event.brackets
-      bracket_1_matches = challonge.matches.index(tournament=brackets[0]['id'], state='open')
-      bracket_2_matches = challonge.matches.index(tournament=brackets[1]['id'], state='open')
+      bracket_1_matches = get_highest_priority_matches(event, event.brackets[0])
+      bracket_2_matches = get_highest_priority_matches(event, event.brackets[1])
       matches = bracket_1_matches + bracket_2_matches
       return jsonify({'matches' : matches})
     except HTTPError as e:
