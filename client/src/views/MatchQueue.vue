@@ -1,23 +1,27 @@
 <template>
   <div class="match-queue">
-    <div class="form-title">
-      <p>Event Name</p>
-      <input class="btn btn-danger btn-lg" type="submit"
-                      value="End Event"/>
-    </div>
+    <b-container>
+      <b-row align-h="between">
+        <div class="form-title">
+          <p>Event Name</p>
+          <input class="btn btn-danger btn-lg" type="submit"
+                          value="End Event"/>
+        </div>
+      </b-row>
+    </b-container>
     <b-container class="card-deck">
-      <div v-for="matchData in matchData" v-bind:key="matchData">
-        <b-row align-h="center" class="card border-light">
-            <div class="card-body">
-                <h3 class="card-title">{{ matchData.player1}} vs. {{matchData.player2}}</h3>
-                <h4 class="card-title">{{ matchData.game}}</h4>
-            </div>
-        </b-row>
-        <b-row align-h="center">
-            <input class="btn btn-success btn-lg in-progress-submit" type="submit"
-                 value="Mark In Progress"/>
-        </b-row>
-      </div>
+        <div v-for="matchData in matchData" class="match" v-bind:key="matchData">
+          <b-row align-h="center" class="card border-light">
+              <div class="card-body">
+                  <h3 class="card-title">{{ matchData.player1}} vs. {{matchData.player2}}</h3>
+                  <h4 class="card-title">{{ matchData.game}}</h4>
+              </div>
+          </b-row>
+          <b-row align-h="center">
+              <input class="btn btn-success btn-lg in-progress-submit" type="submit"
+                  value="Mark In Progress"/>
+          </b-row>
+        </div>
     </b-container>
   </div>
 </template>
@@ -32,7 +36,7 @@ export default {
       maxVisibleMatches: 5,
       matchData: [
         { player1: 'ZachAtk', player2: 'CamBlam', game: 'Game 1' },
-        { player1: 'DannyGranE', player2: 'TaylerMailr', game: 'Game 1' },
+        { player1: 'DannyGranE', player2: 'TaylerMailr', game: 'Game 2' },
       ],
     };
   },
@@ -43,6 +47,10 @@ export default {
 .card {
   background-color: #0066FF !important;
   width: 50rem;
+  margin: 0;
+}
+.col {
+  padding: 0;
 }
 .card-title{
     font-weight: bold;
@@ -59,6 +67,11 @@ export default {
 }
 .btn-danger {
   height: 60px;
+}
+@media only screen and (max-width: 600px) {
+  .match {
+    width: 95%;
+  }
 }
 
 </style>
