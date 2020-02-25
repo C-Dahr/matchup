@@ -2,20 +2,27 @@
   <div class="match-queue">
     <b-container>
       <b-row align-h="between">
-        <div class="form-title">
-          <p>Event Name</p>
-          <input class="btn btn-danger btn-lg" type="submit"
-                          value="End Event"/>
-        </div>
+        <b-col sm="2">
+        </b-col>
+        <b-col sm="8">
+          <div class="form-title">
+            <p>Event Name</p>
+          </div>
+        </b-col>
+        <b-col sm="2">
+          <input class="btn btn-danger btn-lg" type="submit" value="End Event"/>
+        </b-col>
       </b-row>
     </b-container>
-    <b-container class="card-deck">
+    <b-container>
         <div v-for="matchData in matchData" class="match" v-bind:key="matchData">
-          <b-row align-h="center" class="card border-light">
+          <b-row align-h="center">
+            <b-card border-variant="light">
               <div class="card-body">
                   <h3 class="card-title">{{ matchData.player1}} vs. {{matchData.player2}}</h3>
                   <h4 class="card-title">{{ matchData.game}}</h4>
               </div>
+            </b-card>
           </b-row>
           <b-row align-h="center">
               <input class="btn btn-success btn-lg in-progress-submit" type="submit"
