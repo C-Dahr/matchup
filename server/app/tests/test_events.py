@@ -97,3 +97,102 @@ class TestCreateEvent(BaseTestCase):
     response = self.client.post(BASE_URL, json=event_data, headers=self.headers)
     # pychallonge throws a 401 if it doesn't receive anything back
     self.assert401(response)
+
+class TestUpdateEvent(BaseTestCase):
+  def test_update_event(self):
+    event_data = {
+      'event_name': 'Test Event',
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': 4
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': 5
+        }
+      ]
+    }
+    self.client.post(BASE_URL, json=event_data, headers=self.headers)
+    event_data = {
+      'event_name': 'Test Event',
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': 7
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': 7
+        }
+      ]
+    }
+    response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
+    event_returned = json.loads(response.data)
+    primary_key = {
+      'event_name': event_returned['event_name'],
+      'user_id': event_returned['user_id']
+    }
+    event_from_db = Event.query.get(primary_key)
+    self.assertEqual(event_data['event_name'], event_returned['event_name'], event_from_db.event_name)
+
+  def test_update_event_missing_fields(self):
+    event_data = {
+      'event_name': 'Test Event',
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': 4
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': 5
+        }
+      ]
+    }
+    self.client.post(BASE_URL, json=event_data, headers=self.headers)
+    event_data = {
+      'event_name': 'Test Event',
+      'brackets': [
+        {
+          'bracket_id': 1
+        },
+        {
+          'bracket_id': 2
+        }
+      ]
+    }
+    response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
+    self.assert400(response)
+
+  def test_update_event_invalid_bracket(self):
+    event_data = {
+      'event_name': 'Test Event',
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': 4
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': 5
+        }
+      ]
+    }
+    self.client.post(BASE_URL, json=event_data, headers=self.headers)
+    event_data = {
+      'event_name': 'Test Event',
+      'brackets': [
+        {
+          'bracket_id': -1,
+          'number_of_setups': 4
+        },
+        {
+          'bracket_id': -2,
+          'number_of_setups': 5
+        }
+      ]
+    }
+    response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
+    # pychallonge throws a 401 if it doesn't receive anything back
+    self.assert401(response)
