@@ -25,10 +25,25 @@ class BaseTestCase(TestCase):
     password = generate_password_hash('password')
     test_user = User('testuser', password, 'test@gmail.com', 'matchuptesting', challonge_api_key)
     self.test_user = test_user
+    bracket_data = {
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': 4
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': 5
+        }
+      ]
+    }
+    test_event = Event('Test Event', 1, bracket_data)
+    self.test_event = test_event
 
     db.drop_all()
     db.create_all()
     db.session.add(self.test_user)
+    db.session.add(self.test_event)
     db.session.commit()
 
     valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
@@ -105,20 +120,6 @@ class TestUpdateEvent(BaseTestCase):
       'brackets': [
         {
           'bracket_id': bracket_1_id,
-          'number_of_setups': 4
-        },
-        {
-          'bracket_id': bracket_2_id,
-          'number_of_setups': 5
-        }
-      ]
-    }
-    self.client.post(BASE_URL, json=event_data, headers=self.headers)
-    event_data = {
-      'event_name': 'Test Event',
-      'brackets': [
-        {
-          'bracket_id': bracket_1_id,
           'number_of_setups': 7
         },
         {
@@ -141,20 +142,6 @@ class TestUpdateEvent(BaseTestCase):
       'event_name': 'Test Event',
       'brackets': [
         {
-          'bracket_id': bracket_1_id,
-          'number_of_setups': 4
-        },
-        {
-          'bracket_id': bracket_2_id,
-          'number_of_setups': 5
-        }
-      ]
-    }
-    self.client.post(BASE_URL, json=event_data, headers=self.headers)
-    event_data = {
-      'event_name': 'Test Event',
-      'brackets': [
-        {
           'bracket_id': 1
         },
         {
@@ -166,20 +153,6 @@ class TestUpdateEvent(BaseTestCase):
     self.assert400(response)
 
   def test_update_event_invalid_bracket(self):
-    event_data = {
-      'event_name': 'Test Event',
-      'brackets': [
-        {
-          'bracket_id': bracket_1_id,
-          'number_of_setups': 4
-        },
-        {
-          'bracket_id': bracket_2_id,
-          'number_of_setups': 5
-        }
-      ]
-    }
-    self.client.post(BASE_URL, json=event_data, headers=self.headers)
     event_data = {
       'event_name': 'Test Event',
       'brackets': [
