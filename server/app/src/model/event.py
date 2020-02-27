@@ -7,11 +7,11 @@ class Event(db.Model):
   players = db.Column(db.JSON)
   brackets = db.Column(db.JSON)
 
-  def __init__(self, event_name, user_id, brackets, players):
+  def __init__(self, event_name, user_id, brackets):
     self.event_name = event_name
     self.user_id = user_id
     self.brackets = brackets
-    self.players = players
+    self.players = []
     self.matches = []
 
 class EventSchema(ma.Schema):
