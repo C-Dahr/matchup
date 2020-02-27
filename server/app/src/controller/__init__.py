@@ -22,18 +22,6 @@ def get_user_from_auth_header(request, api):
     api.abort(404, 'User does not exist.')
   return current_user
 
-def get_event_from_name(request, api):
-  # check header for auth token
-  if 'x-access-token' in request.headers:
-    token = request.headers['x-access-token']
-  else:
-    api.abort(401, 'No user signed in.')
-  # query database for event
-  current_event = Event.query.filter_by(event_name=request.json['event_name']).first()
-  if not current_event:
-    api.abort(404, 'Event does not exist')
-  return current_event
-
 # xor encrypt/decrypt
 def xor_crypt_string(data, encode = False, decode = False):
   if decode: 

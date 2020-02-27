@@ -1,6 +1,5 @@
 from .. import db, ma
 from app.src.controller import get_user_from_auth_header
-from app.src.controller import get_event_from_name
 from app.src.config import key
 from ..model.user import User, UserSchema
 from ..model.bracket import Bracket, BracketSchema
@@ -44,7 +43,7 @@ class EventController(Resource):
   def put(self):
     current_user = get_user_from_auth_header(request, api)
     challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
-    event = get_event_from_name(request, api)
+    event = Event.query.filter_by(event_name=request.json['event_name'],user_id=current_user.id).first()
     if not event:
       api.abort(404, 'Event not found')
     
