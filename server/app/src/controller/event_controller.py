@@ -32,16 +32,22 @@ class EventController(Resource):
       brackets_from_request = request.json['brackets']
       list_of_brackets = get_brackets_from_request(brackets_from_request)
       # for each bracket get the list of players from challonge, create player objects and store them in a dictionary
-      players_by_bracket = {}
+      players_by_bracket = []
       for bracket in list_of_brackets:
-        players_by_bracket[bracket.id] = get_players_from_bracket(bracket.id)
-        bracket.number_of_players =  len(players_by_bracket[bracket.id])
+        list_of_players = get_players_from_bracket(bracket.id)
+        players_by_bracket.append(list_of_players)
+        # update bracket info
+        bracket.number_of_players =  len(list_of_players)
+        for player in list_of_players:
+          bracket.players.append(player)
       # compare the players in each bracket and return a list of players that appear in both
       players_in_both_brackets = get_players_in_both_brackets(players_by_bracket)
       # create the event
       players_json = player_schema.jsonify(players_in_both_brackets).json
       brackets_json = brackets_schema.jsonify(list_of_brackets).json
-      event = Event(event_name, current_user.id, brackets_json, players_json)
+      event = Event(event_name, current_user.id, brackets_json)
+      event.players = players_json
+      # add event to database
       db.session.add(event)
       db.session.commit()
       return event_schema.jsonify(event)
@@ -82,22 +88,27 @@ def get_brackets_from_request(brackets_from_request):
                           bracket_info['game_name'],
                           bracket['number_of_setups'])
     list_of_brackets.append(new_bracket)
+    db.session.add(new_bracket)
+  db.session.commit()
   return list_of_brackets
 
 def get_players_from_bracket(bracket_id):
   list_of_player_objects = []
   # this call to challonge returns a list of dictionaries
   list_of_participants = challonge.participants.index(bracket_id)
-  for index in range(len(list_of_participants)):
-    new_player = Player(list_of_participants[index]['id'], list_of_participants[index]['name'], bracket_id, list_of_participants[index]['seed'])
+  for participant in list_of_participants:
+    new_player = Player(participant['id'], 
+                        participant['name'], 
+                        participant['seed'])
     list_of_player_objects.append(new_player)
+    db.session.add(new_player)
+  db.session.commit()
   return list_of_player_objects
 
 def get_players_in_both_brackets(players_by_bracket):
   list_of_players = []
-  keys = list(players_by_bracket.keys())
-  players_in_bracket1 = players_by_bracket[keys[0]]
-  players_in_bracket2 = players_by_bracket[keys[1]]
+  players_in_bracket1 = players_by_bracket[0]
+  players_in_bracket2 = players_by_bracket[1]
   # compare each player in bracket 1 to each player in bracket 2 by name only
   for b1 in players_in_bracket1:
     for b2 in players_in_bracket2:
