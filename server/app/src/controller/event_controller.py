@@ -34,7 +34,7 @@ class EventController(Resource):
       # for each bracket get the list of players from challonge, create player objects and store them in a dictionary
       players_by_bracket = []
       for bracket in list_of_brackets:
-        list_of_players = get_players_from_bracket(bracket.id)
+        list_of_players = get_players_from_bracket(bracket.bracket_id)
         players_by_bracket.append(list_of_players)
         # update bracket info
         bracket.number_of_players =  len(list_of_players)
