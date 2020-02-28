@@ -1,11 +1,8 @@
 from .. import db, ma
 from flask import jsonify
-from .tables import bracket_players
+from .tables import Bracket_Players
 
 class Player(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-  brackets = db.relationship("Bracket", secondary=bracket_players, back_populates='players')
+  brackets = db.relationship('Bracket_Players', back_populates='player')
 
-class PlayerSchema(ma.Schema):
-  class Meta:
-    fields = ('id', 'name', 'seeds')
