@@ -22,9 +22,15 @@ class BaseTestCase(TestCase):
     return app
 
   def setUp(self):
+    db.drop_all()
+    db.create_all()
+    
     password = generate_password_hash('password')
     test_user = User('testuser', password, 'test@gmail.com', 'matchuptesting', challonge_api_key)
     self.test_user = test_user
+    db.session.add(self.test_user)
+    db.session.commit()
+    
     bracket_data = {
       'brackets': [
         {
@@ -37,12 +43,8 @@ class BaseTestCase(TestCase):
         }
       ]
     }
-    test_event = Event('Test Event', 1, bracket_data)
+    test_event = Event('Test Event', test_user.id, bracket_data)
     self.test_event = test_event
-
-    db.drop_all()
-    db.create_all()
-    db.session.add(self.test_user)
     db.session.add(self.test_event)
     db.session.commit()
 
