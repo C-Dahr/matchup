@@ -4,19 +4,20 @@ from app.src.config import key
 from ..model.user import User, UserSchema
 from ..model.bracket import Bracket, BracketSchema
 from ..model.event import Event, EventSchema
-from..model.player import Player, PlayerSchema
+from..model.player import Player
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from requests.exceptions import HTTPError
 from app.src.controller import xor_crypt_string
 import challonge
 import jwt
+import pdb
+from ..model.tables import Bracket_Players
 
 api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
 brackets_schema = BracketSchema(many=True)
-player_schema = PlayerSchema(many=True)
 
 @api.route('')
 class EventController(Resource):
@@ -31,21 +32,13 @@ class EventController(Resource):
       brackets_from_request = request.json['brackets']
       list_of_brackets = get_brackets_from_request(brackets_from_request)
       # for each bracket get the list of players from challonge, create player objects and store them in a dictionary
-      players_by_bracket = []
       for bracket in list_of_brackets:
-        list_of_players = get_players_from_bracket(bracket.bracket_id)
-        players_by_bracket.append(list_of_players)
+        get_players_from_bracket(bracket)
         # update bracket info
-        bracket.number_of_players =  len(list_of_players)
-        for player in list_of_players:
-          bracket.players.append(player)
-      # compare the players in each bracket and return a list of players that appear in both
-      players_in_both_brackets = get_players_in_both_brackets(players_by_bracket)
+        #bracket.number_of_players =  len(list_of_players)
+        #pdb.set_trace()
       # create the event
-      players_json = player_schema.jsonify(players_in_both_brackets).json
-      brackets_json = brackets_schema.jsonify(list_of_brackets).json
-      event = Event(event_name, current_user.id, brackets_json)
-      event.players = players_json
+      event = Event(event_name, current_user.id)
       # add event to database
       db.session.add(event)
       db.session.commit()
@@ -69,18 +62,19 @@ def get_brackets_from_request(brackets_from_request):
   db.session.commit()
   return list_of_brackets
 
-def get_players_from_bracket(bracket_id):
-  list_of_player_objects = []
+def get_players_from_bracket(bracket):
   # this call to challonge returns a list of dictionaries
-  list_of_participants = challonge.participants.index(bracket_id)
+  list_of_participants = challonge.participants.index(bracket.bracket_id)
   for participant in list_of_participants:
-    new_player = Player(participant['id'], 
-                        participant['name'], 
-                        participant['seed'])
-    list_of_player_objects.append(new_player)
+    new_player = Player()
     db.session.add(new_player)
-  db.session.commit()
-  return list_of_player_objects
+    db.session.commit()
+    bracket_players = Bracket_Players(name = participant['name'])
+    bracket_players.player = new_player
+    bracket_players.bracket = bracket
+    bracket.players.append(bracket_players)
+    db.session.add(bracket_players)
+    db.session.commit()
 
 def get_players_in_both_brackets(players_by_bracket):
   list_of_players = []

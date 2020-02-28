@@ -1,7 +1,7 @@
 from enum import Enum
 from .. import db, ma
 from flask import jsonify
-from .tables import bracket_players
+from .tables import Bracket_Players
 
 class BracketSource(Enum):
   CHALLONGE = 'challonge'
@@ -14,7 +14,7 @@ class Bracket(db.Model):
   game_name = db.Column(db.String(100), nullable=False)
   number_of_setups = db.Column(db.Integer, nullable=False)
   number_of_players = db.Column(db.Integer, nullable=False)
-  players = db.relationship("Player", secondary=bracket_players, back_populates='brackets')
+  players = db.relationship('Bracket_Players', back_populates='bracket')
 
   def __init__(self, id, source, game_name, number_of_setups):
     self.bracket_id = id
