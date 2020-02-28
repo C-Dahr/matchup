@@ -36,8 +36,7 @@ class EventController(Resource):
       for bracket in list_of_brackets:
         get_players_from_bracket(bracket)
         # update bracket info
-        #bracket.number_of_players =  len(list_of_players)
-        #pdb.set_trace()
+        bracket.number_of_players = len(bracket.players)
       # create the event
       event = Event(event_name, current_user.id)
       # add event to database
