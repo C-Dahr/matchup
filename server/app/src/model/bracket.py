@@ -14,7 +14,7 @@ class Bracket(db.Model):
   game_name = db.Column(db.String(100), nullable=False)
   number_of_setups = db.Column(db.Integer, nullable=False)
   number_of_players = db.Column(db.Integer, nullable=False)
-  players = db.relationship("Player", secondary=bracket_players)
+  players = db.relationship("Player", secondary=bracket_players, back_populates='brackets')
 
   def __init__(self, id, source, game_name, number_of_setups):
     self.bracket_id = id
