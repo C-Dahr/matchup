@@ -12,7 +12,7 @@ from app.src.controller import xor_crypt_string
 import challonge
 import jwt
 import pdb
-from ..model.tables import BracketPlayers
+from ..model.tables import BracketPlayers, ChallongePlayer
 
 api = Namespace('event', description='handles CRUD operations for events')
 
@@ -68,12 +68,15 @@ def get_players_from_bracket(bracket):
     new_player = Player()
     db.session.add(new_player)
     db.session.commit()
+    new_challonge_player = ChallongePlayer(new_player.id, participant['id'])
+    db.session.add(new_challonge_player)
     bracket_players = BracketPlayers(name = participant['name'])
     bracket_players.player = new_player
     bracket_players.bracket = bracket
     bracket.players.append(bracket_players)
     db.session.add(bracket_players)
     db.session.commit()
+    pdb.set_trace()
 
 def get_players_in_both_brackets(players_by_bracket):
   list_of_players = []
