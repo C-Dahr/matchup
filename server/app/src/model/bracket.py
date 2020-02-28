@@ -1,23 +1,20 @@
 from enum import Enum
 from .. import db, ma
 from flask import jsonify
-
-player_identifier = db.Table('player_identifier',
-    db.Column('player_id', db.Integer, db.ForeignKey('player.player_id'), primary_key=True, nullable=False),
-    db.Column('bracket_id', db.Integer, db.ForeignKey('bracket.bracket_id'), primary_key=True, nullable=False)
-)
+from .tables import bracket_players
 
 class BracketSource(Enum):
   CHALLONGE = 'challonge'
   SMASHGG = 'smashgg'
 
 class Bracket(db.Model):
-  bracket_id = db.Column(db.Integer, primary_key=True, nullable=False)
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+  bracket_id = db.Column(db.Integer, nullable=False)
   source = db.Column(db.String(100), nullable=False)
   game_name = db.Column(db.String(100), nullable=False)
   number_of_setups = db.Column(db.Integer, nullable=False)
   number_of_players = db.Column(db.Integer, nullable=False)
-  players = db.relationship("Player", secondary=player_identifier)
+  players = db.relationship("Player", secondary=bracket_players)
 
   def __init__(self, id, source, game_name, number_of_setups):
     self.bracket_id = id

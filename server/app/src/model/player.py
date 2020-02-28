@@ -2,12 +2,13 @@ from .. import db, ma
 from flask import jsonify
 
 class Player(db.Model):
-  player_id = db.Column(db.Integer, primary_key=True, nullable=False)
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+  challonge_id = db.Column(db.Integer, nullable=False)
   name = db.Column(db.String(100), nullable=False)
   seeds = db.Column(db.Integer, nullable=False)
 
-  def __init__(self, id, name, seeds):
-    self.player_id = id
+  def __init__(self, c_id, name, seeds):
+    self.challonge_id = c_id
     self.name = name
     self.seeds = seeds
 
@@ -20,4 +21,4 @@ class Player(db.Model):
 
 class PlayerSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'name', 'bracket_ids', 'seeds')
+    fields = ('id', 'name', 'seeds')
