@@ -60,7 +60,7 @@ const routes = [
     },
   },
   {
-    path: '/matchQueue',
+    path: '/matches',
     name: 'matchQueue',
     component: MatchQueue,
   },
