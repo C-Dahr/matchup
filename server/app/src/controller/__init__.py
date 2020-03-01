@@ -1,5 +1,6 @@
 import jwt
 from ..model.user import User
+from ..model.user import Event
 from app.src.config import key
 from itertools import cycle
 import base64
