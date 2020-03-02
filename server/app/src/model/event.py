@@ -2,6 +2,7 @@ from .. import db, ma
 from flask import jsonify
 
 class Event(db.Model):
+  id = db.Column(db.Integer, autoincrement=True, nullable=False, unique=True)
   event_name = db.Column(db.String(100), primary_key=True, nullable=False)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
 
