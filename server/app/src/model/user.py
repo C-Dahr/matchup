@@ -8,7 +8,7 @@ class User(db.Model):
   email = db.Column(db.String(100), unique=True, nullable=False)
   challonge_username = db.Column(db.String(100), unique=True)
   api_key = db.Column(db.String(100))
-  events = db.relationship('Event', backref='user', lazy=True)
+  events = db.relationship('Event', back_populates='user')
 
   def __init__(self, username, password, email, challonge_username, api_key):
     self.username = username
