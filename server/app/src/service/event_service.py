@@ -29,7 +29,7 @@ def get_players_from_bracket(bracket):
     bracket_players.bracket = bracket
     bracket.players.append(bracket_players)
     db.session.add(bracket_players)
-    db.session.commit()
+  db.session.commit()
 
 def get_duplicate_players(list_of_brackets):
   for player1 in list_of_brackets[0].players:
