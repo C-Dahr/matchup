@@ -8,7 +8,7 @@ class BracketSource(Enum):
   SMASHGG = 'smashgg'
 
 class Bracket(db.Model):
-  id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
   event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True, nullable=False)
   event = db.relationship('Event', back_populates='brackets')
   bracket_id = db.Column(db.Integer, nullable=False)

@@ -24,17 +24,19 @@ class EventController(Resource):
 
     try:
       event_name = request.json['event_name']
+      event = Event(event_name, current_user.id)
+      db.session.add(event)
+      db.session.commit()
+
       brackets_from_request = request.json['brackets']
-      list_of_brackets = get_brackets_from_request(brackets_from_request)
+      list_of_brackets = get_brackets_from_request(brackets_from_request, event)
       
       for bracket in list_of_brackets:
         get_players_from_bracket(bracket)
         bracket.number_of_players = len(bracket.players)
 
-      event = Event(event_name, current_user.id)
       get_duplicate_players(list_of_brackets)
 
-      db.session.add(event)
       db.session.commit()
       return event_schema.jsonify(event)
     except KeyError as e:
@@ -55,7 +57,7 @@ class EventController(Resource):
       event.name = request.json['event_name']
       brackets_from_request = request.json['brackets']
 
-      update_number_of_setups_in_brackets(brackets_from_request)
+      update_number_of_setups_in_brackets(brackets_from_request, event)
       
       db.session.commit()
       return event_schema.jsonify(event)
