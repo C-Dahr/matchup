@@ -77,3 +77,9 @@ def merge_players(players, list_of_brackets):
   db.session.delete(player1)
   db.session.delete(player2)
   db.session.commit()
+
+def update_number_of_setups_in_brackets(brackets_from_request):
+  for bracket in brackets_from_request:
+    bracket_object = Bracket.query.get(bracket['bracket_id'])
+    bracket_object.number_of_setups = bracket['number_of_setups']
+  db.session.commit()

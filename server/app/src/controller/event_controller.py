@@ -54,9 +54,9 @@ class EventController(Resource):
     try:
       event.name = request.json['event_name']
       brackets_from_request = request.json['brackets']
-      list_of_brackets = get_brackets_from_request(brackets_from_request)
-      brackets_json = brackets_schema.jsonify(list_of_brackets).json
-      event.brackets = brackets_json
+
+      update_number_of_setups_in_brackets(brackets_from_request)
+      
       db.session.commit()
       return event_schema.jsonify(event)
     except KeyError as e:
