@@ -7,10 +7,10 @@
                 <h4 class="card-title">{{ game }}</h4>
             </div>
             </b-card>
+            <button class="btn btn-success btn-lg in-progress-submit" type="submit">
+            Mark In<br/>Progress</button>
         </b-row>
         <b-row align-h="center">
-            <input class="btn btn-success btn-lg in-progress-submit" type="submit"
-            value="Mark In Progress"/>
         </b-row>
     </div>
 </template>
@@ -27,12 +27,13 @@ export default {
   background-color: #0066FF;
   width: 50rem;
   margin: 0;
+  margin-bottom: 20px;
+  margin-right: 10px;
 }
 .card-title{
     font-weight: bold;
 }
 .in-progress-submit {
-  margin-top: 10px;
   margin-bottom: 20px;
 }
 @media only screen and (max-width: 600px) {

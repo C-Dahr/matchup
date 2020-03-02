@@ -37,6 +37,7 @@ export default {
       matchData: [
         { player1: 'ZachAtk', player2: 'CamBlam', game: 'Game 1' },
         { player1: 'DannyGranE', player2: 'TaylerMailr', game: 'Game 2' },
+        { player1: 'ZachAtk', player2: 'TaylerMailr', game: 'Game 2' },
       ],
     };
   },
