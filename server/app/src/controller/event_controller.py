@@ -38,6 +38,7 @@ class EventController(Resource):
         bracket.number_of_players = len(bracket.players)
       # create the event
       event = Event(event_name, current_user.id)
+      get_duplicate_players(list_of_brackets)
       # add event to database
       db.session.add(event)
       db.session.commit()
@@ -76,18 +77,51 @@ def get_players_from_bracket(bracket):
     bracket.players.append(bracket_players)
     db.session.add(bracket_players)
     db.session.commit()
-    pdb.set_trace()
 
-def get_players_in_both_brackets(players_by_bracket):
-  list_of_players = []
-  players_in_bracket1 = players_by_bracket[0]
-  players_in_bracket2 = players_by_bracket[1]
-  # compare each player in bracket 1 to each player in bracket 2 by name only
-  for b1 in players_in_bracket1:
-    for b2 in players_in_bracket2:
-      if b1.name == b2.name:
-        list_of_players.append(b1)
-  return list_of_players
+def get_duplicate_players(list_of_brackets):
+  for player1 in list_of_brackets[0].players:
+    for player2 in list_of_brackets[1].players:
+      if player1.name == player2.name:
+        players = (player1.player, player2.player)
+        merge_players(players, list_of_brackets)
+
+def merge_players(players, list_of_brackets):
+  player1, player2 = players
+  challonge_player1_old = player1.challonge_players[0]
+  challonge_player2_old = player2.challonge_players[0]
+  bracket1 = list_of_brackets[0]
+  bracket2 = list_of_brackets[1]
+  bracket_player1_old = BracketPlayers.query.get({'player_id':player1.id, 'bracket_id':bracket1.id})
+  bracket_player2_old = BracketPlayers.query.get({'player_id':player2.id, 'bracket_id':bracket2.id})
+  # create a new player
+  merged_player = Player()
+  db.session.add(merged_player)
+  db.session.commit()
+  challonge_player1 = ChallongePlayer(merged_player.id, challonge_player1_old.challonge_id)
+  challonge_player2 = ChallongePlayer(merged_player.id, challonge_player2_old.challonge_id)
+  # make same relationships
+  bracket_player1 = BracketPlayers(name = bracket_player1_old.name)
+  bracket_player1.player = merged_player
+  bracket_player1.bracket = bracket1
+  bracket_player2 = BracketPlayers(name = bracket_player2_old.name)
+  bracket_player2.player = merged_player
+  bracket_player2.bracket = bracket2
+  bracket1.players.append(bracket_player1)
+  bracket2.players.append(bracket_player2)
+  # add all new entities to db
+  db.session.add(bracket_player1)
+  db.session.add(bracket_player2)
+  db.session.add(challonge_player1)
+  db.session.add(challonge_player2)
+  db.session.commit()
+  # delete all old entities from db
+  db.session.delete(challonge_player1_old)
+  db.session.delete(challonge_player2_old)
+  db.session.delete(bracket_player1_old)
+  db.session.delete(bracket_player2_old)
+  db.session.delete(player1)
+  db.session.delete(player2)
+  db.session.commit()
 
     
   
