@@ -14,28 +14,22 @@
       </b-row>
     </b-container>
     <b-container>
-      <div v-for="matchData in matchData" class="match" v-bind:key="matchData">
-        <b-row align-h="center">
-          <b-card border-variant="light">
-            <div class="card-body">
-              <h3 class="card-title">{{ matchData.player1}} vs. {{matchData.player2}}</h3>
-              <h4 class="card-title">{{ matchData.game}}</h4>
-            </div>
-          </b-card>
-        </b-row>
-        <b-row align-h="center">
-          <input class="btn btn-success btn-lg in-progress-submit" type="submit"
-          value="Mark In Progress"/>
-        </b-row>
+      <div v-for="data in matchData" class="match" v-bind:key="data">
+        <MatchCard :player1="data.player1" :player2="data.player2" :game="data.game">
+        </MatchCard>
       </div>
     </b-container>
   </div>
 </template>
 
 <script>
-// import axios from 'axios';
+import MatchCard from '../components/MatchCard.vue';
 
 export default {
+  name: 'MatchQueue',
+  components: {
+    MatchCard,
+  },
   data() {
     return {
       errors: [],
@@ -50,18 +44,6 @@ export default {
 </script>
 
 <style scoped>
-.card {
-  background-color: #0066FF;
-  width: 50rem;
-  margin: 0;
-}
-.card-title{
-    font-weight: bold;
-}
-.in-progress-submit {
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
 
 @media only screen and (max-width: 600px) {
   .form-title{
@@ -70,10 +52,6 @@ export default {
 
   #titleCard{
     padding-bottom: 1.5em;
-  }
-
-  .card {
-    width: 25rem;
   }
 }
 
