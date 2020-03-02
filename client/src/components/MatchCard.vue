@@ -7,7 +7,7 @@
                 <h4 class="card-title">{{ game }}</h4>
             </div>
             </b-card>
-            <button class="btn btn-success btn-lg in-progress-submit" type="submit">
+            <button v-if=loggedIn class="btn btn-success btn-lg in-progress-submit" type="submit">
             Mark In<br/>Progress</button>
         </b-row>
         <b-row align-h="center">
@@ -19,6 +19,11 @@
 export default {
   name: 'MatchCard',
   props: ['player1', 'player2', 'game'],
+  data() {
+    return {
+      loggedIn: this.$store.getters.isLoggedIn,
+    };
+  },
 };
 </script>
 

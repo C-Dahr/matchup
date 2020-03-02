@@ -5,11 +5,13 @@
         <b-col sm="2"/>
         <b-col sm="8">
           <div class="form-title">
-            <p>Event Name <a href="editEvent"><font-awesome-icon icon="cog" size=""/></a></p>
+            <p>Event Name
+              <a v-if=loggedIn href="editEvent"><font-awesome-icon icon="cog" size=""/></a>
+            </p>
           </div>
         </b-col>
         <b-col sm="2">
-          <input class="btn btn-danger" type="submit" value="End Event"/>
+          <input class="btn btn-danger" v-if=loggedIn type="submit" value="End Event"/>
         </b-col>
       </b-row>
     </b-container>
@@ -34,6 +36,7 @@ export default {
     return {
       errors: [],
       maxVisibleMatches: 5,
+      loggedIn: this.$store.getters.isLoggedIn,
       matchData: [
         { player1: 'ZachAtk', player2: 'CamBlam', game: 'Game 1' },
         { player1: 'DannyGranE', player2: 'TaylerMailr', game: 'Game 2' },
