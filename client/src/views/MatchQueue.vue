@@ -35,7 +35,6 @@ export default {
   data() {
     return {
       errors: [],
-      maxVisibleMatches: 5,
       loggedIn: this.$store.getters.isLoggedIn,
       matchData: [
         { player1: 'ZachAtk', player2: 'CamBlam', game: 'Game 1' },
