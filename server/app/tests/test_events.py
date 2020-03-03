@@ -171,3 +171,13 @@ class TestUpdateEvent(BaseTestCase):
     }
     response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
     self.assert400(response)
+
+class TestObjectCreation(BaseTestCase):
+  def test_brackets_in_db(self):
+    self.assertEqual(self.test_event.brackets[0].bracket_id, bracket_1_id)
+    self.assertEqual(self.test_event.brackets[1].bracket_id, bracket_2_id)
+    
+  def test_players_in_db(self):
+    self.assertEqual(len(self.test_event.brackets[0].players), 4)
+    self.assertEqual(len(self.test_event.brackets[1].players), 8)
+    self.assertEqual(len(Player.query.all()), 11)
