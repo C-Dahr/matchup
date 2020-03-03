@@ -1,23 +1,25 @@
 from .. import db, ma
 from app.src.controller import get_user_from_auth_header
 from app.src.config import key
-from ..model.user import User, UserSchema
-from ..model.bracket import Bracket, BracketSchema
 from ..model.event import Event, EventSchema
 from..model.player import Player
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from requests.exceptions import HTTPError
 from app.src.controller import xor_crypt_string
+from sqlalchemy.exc import IntegrityError
 import challonge
 import jwt
+<<<<<<< HEAD
 import pdb
 from ..model.tables import BracketPlayers, ChallongePlayer
+=======
+from ..service.event_service import *
+>>>>>>> b4661eb78146268c229c5c2b52cf79ba7618c083
 
 api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
-brackets_schema = BracketSchema(many=True)
 
 @api.route('')
 class EventController(Resource):
@@ -28,6 +30,7 @@ class EventController(Resource):
 
     try:
       event_name = request.json['event_name']
+<<<<<<< HEAD
       # get the brackets from the request, create bracket objects and store them in a list
       brackets_from_request = request.json['brackets']
       list_of_brackets = get_brackets_from_request(brackets_from_request)
@@ -40,7 +43,21 @@ class EventController(Resource):
       event = Event(event_name, current_user.id)
       get_duplicate_players(list_of_brackets)
       # add event to database
+=======
+      event = Event(event_name, current_user.id)
+>>>>>>> b4661eb78146268c229c5c2b52cf79ba7618c083
       db.session.add(event)
+      db.session.commit()
+
+      brackets_from_request = request.json['brackets']
+      list_of_brackets = get_brackets_from_request(brackets_from_request, event)
+      
+      for bracket in list_of_brackets:
+        get_players_from_bracket(bracket)
+        bracket.number_of_players = len(bracket.players)
+
+      get_duplicate_players(list_of_brackets)
+
       db.session.commit()
       return event_schema.jsonify(event)
     except KeyError as e:
@@ -48,7 +65,16 @@ class EventController(Resource):
       api.abort(400, message)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
+  
+  @api.doc('update event')
+  def put(self):
+    current_user = get_user_from_auth_header(request, api)
+    challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
+    event = Event.query.filter_by(event_name=request.json['event_name'],user_id=current_user.id).first()
+    if not event:
+      api.abort(404, 'Event not found')
     
+<<<<<<< HEAD
 def get_brackets_from_request(brackets_from_request):
   list_of_brackets = []
   for bracket in brackets_from_request:
@@ -125,3 +151,18 @@ def merge_players(players, list_of_brackets):
 
     
   
+=======
+    try:
+      event.name = request.json['event_name']
+      brackets_from_request = request.json['brackets']
+
+      update_number_of_setups_in_brackets(brackets_from_request, event)
+      
+      db.session.commit()
+      return event_schema.jsonify(event)
+    except KeyError as e:
+      message = f'Missing field on event entity: {e.args[0]}'
+      api.abort(400, message)
+    except HTTPError as e:
+      api.abort(401, 'Invalid credentials.')
+>>>>>>> b4661eb78146268c229c5c2b52cf79ba7618c083

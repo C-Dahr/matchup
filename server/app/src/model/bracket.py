@@ -8,16 +8,30 @@ class BracketSource(Enum):
   SMASHGG = 'smashgg'
 
 class Bracket(db.Model):
+<<<<<<< HEAD
   id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+=======
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+  event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True, nullable=False)
+  event = db.relationship('Event', back_populates='brackets')
+>>>>>>> b4661eb78146268c229c5c2b52cf79ba7618c083
   bracket_id = db.Column(db.Integer, nullable=False)
   source = db.Column(db.String(100), nullable=False)
   game_name = db.Column(db.String(100), nullable=False)
   number_of_setups = db.Column(db.Integer, nullable=False)
   number_of_players = db.Column(db.Integer, nullable=False)
+<<<<<<< HEAD
   players = db.relationship('BracketPlayers', back_populates='bracket')
 
   def __init__(self, id, source, game_name, number_of_setups):
     self.bracket_id = id
+=======
+  players = db.relationship('BracketPlayers', back_populates='bracket')  
+
+  def __init__(self, id, event_id, source, game_name, number_of_setups):
+    self.bracket_id = id
+    self.event_id = event_id
+>>>>>>> b4661eb78146268c229c5c2b52cf79ba7618c083
     self.source = BracketSource(source).name # makes sure the source is a valid enum
     self.game_name = game_name
     self.number_of_setups = number_of_setups
