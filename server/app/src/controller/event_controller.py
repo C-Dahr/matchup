@@ -2,6 +2,7 @@ from .. import db, ma
 from app.src.controller import get_user_from_auth_header
 from app.src.config import key
 from ..model.event import Event, EventSchema
+from..model.player import Player
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from requests.exceptions import HTTPError
