@@ -7,6 +7,7 @@ from app.src.model.user import User
 from app.src.model.event import Event
 from werkzeug.security import generate_password_hash
 from app.src.controller import xor_crypt_string
+from app.src.service.event_service import *
 import json
 import base64
 
@@ -31,6 +32,11 @@ class BaseTestCase(TestCase):
     db.session.add(self.test_user)
     db.session.commit()
     
+    test_event = Event('Test Event', test_user.id)
+    self.test_event = test_event
+    db.session.add(self.test_event)
+    db.session.commit()
+
     bracket_data = {
       'brackets': [
         {
@@ -43,9 +49,12 @@ class BaseTestCase(TestCase):
         }
       ]
     }
-    test_event = Event('Test Event', test_user.id, bracket_data)
-    self.test_event = test_event
-    db.session.add(self.test_event)
+    list_of_brackets = get_brackets_from_request(bracket_data['brackets'], test_event)
+    for bracket in list_of_brackets:
+        get_players_from_bracket(bracket)
+        bracket.number_of_players = len(bracket.players)
+
+    get_duplicate_players(list_of_brackets)
     db.session.commit()
 
     valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
@@ -72,14 +81,10 @@ class TestCreateEvent(BaseTestCase):
           'number_of_setups': 5
         }
       ]
-    }
+    }    
     response = self.client.post(BASE_URL, json=event_data, headers=self.headers)
     event_returned = json.loads(response.data)
-    primary_key = {
-      'event_name': event_returned['event_name'],
-      'user_id': event_returned['user_id']
-    }
-    event_from_db = Event.query.get(primary_key)
+    event_from_db = Event.query.get(event_returned['id'])
     self.assertEqual(event_data['event_name'], event_returned['event_name'], event_from_db.event_name)
 
   def test_create_event_missing_fields(self):
@@ -132,11 +137,7 @@ class TestUpdateEvent(BaseTestCase):
     }
     response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
     event_returned = json.loads(response.data)
-    primary_key = {
-      'event_name': event_returned['event_name'],
-      'user_id': event_returned['user_id']
-    }
-    event_from_db = Event.query.get(primary_key)
+    event_from_db = Event.query.get(event_returned['id'])
     self.assertEqual(event_data['event_name'], event_returned['event_name'], event_from_db.event_name)
 
   def test_update_event_missing_fields(self):
@@ -169,5 +170,4 @@ class TestUpdateEvent(BaseTestCase):
       ]
     }
     response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
-    # pychallonge throws a 401 if it doesn't receive anything back
-    self.assert401(response)
+    self.assert400(response)

@@ -14,4 +14,4 @@ class Event(db.Model):
 
 class EventSchema(ma.Schema):
   class Meta:
-    fields = ('event_name', 'user_id')
+    fields = ('id', 'event_name', 'user_id')
