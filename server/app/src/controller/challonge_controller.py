@@ -26,12 +26,12 @@ class BracketController(Resource):
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
 
-@api.route('/match/<event_name>')
+@api.route('/match/<event_id>')
 class MatchController(Resource):
   @api.doc('get matches for an event')
-  def get(self, event_name):
+  def get(self, event_id):
     current_user = get_user_from_auth_header(request, api)
-    event = Event.query.get({'event_name': event_name, 'user_id': current_user.id})
+    event = Event.query.get(event_id)
     try:
       challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
       bracket_1_matches = get_highest_priority_matches(event, event.brackets[0])
