@@ -1,5 +1,6 @@
 from .. import db, ma
 from flask import jsonify
+from ..model.bracket import Bracket
 
 class Event(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
@@ -11,6 +12,12 @@ class Event(db.Model):
   def __init__(self, event_name, user_id):
     self.event_name = event_name
     self.user_id = user_id
+
+  def update_number_of_setups_in_brackets(self, brackets_from_request):
+    for bracket in brackets_from_request:
+      bracket_object = Bracket.query.filter_by(event_id=self.id, bracket_id=bracket['bracket_id']).first()
+      bracket_object.number_of_setups = bracket['number_of_setups']
+    db.session.commit()
 
 class EventSchema(ma.Schema):
   class Meta:

@@ -49,14 +49,14 @@ class EventController(Resource):
   @api.doc('update event')
   def put(self):
     current_user = get_user_from_auth_header(request, api)
-    event = Event.query.filter_by(event_name=request.json['event_name'],user_id=current_user.id).first()
+    event = Event.query.get(request.json['event_id'])
     if not event:
       api.abort(404, 'Event not found')
     
     try:
-      event.name = request.json['event_name']
+      event.event_name = request.json['event_name']
       brackets_from_request = request.json['brackets']
-      update_number_of_setups_in_brackets(brackets_from_request, event)
+      event.update_number_of_setups_in_brackets(brackets_from_request)
       
       db.session.commit()
       return event_schema.jsonify(event)

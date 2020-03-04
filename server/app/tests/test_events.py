@@ -5,6 +5,8 @@ from flask import Flask
 from app.src.config import basedir
 from app.src.model.user import User
 from app.src.model.event import Event
+from app.src.model.player import Player
+from app.src.model.bracket import Bracket
 from werkzeug.security import generate_password_hash
 from app.src.controller import xor_crypt_string
 from app.src.service.event_service import *
@@ -122,16 +124,18 @@ class TestCreateEvent(BaseTestCase):
 
 class TestUpdateEvent(BaseTestCase):
   def test_update_event(self):
+    new_number_of_setups = 7
     event_data = {
-      'event_name': 'Test Event',
+      'event_id': self.test_event.id,
+      'event_name': 'Updated Test Event',
       'brackets': [
         {
           'bracket_id': bracket_1_id,
-          'number_of_setups': 7
+          'number_of_setups': new_number_of_setups
         },
         {
           'bracket_id': bracket_2_id,
-          'number_of_setups': 7
+          'number_of_setups': new_number_of_setups
         }
       ]
     }
@@ -140,9 +144,34 @@ class TestUpdateEvent(BaseTestCase):
     event_from_db = Event.query.get(event_returned['id'])
     self.assertEqual(event_data['event_name'], event_returned['event_name'], event_from_db.event_name)
 
+    bracket1 = Bracket.query.filter_by(bracket_id=bracket_1_id, event_id=event_from_db.id).first()
+    bracket2 = Bracket.query.filter_by(bracket_id=bracket_2_id, event_id=event_from_db.id).first()
+    self.assertEqual(bracket1.number_of_setups, new_number_of_setups)
+    self.assertEqual(bracket2.number_of_setups, new_number_of_setups)
+
+  def test_update_event_invalid_event_id(self):
+    new_number_of_setups = 7
+    event_data = {
+      'event_id': -1,
+      'event_name': 'Updated Test Event',
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': new_number_of_setups
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': new_number_of_setups
+        }
+      ]
+    }
+    response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
+    self.assert404(response)
+
   def test_update_event_missing_fields(self):
     event_data = {
-      'event_name': 'Test Event',
+      'event_id': self.test_event.id,
+      'event_name': 'Updated Test Event',
       'brackets': [
         {
           'bracket_id': 1
@@ -157,7 +186,8 @@ class TestUpdateEvent(BaseTestCase):
 
   def test_update_event_invalid_bracket(self):
     event_data = {
-      'event_name': 'Test Event',
+      'event_id': self.test_event.id,
+      'event_name': 'Updated Test Event',
       'brackets': [
         {
           'bracket_id': -1,
