@@ -4,6 +4,7 @@ import Login from '../views/Login.vue';
 import SignUp from '../views/SignUp.vue';
 import Home from '../views/Home.vue';
 import CreateEvent from '../views/CreateEvent.vue';
+import MatchQueue from '../views/MatchQueue.vue';
 import store from '../store';
 import EditProfile from '../views/EditProfile.vue';
 
@@ -57,6 +58,11 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: '/matches',
+    name: 'matchQueue',
+    component: MatchQueue,
   },
 ];
 
