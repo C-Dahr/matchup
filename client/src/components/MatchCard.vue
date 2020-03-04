@@ -7,7 +7,7 @@
                 <h4 class="card-title">{{ game }}</h4>
             </div>
             </b-card>
-            <button v-if=loggedIn class="btn btn-success btn-lg in-progress-submit" type="submit">
+            <button v-if=loggedIn class="btn btn-lg in-progress-submit" type="submit">
             Mark In<br/>Progress</button>
         </b-row>
         <b-row align-h="center">
@@ -40,6 +40,15 @@ export default {
 }
 .in-progress-submit {
   margin-bottom: 20px;
+  background-color: rgb(98, 187, 120);
+  color: white;
+}
+.in-progress-submit:hover {
+  background-color: rgb(67, 182, 96);
+  color: white;
+}
+.in-progress-submit:focus {
+  color: white;
 }
 @media only screen and (max-width: 600px) {
   .card {
