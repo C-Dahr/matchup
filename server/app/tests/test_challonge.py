@@ -9,7 +9,7 @@ from app.src.controller import xor_crypt_string
 import json
 import base64
 
-BASE_URL = 'http://localhost:5000/challonge'
+BASE_URL = 'http://localhost:5000/challonge/bracket'
 LOGIN_URL = 'http://localhost:5000/auth'
 challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
 
