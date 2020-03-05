@@ -26,7 +26,7 @@ class BracketController(Resource):
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
 
-@api.route('/match/<event_id>')
+@api.route('/matches/<event_id>')
 class MatchController(Resource):
   @api.doc('get matches for an event')
   def get(self, event_id):
