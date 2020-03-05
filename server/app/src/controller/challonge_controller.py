@@ -1,7 +1,6 @@
 from .. import db, ma
 from ..model.user import UserSchema, User
 from ..model.event import Event
-from ..model.match import MatchSchema
 from ..service.match_service import determine_priority_for_matches, get_highest_priority_matches
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
@@ -10,8 +9,6 @@ from app.src.controller import xor_crypt_string
 from requests.exceptions import HTTPError
 
 import challonge
-
-matches_schema = MatchSchema(many=True)
 
 api = Namespace('challonge', description='challonge related functionality')
 

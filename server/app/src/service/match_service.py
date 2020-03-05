@@ -1,6 +1,4 @@
 import challonge
-import pdb
-from ..model.match import Match
 from ..model.player import Player, PlayerSchema
 from ..model.bracket import Bracket, BracketSchema
 from ..model.tables import BracketPlayers, ChallongePlayer
