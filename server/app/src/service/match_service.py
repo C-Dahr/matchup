@@ -8,23 +8,18 @@ from ..model.tables import BracketPlayers, ChallongePlayer
 player_schema = PlayerSchema()
 bracket_schema = BracketSchema()
 
-def get_highest_priority_matches(event, bracket, matches_called):
+def determine_priority_for_matches(event, bracket):
   list_of_matches = challonge.matches.index(bracket.bracket_id, state='open')
   for match in list_of_matches:
     player1 = build_player_data(match['player1_id'], bracket)
     player2 = build_player_data(match['player2_id'], bracket)
 
-    # if matches_called containts a match with either player id, set this matches priority to 0
-    if either_player_has_been_called(player1, player2, matches_called):
-      match['priority'] = -1
-    else:
-      match['player1'] = player1
-      match['player2'] = player2
-      match['bracket'] = bracket_schema.jsonify(bracket).json
-      match['priority'] = 0
+    match['player1'] = player1
+    match['player2'] = player2
+    match['bracket'] = bracket_schema.jsonify(bracket).json
+    match['priority'] = 0
   
-  list_of_matches = list(filter(lambda match: match['priority'] >= 0, list_of_matches))
-  return list_of_matches[:bracket.number_of_setups]
+  return list_of_matches
 
 def build_player_data(challonge_player_id, bracket):
   challonge_player = ChallongePlayer.query.filter_by(challonge_id=challonge_player_id).first()
@@ -35,11 +30,31 @@ def build_player_data(challonge_player_id, bracket):
   player_data['name'] = bracket_player.name
   return player_data
 
-def either_player_has_been_called(player1, player2, matches_called):
+def get_highest_priority_matches(matches_sorted_by_priority, event):
+  matches_called = []
+  bracket_setups = {}
+  for match in matches_sorted_by_priority:
+    if bracket_has_setups_available(match, bracket_setups) and both_players_have_not_been_called(match, matches_called):
+      take_setup_from_bracket(bracket_setups, match['bracket'])
+      matches_called.append(match)
+  return matches_called
+
+def bracket_has_setups_available(match, bracket_setups):
+  bracket = match['bracket']
+  if bracket['id'] not in bracket_setups:
+    bracket_setups[bracket['id']] = bracket['number_of_setups']
+  return bracket_setups[bracket['id']] > 0
+
+def take_setup_from_bracket(bracket_setups, bracket):
+  bracket_setups[bracket['id']] = bracket_setups[bracket['id']] - 1
+
+def both_players_have_not_been_called(match, matches_called):
+  player1 = match['player1']
+  player2 = match['player2']
   for match in matches_called:
     if match_contains_player(match, player1) or match_contains_player(match, player2):
-      return True
-  return False
+      return False
+  return True
 
 def match_contains_player(match, player):
   return match['player1']['id'] == player['id'] or match['player2']['id'] == player['id']
