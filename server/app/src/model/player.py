@@ -7,3 +7,7 @@ class Player(db.Model):
   brackets = db.relationship('BracketPlayers', back_populates='player')
   challonge_players = db.relationship('ChallongePlayer', back_populates='player')
 
+class PlayerSchema(ma.Schema):
+  class Meta:
+    fields = ('id',)
+
