@@ -1,3 +1,5 @@
+from .. import ma
+
 class Match:
   def __init__(self, id, player1_id, player2_id, round_in_bracket, bracket_id, game_name):
     self.id = id
@@ -7,3 +9,7 @@ class Match:
     self.bracket_id = bracket_id
     self.game_name = game_name
     self.priority = 0
+
+class MatchSchema(ma.Schema):
+  class Meta:
+    fields = ('id', 'player1_id', 'player2_id', 'round_in_bracket', 'bracket_id', 'game_name', 'priority')
