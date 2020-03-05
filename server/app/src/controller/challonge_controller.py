@@ -38,10 +38,13 @@ class MatchController(Resource):
     try:
       challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
       
-      bracket_1_matches = get_highest_priority_matches(event, event.brackets[0])
-      bracket_2_matches = get_highest_priority_matches(event, event.brackets[1])
-      
-      matches = bracket_1_matches + bracket_2_matches
-      return jsonify(matches)
+      # sort event brackets by entrant
+
+      matches_called = []
+      for bracket in event.brackets:
+        matches_for_bracket = get_highest_priority_matches(event, bracket, matches_called)
+        matches_called = matches_called + matches_for_bracket
+
+      return jsonify(matches_called)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
