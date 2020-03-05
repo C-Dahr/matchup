@@ -50,6 +50,7 @@
                 <input class="btn btn-secondary cancel-btn" type="button"
                  value="Cancel" @click="cancel"/>
             </div>
+            <h4><b-link href="editPassword">Edit Password</b-link></h4>
         </form>
       </div>
   </div>

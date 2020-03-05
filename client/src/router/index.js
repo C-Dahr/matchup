@@ -7,6 +7,7 @@ import CreateEvent from '../views/CreateEvent.vue';
 import MatchQueue from '../views/MatchQueue.vue';
 import store from '../store';
 import EditProfile from '../views/EditProfile.vue';
+import EditPassword from '../views/EditPassword.vue';
 
 Vue.use(VueRouter);
 
@@ -47,6 +48,14 @@ const routes = [
     path: '/editprofile',
     name: 'editprofile',
     component: EditProfile,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/editpassword',
+    name: 'editpassword',
+    component: EditPassword,
     meta: {
       requiresAuth: true,
     },
