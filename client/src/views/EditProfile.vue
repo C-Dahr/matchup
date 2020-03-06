@@ -28,9 +28,11 @@
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
-              <label class="form-label">Password </label>
-              <a class="btn btn-primary edit-password form-control"
-              href="editPassword">Edit Password</a>
+                <label class="form-label">Password </label>
+                <div class="button-position">
+                  <a class="btn btn-primary edit-password"
+                  href="editPassword">Edit Password</a>
+                </div>
             </div>
             <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge Username</label>
@@ -146,6 +148,12 @@ export default {
   margin-top: 10px;
   margin-bottom: 10px;
   background-color: #0066FF !important;
+}
+
+.button-position {
+  width: 100%;
+  display: flex;
+  justify-content: left;
 }
 
 </style>
