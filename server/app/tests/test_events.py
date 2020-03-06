@@ -214,7 +214,7 @@ class TestObjectCreation(BaseTestCase):
     self.assertEqual(len(Player.query.all()), 11)
 
 class TestMergePlayers(BaseTestCase):
-  def test_valid_merge(self):
+  def test_merge_valid_players(self):
     player_data = {
       'event_id': self.test_event.id,
       'players' : [
@@ -227,7 +227,20 @@ class TestMergePlayers(BaseTestCase):
     response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
     self.assert200(response)
 
-  def test_merge_same_bracket(self):
+  def test_merge_invalid_event_id(self):
+    player_data = {
+      'event_id': 13,
+      'players' : [
+        {
+          'id_1': 1,
+          'id_2': 6
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert404(response)
+    
+  def test_merge_players_same_bracket(self):
     player_data = {
       'event_id': self.test_event.id,
       'players' : [
@@ -240,7 +253,7 @@ class TestMergePlayers(BaseTestCase):
     response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
     self.assert404(response)
 
-  def test_merge_twice(self):
+  def test_merge_player_twice(self):
     player_data = {
       'event_id': self.test_event.id,
       'players' : [
@@ -253,7 +266,7 @@ class TestMergePlayers(BaseTestCase):
     response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
     self.assert404(response)
 
-  def test_merge_nonexistent(self):
+  def test_merge_nonexistent_players(self):
     player_data = {
       'event_id': self.test_event.id,
       'players' : [
@@ -266,7 +279,7 @@ class TestMergePlayers(BaseTestCase):
     response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
     self.assert400(response)
 
-  def test_merge_wrong_event(self):
+  def test_merge_from_wrong_event(self):
     event_data = {
       'event_name': 'The Guard 22',
       'brackets': [
