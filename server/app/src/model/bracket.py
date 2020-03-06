@@ -28,4 +28,4 @@ class Bracket(db.Model):
 
 class BracketSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'game_name', 'number_of_setups', 'number_of_players')
+    fields = ('id', 'bracket_id', 'game_name', 'number_of_setups', 'number_of_players')
