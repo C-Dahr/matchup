@@ -5,6 +5,7 @@ from flask import Flask
 from app.src.config import basedir
 from app.src.model.user import User
 from werkzeug.security import generate_password_hash
+from app.src.controller import xor_crypt_string
 import json
 import base64
 
@@ -19,7 +20,8 @@ class BaseTestCase(TestCase):
   
   def setUp(self):
     password = generate_password_hash('password')
-    test_user = User('testuser', password, 'test@gmail.com', 'testuser', 'challonge123')
+    challonge_api_key = xor_crypt_string('challonge123', encode=True)
+    test_user = User('testuser', password, 'test@gmail.com', 'testuser', challonge_api_key)
     self.test_user = test_user
 
     db.drop_all()
