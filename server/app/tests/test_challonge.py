@@ -40,6 +40,40 @@ class BaseTestCase(TestCase):
     db.session.remove()
     db.drop_all()
 
+class TestMatches(BaseTestCase):
+  def test_invalid_event(self):
+    pass
+
+  def test_event_not_owned_by_user(self):
+    pass
+
+class TestMathcesSetups(BaseTestCase):
+  def test_more_setups_than_matches(self):
+    pass
+
+  def test_less_setups_than_matches(self):
+    pass
+
+  def test_no_setups_available(self):
+    pass
+
+  def test_no_setups_on_bracket(self):
+    pass
+
+  def test_some_setups_available(self):
+    pass
+
+
+class TestMatchesPlayerConflicts(BaseTestCase):
+  def test_no_conflicts(self):
+    pass
+
+  def test_one_conflict(self):
+    pass
+
+  def test_two_conflicts(self):
+    pass
+
 class TestCredentials(BaseTestCase):
   def test_valid_credentials(self):
     response = self.client.get(BASE_URL, headers={'Content-Type': 'application/json', 'x-access-token': self.tk_valid_user})
