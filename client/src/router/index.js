@@ -53,8 +53,8 @@ const routes = [
     },
   },
   {
-    path: '/editpassword',
-    name: 'editpassword',
+    path: '/editPassword',
+    name: 'editPassword',
     component: EditPassword,
     meta: {
       requiresAuth: true,

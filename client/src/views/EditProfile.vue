@@ -28,6 +28,11 @@
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
+              <label class="form-label">Password </label>
+              <a class="btn btn-primary edit-password form-control"
+              href="editPassword">Edit Password</a>
+            </div>
+            <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge Username</label>
               <input class="form-control" type="text"
               name="challonge_username" v-model="editProfileForm.challonge_username"
@@ -50,7 +55,6 @@
                 <input class="btn btn-secondary cancel-btn" type="button"
                  value="Cancel" @click="cancel"/>
             </div>
-            <h4><b-link href="editPassword">Edit Password</b-link></h4>
         </form>
       </div>
   </div>
@@ -136,6 +140,12 @@ export default {
 
 .cancel-btn {
   width: 50%;
+}
+
+.edit-password {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #0066FF !important;
 }
 
 </style>
