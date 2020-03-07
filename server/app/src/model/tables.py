@@ -13,7 +13,7 @@ class BracketPlayers(db.Model):
 
 class ChallongePlayer(db.Model):
   player_id = db.Column(db.Integer, db.ForeignKey('player.id'), primary_key=True, nullable=False)
-  challonge_id = db.Column(db.Integer, primary_key=True, nullable=False)
+  challonge_id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
   player = db.relationship('Player', back_populates='challonge_players')
 
   def __init__(self, player_id, challonge_id):
