@@ -22,6 +22,7 @@ b2_id = 8176886
 b3_id = 8176890
 b4_id = 8177036
 b5_id = 8177044
+b6_id = 8182048
 
 class BaseTestCase(TestCase):  
   def create_app(self):
@@ -79,11 +80,11 @@ class BaseTestCase(TestCase):
       'event_name': 'Test Event 3',
       'brackets': [
         {
-          'bracket_id': b3_id,
+          'bracket_id': b5_id,
           'number_of_setups': 0
         },
         {
-          'bracket_id': b5_id,
+          'bracket_id': b6_id,
           'number_of_setups': 0
         }
       ]
@@ -184,12 +185,11 @@ class TestMatchesPlayerConflicts(BaseTestCase):
 
   def test_two_conflicts(self):
     event = self.event3
-    import pdb; pdb.set_trace()
     event.brackets[0].number_of_setups = 5
     event.brackets[1].number_of_setups = 5
     db.session.commit()
 
-    number_of_matches = 4
+    number_of_matches = 2
 
     matches = get_event_matches(self, event)
     self.assertEqual(number_of_matches, len(matches))

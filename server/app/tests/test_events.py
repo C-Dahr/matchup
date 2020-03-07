@@ -29,6 +29,9 @@ player3_Test2_id = 7
 player4_Test2_id = 8
 danny_merged_TestTournament_id = 13
 
+bracket_3_id = 8176881
+bracket_4_id = 8176886
+
 class BaseTestCase(TestCase):  
   def create_app(self):
     app.config.from_object('app.src.config.TestingConfig')
@@ -76,11 +79,11 @@ class TestCreateEvent(BaseTestCase):
       'event_name': 'The Guard 22',
       'brackets': [
         {
-          'bracket_id': bracket_1_id,
+          'bracket_id': bracket_3_id,
           'number_of_setups': 4
         },
         {
-          'bracket_id': bracket_2_id,
+          'bracket_id': bracket_4_id,
           'number_of_setups': 5
         }
       ]
