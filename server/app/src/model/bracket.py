@@ -11,7 +11,7 @@ class Bracket(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
   event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True, nullable=False)
   event = db.relationship('Event', back_populates='brackets')
-  bracket_id = db.Column(db.Integer, nullable=False)
+  bracket_id = db.Column(db.Integer, nullable=False, unique=True)
   source = db.Column(db.String(100), nullable=False)
   game_name = db.Column(db.String(100), nullable=False)
   number_of_setups = db.Column(db.Integer, nullable=False)
