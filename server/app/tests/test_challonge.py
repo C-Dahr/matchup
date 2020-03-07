@@ -62,7 +62,7 @@ class BaseTestCase(TestCase):
     }
 
     event2_data = {
-      'event_name': 'Test Event 1',
+      'event_name': 'Test Event 2',
       'brackets': [
         {
           'bracket_id': b3_id,
@@ -76,7 +76,7 @@ class BaseTestCase(TestCase):
     }
 
     event3_data = {
-      'event_name': 'Test Event 1',
+      'event_name': 'Test Event 3',
       'brackets': [
         {
           'bracket_id': b3_id,
@@ -103,6 +103,11 @@ class BaseTestCase(TestCase):
     db.session.remove()
     db.drop_all()
 
+def get_event_matches(app, event):
+  url = MATCHES_URL + '/' + str(event.id)
+  response = app.client.get(url, headers=app.headers)
+  return json.loads(response.data)
+
 class TestMatches(BaseTestCase):
   def test_invalid_event(self):
     pass
@@ -114,33 +119,80 @@ class TestMatches(BaseTestCase):
 class TestMathcesSetups(BaseTestCase):
   def test_more_setups_than_matches(self):
     event = self.event1
-    pass
+    event.brackets[0].number_of_setups = 5
+    event.brackets[1].number_of_setups = 5
+    db.session.commit()
+
+    number_of_matches = 4
+
+    matches = get_event_matches(self, event)
+    self.assertEqual(number_of_matches, len(matches))
 
   def test_less_setups_than_matches(self):
     event = self.event1
-    pass
+    event.brackets[0].number_of_setups = 1
+    event.brackets[1].number_of_setups = 1
+    db.session.commit()
+
+    number_of_matches = 2
+
+    matches = get_event_matches(self, event)
+    self.assertEqual(number_of_matches, len(matches))
 
   def test_no_setups_on_bracket(self):
     event = self.event1
-    pass
+
+    number_of_matches = 0
+
+    matches = get_event_matches(self, event)
+    self.assertEqual(number_of_matches, len(matches))
 
   def test_no_setups_available(self):
     event = self.event2
-    pass
+    event.brackets[0].number_of_setups = 1
+    event.brackets[1].number_of_setups = 0
+    db.session.commit()
+
+    number_of_matches = 0
+
+    matches = get_event_matches(self, event)
+    self.assertEqual(number_of_matches, len(matches))
+    
 
   def test_some_setups_available(self):
     event = self.event2
-    pass
+    event.brackets[0].number_of_setups = 3
+    event.brackets[1].number_of_setups = 0
+    db.session.commit()
 
+    number_of_matches = 2
+
+    matches = get_event_matches(self, event)
+    self.assertEqual(number_of_matches, len(matches))
 
 class TestMatchesPlayerConflicts(BaseTestCase):
   def test_one_conflict(self):
     event = self.event2
-    pass
+    event.brackets[0].number_of_setups = 5
+    event.brackets[1].number_of_setups = 5
+    db.session.commit()
+
+    number_of_matches = 4
+
+    matches = get_event_matches(self, event)
+    self.assertEqual(number_of_matches, len(matches))
 
   def test_two_conflicts(self):
     event = self.event3
-    pass
+    import pdb; pdb.set_trace()
+    event.brackets[0].number_of_setups = 5
+    event.brackets[1].number_of_setups = 5
+    db.session.commit()
+
+    number_of_matches = 4
+
+    matches = get_event_matches(self, event)
+    self.assertEqual(number_of_matches, len(matches))
 
 class TestCredentials(BaseTestCase):
   def test_valid_credentials(self):
