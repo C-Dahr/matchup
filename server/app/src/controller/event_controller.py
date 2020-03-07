@@ -79,8 +79,8 @@ class PlayerController(Resource):
 
     players_from_request = request.json['players']
 
-    players_from_check = check_valid_merge(event, players_from_request, api)
+    valid_players = get_valid_players_to_merge(event, players_from_request, api)
     
-    for player1, player2 in players_from_check:
+    for player1, player2 in valid_players:
       list_of_brackets = [player1.bracket, player2.bracket]
       merge_players(player1.player, player2.player, list_of_brackets)
