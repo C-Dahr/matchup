@@ -99,7 +99,6 @@ class BaseTestCase(TestCase):
     response3 = self.client.post(EVENT_URL, json=event3_data, headers=self.headers)
     self.event3 = Event.query.get(json.loads(response3.data)['id'])
 
-
   def tearDown(self):
     db.session.remove()
     db.drop_all()
@@ -111,11 +110,10 @@ def get_event_matches(app, event):
 
 class TestMatches(BaseTestCase):
   def test_invalid_event(self):
-    pass
-
-  def test_event_not_owned_by_user(self):
-    event = self.event1
-    pass
+    invalid_id = 69
+    url = MATCHES_URL + '/' + str(invalid_id)
+    response = self.client.get(url, headers=self.headers)
+    self.assert404(response)
 
 class TestMathcesSetups(BaseTestCase):
   def test_more_setups_than_matches(self):

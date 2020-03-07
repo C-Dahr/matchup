@@ -32,6 +32,9 @@ class MatchController(Resource):
   def get(self, event_id):
     current_user = get_user_from_auth_header(request, api)
     event = Event.query.get(event_id)
+    if not event:
+      api.abort(404, 'Event not found')
+
     try:
       challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
 
