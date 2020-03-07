@@ -17,6 +17,7 @@ class ChallongePlayer(db.Model):
   player_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
   player = db.relationship('Player', back_populates='challonge_players')
 
-  def __init__(self, player_id, challonge_id):
+  def __init__(self, player_id, challonge_id, bracket_id):
     self.player_id = player_id
     self.challonge_id = challonge_id
+    self.bracket_id = bracket_id

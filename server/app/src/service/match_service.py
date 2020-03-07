@@ -19,8 +19,8 @@ def determine_priority_for_matches(matches_not_in_progress, bracket):
   return matches_not_in_progress
 
 def build_player_data(challonge_player_id, bracket):
-  challonge_player = ChallongePlayer.query.filter_by(challonge_id=challonge_player_id).first()
-  player = Player.query.get(challonge_player.player_id)
+  challonge_player = ChallongePlayer.query.get({'challonge_id':challonge_player_id, 'bracker_id':bracket.bracket_id})
+  player = challonge_player.player
   bracket_player = BracketPlayers.query.get({'bracket_id':bracket.id, 'player_id':player.id})
 
   player_data = player_schema.jsonify(player).json
