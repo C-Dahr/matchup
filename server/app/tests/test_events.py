@@ -15,9 +15,19 @@ import base64
 
 BASE_URL = 'http://localhost:5000/event'
 LOGIN_URL = 'http://localhost:5000/auth'
+MERGE_URL = BASE_URL + '/players/merge'
 challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
 bracket_1_id = 8061588
 bracket_2_id = 8061653
+cameron_TestTournament_id = 1
+danny_TestTournament_id = 2
+tayler_TestTournament_id = 3
+zach_TestTournament_id = 3
+danny_Test2_id = 5
+player2_Test2_id = 6
+player3_Test2_id = 7
+player4_Test2_id = 8
+danny_merged_TestTournament_id = 13
 
 class BaseTestCase(TestCase):  
   def create_app(self):
@@ -211,3 +221,123 @@ class TestObjectCreation(BaseTestCase):
     self.assertEqual(len(self.test_event.brackets[0].players), 4)
     self.assertEqual(len(self.test_event.brackets[1].players), 8)
     self.assertEqual(len(Player.query.all()), 11)
+
+class TestMergePlayers(BaseTestCase):
+
+  def test_merge_valid_players(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': tayler_TestTournament_id,
+          'id_2': player2_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    old_player1 = Player.query.get(tayler_TestTournament_id)
+    old_player2 = Player.query.get(player2_Test2_id)
+    self.assertEqual(None, old_player1, old_player2)
+    self.assert200(response)
+
+  def test_merge_multiple_valid_players(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': cameron_TestTournament_id,
+          'id_2': player3_Test2_id
+        },
+        {
+          'id_1': zach_TestTournament_id,
+          'id_2': player4_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    old_player1 = Player.query.get(cameron_TestTournament_id)
+    old_player2 = Player.query.get(player3_Test2_id)
+    old_player3 = Player.query.get(zach_TestTournament_id)
+    old_player4 = Player.query.get(player4_Test2_id)
+    self.assertEqual(None, old_player1, old_player2)
+    self.assertEqual(None, old_player3, old_player4)
+    self.assert200(response)
+
+  def test_merge_invalid_event_id(self):
+    player_data = {
+      'event_id': 13,
+      'players' : [
+        {
+          'id_1': tayler_TestTournament_id,
+          'id_2': player2_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert404(response)
+
+  def test_merge_players_same_bracket(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': player2_Test2_id,
+          'id_2': player3_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)
+
+  def test_merge_player_twice(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': danny_merged_TestTournament_id,
+          'id_2': player3_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)
+
+  def test_merge_nonexistent_players(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': 200,
+          'id_2': player2_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)
+
+  def test_merge_from_wrong_event(self):
+    event_data = {
+      'event_name': 'The Guard 22',
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': 4
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': 5
+        }
+      ]
+    }  
+    self.client.post(BASE_URL, json=event_data, headers=self.headers)
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': 19,
+          'id_2': 20
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)
