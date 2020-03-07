@@ -108,33 +108,38 @@ class TestMatches(BaseTestCase):
     pass
 
   def test_event_not_owned_by_user(self):
+    event = self.event1
     pass
 
 class TestMathcesSetups(BaseTestCase):
   def test_more_setups_than_matches(self):
+    event = self.event1
     pass
 
   def test_less_setups_than_matches(self):
-    pass
-
-  def test_no_setups_available(self):
+    event = self.event1
     pass
 
   def test_no_setups_on_bracket(self):
+    event = self.event1
+    pass
+
+  def test_no_setups_available(self):
+    event = self.event2
     pass
 
   def test_some_setups_available(self):
+    event = self.event2
     pass
 
 
 class TestMatchesPlayerConflicts(BaseTestCase):
-  def test_no_conflicts(self):
-    pass
-
   def test_one_conflict(self):
+    event = self.event2
     pass
 
   def test_two_conflicts(self):
+    event = self.event3
     pass
 
 class TestCredentials(BaseTestCase):
