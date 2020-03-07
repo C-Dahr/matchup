@@ -9,7 +9,7 @@ def get_brackets_from_request(brackets_from_request, event):
   list_of_brackets = []
   for bracket in brackets_from_request:
     bracket_info = challonge.tournaments.show(bracket['bracket_id'])
-    new_bracket = Bracket(bracket_info['id'], event.id, 'challonge',
+    new_bracket = Bracket(bracket['bracket_id'], event.id, 'challonge',
                           bracket_info['game_name'], bracket['number_of_setups'])
     list_of_brackets.append(new_bracket)
     db.session.add(new_bracket)

@@ -18,8 +18,8 @@ class Bracket(db.Model):
   number_of_players = db.Column(db.Integer, nullable=False)
   players = db.relationship('BracketPlayers', back_populates='bracket')
 
-  def __init__(self, id, event_id, source, game_name, number_of_setups):
-    self.bracket_id = id
+  def __init__(self, bracket_id, event_id, source, game_name, number_of_setups):
+    self.bracket_id = bracket_id
     self.event_id = event_id
     self.source = BracketSource(source).name # makes sure the source is a valid enum
     self.game_name = game_name
