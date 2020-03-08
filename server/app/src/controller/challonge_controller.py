@@ -12,7 +12,7 @@ import challonge
 
 api = Namespace('challonge', description='challonge related functionality')
 
-@api.route('/bracket')
+@api.route('/brackets')
 class BracketController(Resource):
   @api.doc('get brackets')
   def get(self):

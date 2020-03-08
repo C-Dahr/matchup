@@ -11,7 +11,7 @@ import json
 import base64
 
 BASE_URL = 'http://localhost:5000/challonge'
-BRACKET_URL = BASE_URL + '/bracket'
+BRACKET_URL = BASE_URL + '/brackets'
 MATCHES_URL = BASE_URL + '/matches'
 LOGIN_URL = 'http://localhost:5000/auth'
 EVENT_URL = 'http://localhost:5000/event'
@@ -115,7 +115,7 @@ class TestMatches(BaseTestCase):
     response = self.client.get(url, headers=self.headers)
     self.assert404(response)
 
-class TestMathcesSetups(BaseTestCase):
+class TestMatchesSetups(BaseTestCase):
   def test_more_setups_than_matches(self):
     event = self.event1
     event.brackets[0].number_of_setups = 5
