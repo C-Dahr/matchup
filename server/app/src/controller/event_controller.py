@@ -43,6 +43,9 @@ class EventController(Resource):
     except KeyError as e:
       message = f'Missing field: {e.args[0]}'
       api.abort(400, message)
+    except IntegrityError as e:
+      message = 'Bracket already in use by another event.'
+      api.abort(400, message)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
   

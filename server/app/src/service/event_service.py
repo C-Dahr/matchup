@@ -9,7 +9,7 @@ def get_brackets_from_request(brackets_from_request, event):
   list_of_brackets = []
   for bracket in brackets_from_request:
     bracket_info = challonge.tournaments.show(bracket['bracket_id'])
-    new_bracket = Bracket(bracket_info['id'], event.id, 'challonge',
+    new_bracket = Bracket(bracket['bracket_id'], event.id, 'challonge',
                           bracket_info['game_name'], bracket['number_of_setups'])
     list_of_brackets.append(new_bracket)
     db.session.add(new_bracket)
@@ -23,7 +23,7 @@ def get_players_from_bracket(bracket):
     new_player = Player()
     db.session.add(new_player)
     db.session.commit()
-    new_challonge_player = ChallongePlayer(new_player.id, participant['id'])
+    new_challonge_player = ChallongePlayer(new_player.id, participant['id'], bracket.bracket_id)
     db.session.add(new_challonge_player)
     bracket_players = BracketPlayers(name = participant['name'])
     bracket_players.player = new_player
@@ -56,8 +56,8 @@ def create_player():
 def update_challonge_players(player1, player2, merged_player):
   old_challonge_player1 = player1.challonge_players[0]
   old_challonge_player2 = player2.challonge_players[0]
-  new_challonge_player1 = ChallongePlayer(merged_player.id, old_challonge_player1.challonge_id)
-  new_challonge_player2 = ChallongePlayer(merged_player.id, old_challonge_player2.challonge_id)
+  new_challonge_player1 = ChallongePlayer(merged_player.id, old_challonge_player1.challonge_id, old_challonge_player1.bracket_id)
+  new_challonge_player2 = ChallongePlayer(merged_player.id, old_challonge_player2.challonge_id, old_challonge_player2.bracket_id)
 
   db.session.add(new_challonge_player1)
   db.session.add(new_challonge_player2)

@@ -29,6 +29,9 @@ player3_Test2_id = 7
 player4_Test2_id = 8
 danny_merged_TestTournament_id = 13
 
+bracket_3_id = 8176881
+bracket_4_id = 8176886
+
 class BaseTestCase(TestCase):  
   def create_app(self):
     app.config.from_object('app.src.config.TestingConfig')
@@ -43,13 +46,15 @@ class BaseTestCase(TestCase):
     self.test_user = test_user
     db.session.add(self.test_user)
     db.session.commit()
-    
-    test_event = Event('Test Event', test_user.id)
-    self.test_event = test_event
-    db.session.add(self.test_event)
-    db.session.commit()
 
-    bracket_data = {
+    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
+    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
+    returned = json.loads(response.data)
+    self.tk_valid_user = returned['token']
+    self.headers = {'Content-Type': 'application/json', 'x-access-token': self.tk_valid_user}
+
+    event_data = {
+      'event_name': 'Test Event',
       'brackets': [
         {
           'bracket_id': bracket_1_id,
@@ -60,20 +65,9 @@ class BaseTestCase(TestCase):
           'number_of_setups': 5
         }
       ]
-    }
-    list_of_brackets = get_brackets_from_request(bracket_data['brackets'], test_event)
-    for bracket in list_of_brackets:
-        get_players_from_bracket(bracket)
-        bracket.number_of_players = len(bracket.players)
-
-    get_duplicate_players(list_of_brackets)
-    db.session.commit()
-
-    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
-    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
-    returned = json.loads(response.data)
-    self.tk_valid_user = returned['token']
-    self.headers = {'Content-Type': 'application/json', 'x-access-token': self.tk_valid_user}
+    }    
+    response = self.client.post(BASE_URL, json=event_data, headers=self.headers)
+    self.test_event = Event.query.get(json.loads(response.data)['id'])
 
   def tearDown(self):
     db.session.remove()
@@ -85,11 +79,11 @@ class TestCreateEvent(BaseTestCase):
       'event_name': 'The Guard 22',
       'brackets': [
         {
-          'bracket_id': bracket_1_id,
+          'bracket_id': bracket_3_id,
           'number_of_setups': 4
         },
         {
-          'bracket_id': bracket_2_id,
+          'bracket_id': bracket_4_id,
           'number_of_setups': 5
         }
       ]
