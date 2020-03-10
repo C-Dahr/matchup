@@ -5,8 +5,7 @@ from flask import Flask
 from app.src.config import basedir
 from app.src.model.user import User
 from werkzeug.security import generate_password_hash
-
-
+from app.src.controller import xor_crypt_string
 from werkzeug.security import check_password_hash
 import json
 import base64
