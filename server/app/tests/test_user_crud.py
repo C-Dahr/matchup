@@ -9,6 +9,7 @@ import json
 import base64
 
 BASE_URL = 'http://localhost:5000/user'
+PASSWORD_URL = 'http://localhost:5000/user/password'
 LOGIN_URL = 'http://localhost:5000/auth'
 invalid_id = 69 # nice
 
@@ -143,6 +144,29 @@ class TestUpdateUser(BaseTestCase):
     response = self.client.put(BASE_URL, json=new_info, headers=self.headers)
     self.assert_status(response, 409)
 
+class TestUpdatePassword(BaseTestCase):
+  def test_update_password(self):
+    user_id = self.test_user.id
+    password_info = {
+      'current_password': 'password',
+      'new_password': 'newPassword',
+    }
+    hashed_new_password = generate_password_hash(password_info['new_password'])
+    response = self.client.put(PASSWORD_URL, json=password_info, headers=self.headers)
+    user_returned = json.loads(response.data)
+    check_password_hash(hashed_new_password, self.test_user.password):
+    # get the user in the database, confirm they are equal
+    user_from_db = User.query.get(user_id)
+    self.assertEqual(user_from_db, self.test_user)
+
+  def test_update_password_wrong_password(self):
+    user_id = self.test_user.id
+    password_info = {
+      'current_password': 'wrongPassword',
+      'new_password': 'newPassword',
+    }
+    response = self.client.put(PASSWORD_URL, json=password_info, headers=self.headers)
+    self.assert401(response, 'Incorrect Password.')
 
 class TestGetUsers(BaseTestCase):
   def test_get_user_by_id(self):
