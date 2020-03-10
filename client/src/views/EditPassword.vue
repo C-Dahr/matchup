@@ -38,6 +38,10 @@
                 <input class="btn btn-primary account-form-submit" type="submit"
                  value="Change Password"/>
             </div>
+            <div class="form-group d-flex justify-content-center">
+                <input class="btn btn-secondary cancel-btn" type="button"
+                 value="Back to Edit Profile" @click="cancel"/>
+            </div>
         </form>
       </div>
   </div>
@@ -95,6 +99,10 @@ export default {
             this.errors.push('Current password is incorrect');
           }
         });
+    },
+    cancel(evt) {
+      evt.preventDefault();
+      this.$router.push('/editprofile');
     },
   },
 };

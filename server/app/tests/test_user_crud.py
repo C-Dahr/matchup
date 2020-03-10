@@ -5,6 +5,7 @@ from flask import Flask
 from app.src.config import basedir
 from app.src.model.user import User
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 import json
 import base64
 
@@ -154,7 +155,7 @@ class TestUpdatePassword(BaseTestCase):
     hashed_new_password = generate_password_hash(password_info['new_password'])
     response = self.client.put(PASSWORD_URL, json=password_info, headers=self.headers)
     user_returned = json.loads(response.data)
-    check_password_hash(hashed_new_password, self.test_user.password):
+    check_password_hash(hashed_new_password, self.test_user.password)
     # get the user in the database, confirm they are equal
     user_from_db = User.query.get(user_id)
     self.assertEqual(user_from_db, self.test_user)
