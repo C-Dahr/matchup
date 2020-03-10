@@ -12,10 +12,12 @@ class BracketPlayers(db.Model):
   player = db.relationship('Player', back_populates='brackets')
 
 class ChallongePlayer(db.Model):
-  player_id = db.Column(db.Integer, db.ForeignKey('player.id'), primary_key=True, nullable=False)
   challonge_id = db.Column(db.Integer, primary_key=True, nullable=False)
+  bracket_id = db.Column(db.Integer, db.ForeignKey('bracket.bracket_id'), primary_key=True, nullable=False)
+  player_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
   player = db.relationship('Player', back_populates='challonge_players')
 
-  def __init__(self, player_id, challonge_id):
+  def __init__(self, player_id, challonge_id, bracket_id):
     self.player_id = player_id
     self.challonge_id = challonge_id
+    self.bracket_id = bracket_id

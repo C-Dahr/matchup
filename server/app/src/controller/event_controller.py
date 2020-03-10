@@ -43,6 +43,9 @@ class EventController(Resource):
     except KeyError as e:
       message = f'Missing field: {e.args[0]}'
       api.abort(400, message)
+    except IntegrityError as e:
+      message = 'Bracket already in use by another event.'
+      api.abort(400, message)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
   
@@ -67,3 +70,20 @@ class EventController(Resource):
       api.abort(400, 'Invalid bracket specified.')
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
+
+@api.route('/players/merge')
+class PlayerController(Resource):
+  @api.doc('merge players')
+  def post(self):
+    current_user = get_user_from_auth_header(request, api)
+    event = Event.query.get(request.json['event_id'])
+    if not event:
+      api.abort(404, 'Event not found.')
+
+    players_from_request = request.json['players']
+
+    valid_players = get_valid_players_to_merge(event, players_from_request, api)
+    
+    for player1, player2 in valid_players:
+      list_of_brackets = [player1.bracket, player2.bracket]
+      merge_players(player1.player, player2.player, list_of_brackets)

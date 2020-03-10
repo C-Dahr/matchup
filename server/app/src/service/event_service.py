@@ -3,12 +3,13 @@ from .. import db
 from ..model.bracket import Bracket
 from ..model.player import Player
 from ..model.tables import BracketPlayers, ChallongePlayer
+from sqlalchemy.orm.exc import MultipleResultsFound 
 
 def get_brackets_from_request(brackets_from_request, event):
   list_of_brackets = []
   for bracket in brackets_from_request:
     bracket_info = challonge.tournaments.show(bracket['bracket_id'])
-    new_bracket = Bracket(bracket_info['id'], event.id, 'challonge',
+    new_bracket = Bracket(bracket['bracket_id'], event.id, 'challonge',
                           bracket_info['game_name'], bracket['number_of_setups'])
     list_of_brackets.append(new_bracket)
     db.session.add(new_bracket)
@@ -22,7 +23,7 @@ def get_players_from_bracket(bracket):
     new_player = Player()
     db.session.add(new_player)
     db.session.commit()
-    new_challonge_player = ChallongePlayer(new_player.id, participant['id'])
+    new_challonge_player = ChallongePlayer(new_player.id, participant['id'], bracket.bracket_id)
     db.session.add(new_challonge_player)
     bracket_players = BracketPlayers(name = participant['name'])
     bracket_players.player = new_player
@@ -55,8 +56,8 @@ def create_player():
 def update_challonge_players(player1, player2, merged_player):
   old_challonge_player1 = player1.challonge_players[0]
   old_challonge_player2 = player2.challonge_players[0]
-  new_challonge_player1 = ChallongePlayer(merged_player.id, old_challonge_player1.challonge_id)
-  new_challonge_player2 = ChallongePlayer(merged_player.id, old_challonge_player2.challonge_id)
+  new_challonge_player1 = ChallongePlayer(merged_player.id, old_challonge_player1.challonge_id, old_challonge_player1.bracket_id)
+  new_challonge_player2 = ChallongePlayer(merged_player.id, old_challonge_player2.challonge_id, old_challonge_player2.bracket_id)
 
   db.session.add(new_challonge_player1)
   db.session.add(new_challonge_player2)
@@ -89,3 +90,36 @@ def update_player_relationships(list_of_brackets, player1, player2, merged_playe
   db.session.delete(old_bracket_player2)
 
   db.session.commit()
+
+def isUnique(player_id):
+  try:
+    BracketPlayers.query.filter_by(player_id = player_id).one()
+  except MultipleResultsFound as e:
+    return False
+  return True
+
+def get_valid_players_to_merge(event, players_from_request, api):
+  list_of_players = []
+  for players in players_from_request:
+    player1 = BracketPlayers.query.filter_by(player_id=players['id_1']).first()
+    player2 = BracketPlayers.query.filter_by(player_id=players['id_2']).first()
+
+    # check that player IDs exist
+    if not player1 or not player2:
+      api.abort(400, 'Invalid player IDs.')
+    
+    # check that players do not belong to the same bracket
+    if player1.bracket == player2.bracket:
+      api.abort(400, 'Cannot merge players from the same bracket.')
+
+    # check that player IDs correspond to the correct event
+    if player1.bracket not in event.brackets or player2.bracket not in event.brackets:
+      api.abort(400, 'Cannot merge players from other events.')
+
+    # check that player IDs have only one entry (not merged)
+    if not isUnique(player1.player_id) or not isUnique(player2.player_id):
+      api.abort(400, 'Cannot merge previously merged players.')
+
+    list_of_players.append((player1, player2))
+    
+  return list_of_players

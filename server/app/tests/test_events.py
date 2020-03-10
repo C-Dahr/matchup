@@ -15,9 +15,22 @@ import base64
 
 BASE_URL = 'http://localhost:5000/event'
 LOGIN_URL = 'http://localhost:5000/auth'
+MERGE_URL = BASE_URL + '/players/merge'
 challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
 bracket_1_id = 8061588
 bracket_2_id = 8061653
+cameron_TestTournament_id = 1
+danny_TestTournament_id = 2
+tayler_TestTournament_id = 3
+zach_TestTournament_id = 3
+danny_Test2_id = 5
+player2_Test2_id = 6
+player3_Test2_id = 7
+player4_Test2_id = 8
+danny_merged_TestTournament_id = 13
+
+bracket_3_id = 8176881
+bracket_4_id = 8176886
 
 class BaseTestCase(TestCase):  
   def create_app(self):
@@ -33,13 +46,15 @@ class BaseTestCase(TestCase):
     self.test_user = test_user
     db.session.add(self.test_user)
     db.session.commit()
-    
-    test_event = Event('Test Event', test_user.id)
-    self.test_event = test_event
-    db.session.add(self.test_event)
-    db.session.commit()
 
-    bracket_data = {
+    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
+    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
+    returned = json.loads(response.data)
+    self.tk_valid_user = returned['token']
+    self.headers = {'Content-Type': 'application/json', 'x-access-token': self.tk_valid_user}
+
+    event_data = {
+      'event_name': 'Test Event',
       'brackets': [
         {
           'bracket_id': bracket_1_id,
@@ -50,20 +65,9 @@ class BaseTestCase(TestCase):
           'number_of_setups': 5
         }
       ]
-    }
-    list_of_brackets = get_brackets_from_request(bracket_data['brackets'], test_event)
-    for bracket in list_of_brackets:
-        get_players_from_bracket(bracket)
-        bracket.number_of_players = len(bracket.players)
-
-    get_duplicate_players(list_of_brackets)
-    db.session.commit()
-
-    valid_credentials = base64.b64encode(b'testuser:password').decode('utf-8')
-    response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
-    returned = json.loads(response.data)
-    self.tk_valid_user = returned['token']
-    self.headers = {'Content-Type': 'application/json', 'x-access-token': self.tk_valid_user}
+    }    
+    response = self.client.post(BASE_URL, json=event_data, headers=self.headers)
+    self.test_event = Event.query.get(json.loads(response.data)['id'])
 
   def tearDown(self):
     db.session.remove()
@@ -75,11 +79,11 @@ class TestCreateEvent(BaseTestCase):
       'event_name': 'The Guard 22',
       'brackets': [
         {
-          'bracket_id': bracket_1_id,
+          'bracket_id': bracket_3_id,
           'number_of_setups': 4
         },
         {
-          'bracket_id': bracket_2_id,
+          'bracket_id': bracket_4_id,
           'number_of_setups': 5
         }
       ]
@@ -211,3 +215,123 @@ class TestObjectCreation(BaseTestCase):
     self.assertEqual(len(self.test_event.brackets[0].players), 4)
     self.assertEqual(len(self.test_event.brackets[1].players), 8)
     self.assertEqual(len(Player.query.all()), 11)
+
+class TestMergePlayers(BaseTestCase):
+
+  def test_merge_valid_players(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': tayler_TestTournament_id,
+          'id_2': player2_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    old_player1 = Player.query.get(tayler_TestTournament_id)
+    old_player2 = Player.query.get(player2_Test2_id)
+    self.assertEqual(None, old_player1, old_player2)
+    self.assert200(response)
+
+  def test_merge_multiple_valid_players(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': cameron_TestTournament_id,
+          'id_2': player3_Test2_id
+        },
+        {
+          'id_1': zach_TestTournament_id,
+          'id_2': player4_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    old_player1 = Player.query.get(cameron_TestTournament_id)
+    old_player2 = Player.query.get(player3_Test2_id)
+    old_player3 = Player.query.get(zach_TestTournament_id)
+    old_player4 = Player.query.get(player4_Test2_id)
+    self.assertEqual(None, old_player1, old_player2)
+    self.assertEqual(None, old_player3, old_player4)
+    self.assert200(response)
+
+  def test_merge_invalid_event_id(self):
+    player_data = {
+      'event_id': 13,
+      'players' : [
+        {
+          'id_1': tayler_TestTournament_id,
+          'id_2': player2_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert404(response)
+
+  def test_merge_players_same_bracket(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': player2_Test2_id,
+          'id_2': player3_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)
+
+  def test_merge_player_twice(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': danny_merged_TestTournament_id,
+          'id_2': player3_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)
+
+  def test_merge_nonexistent_players(self):
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': 200,
+          'id_2': player2_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)
+
+  def test_merge_from_wrong_event(self):
+    event_data = {
+      'event_name': 'The Guard 22',
+      'brackets': [
+        {
+          'bracket_id': bracket_1_id,
+          'number_of_setups': 4
+        },
+        {
+          'bracket_id': bracket_2_id,
+          'number_of_setups': 5
+        }
+      ]
+    }  
+    self.client.post(BASE_URL, json=event_data, headers=self.headers)
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': 19,
+          'id_2': 20
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers=self.headers)
+    self.assert400(response)

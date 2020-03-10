@@ -42,6 +42,8 @@ class UserController(Resource):
     user = get_user_from_auth_header(request, api)
     if not user:
       api.abort(404, user_not_found)
+    api_key = xor_crypt_string(user.api_key, decode=True)
+    user.api_key = api_key
     return user_schema.jsonify(user)
     
   @api.doc('update a user')

@@ -7,7 +7,8 @@
       <ul class="form-error">
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>
-      <p v-if="link === true">Generate or find an existing API key for Challonge <b-link class="text-warning" href="https://challonge.com/settings/developer" target="_blank">here</b-link></p>
+      <p v-if="link === true">Add or edit your API key on your
+        <b-link class="text-warning" href="/editprofile">profile</b-link></p>
     </div>
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit" method="post" class="event-form">
