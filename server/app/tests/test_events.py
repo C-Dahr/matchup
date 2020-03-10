@@ -19,6 +19,8 @@ MERGE_URL = BASE_URL + '/players/merge'
 challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
 bracket_1_id = 8061588
 bracket_2_id = 8061653
+b1_id = 8176881
+b2_id = 8176886
 cameron_TestTournament_id = 1
 danny_TestTournament_id = 2
 tayler_TestTournament_id = 3
@@ -217,6 +219,27 @@ class TestObjectCreation(BaseTestCase):
     self.assertEqual(len(Player.query.all()), 11)
 
 class TestMergePlayers(BaseTestCase):
+  def test_user_does_not_own_event(self):
+    password = generate_password_hash('password')
+    extra_test_user = User('extratestuser', password, 'extra@gmail.com', 'matchup', challonge_api_key)
+    db.session.add(extra_test_user)
+    db.session.commit()
+
+    valid_credentials = base64.b64encode(b'extratestuser:password').decode('utf-8')
+    login_response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
+    returned = json.loads(login_response.data)
+ 
+    player_data = {
+      'event_id': self.test_event.id,
+      'players' : [
+        {
+          'id_1': tayler_TestTournament_id,
+          'id_2': player2_Test2_id
+        }
+      ]
+    }
+    response = self.client.post(MERGE_URL, json=player_data, headers={'Content-Type': 'application/json', 'x-access-token': returned['token']})
+    self.assert401(response)
 
   def test_merge_valid_players(self):
     player_data = {
@@ -314,11 +337,11 @@ class TestMergePlayers(BaseTestCase):
       'event_name': 'The Guard 22',
       'brackets': [
         {
-          'bracket_id': bracket_1_id,
+          'bracket_id': b1_id,
           'number_of_setups': 4
         },
         {
-          'bracket_id': bracket_2_id,
+          'bracket_id': b2_id,
           'number_of_setups': 5
         }
       ]

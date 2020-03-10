@@ -79,6 +79,8 @@ class PlayerController(Resource):
     event = Event.query.get(request.json['event_id'])
     if not event:
       api.abort(404, 'Event not found.')
+    if event not in current_user.events:
+      api.abort(401, 'Current user cannot edit this event.')
 
     players_from_request = request.json['players']
 
