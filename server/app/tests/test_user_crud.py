@@ -154,13 +154,14 @@ class TestUpdatePassword(BaseTestCase):
       'current_password': 'password',
       'new_password': 'newPassword',
     }
-    hashed_new_password = generate_password_hash(password_info['new_password'])
+    hashed_new_password = generate_password_hash(password_info['new_password'], method='sha256')
     response = self.client.put(PASSWORD_URL, json=password_info, headers=self.headers)
     user_returned = json.loads(response.data)
-    check_password_hash(hashed_new_password, self.test_user.password)
     # get the user in the database, confirm they are equal
     user_from_db = User.query.get(user_id)
-    self.assertEqual(user_from_db, self.test_user)
+    self.assertEqual(user_from_db.password, self.test_user.password)
+    self.assertEqual(hashed_new_password, user_from_db.password)
+    self.assertEqual(hashed_new_password, self.test_user.password)
 
   def test_update_password_wrong_password(self):
     user_id = self.test_user.id

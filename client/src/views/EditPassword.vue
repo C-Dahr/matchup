@@ -40,7 +40,7 @@
             </div>
             <div class="form-group d-flex justify-content-center">
                 <input class="btn btn-secondary cancel-btn" type="button"
-                 value="Back to Edit Profile" @click="cancel"/>
+                 value="Back to Profile" @click="cancel"/>
             </div>
         </form>
       </div>
