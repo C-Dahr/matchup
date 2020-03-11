@@ -10,6 +10,7 @@ from app.src.controller import xor_crypt_string
 from requests.exceptions import HTTPError
 
 import requests
+import json
 import challonge
 
 from urllib.parse import urlencode
@@ -82,14 +83,15 @@ class MatchProgressController(Resource):
 
     match_id = request.json['match_id']
     bracket_id = request.json['bracket_id']
-    bracket_challonge_id = Bracket.query.get(bracket_id).bracket_id
+    bracket_challonge_id = Bracket.query.get({'id':bracket_id, 'event_id':event_id}).bracket_id
     challonge_path = f'https://api.challonge.com/v1/tournaments/{bracket_challonge_id}/matches/{match_id}/mark_as_underway.json'
 
-    return send_challonge_request(challonge_path, current_user)
-
+    response = send_challonge_request(challonge_path, current_user)
+    return get_json_data(response)
 
 def send_challonge_request(challonge_path, current_user):
-  req = Request(challonge_path)
+  data = {} # needed so the Request object is a "PUT" request
+  req = Request(challonge_path, data)
 
   # use basic authentication
   user, api_key = current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True)
@@ -103,15 +105,20 @@ def send_challonge_request(challonge_path, current_user):
   opener = build_opener(auth_handler)
 
   try:
-      response = opener.open(req)
+    response = opener.open(req)
   except HTTPError as e:
-      if e.code != 422:
-        raise
-      # wrap up application-level errors
-      doc = ElementTree.parse(e).getroot()
-      if doc.tag != "errors":
-        raise
-      errors = [e.text for e in doc]
-      raise ChallongeException(*errors)
+    import pdb; pdb.set_trace()
+    if e.code != 422:
+      raise
+    # wrap up application-level errors
+    doc = ElementTree.parse(e).getroot()
+    if doc.tag != "errors":
+      raise
+    errors = [e.text for e in doc]
+    raise ChallongeException(*errors)
 
   return response
+
+def get_json_data(response):
+  encoding = response.info().get_content_charset('utf8')
+  return json.loads(response.read().decode(encoding))
