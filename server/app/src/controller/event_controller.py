@@ -13,8 +13,6 @@ import challonge
 import jwt
 from ..service.event_service import *
 
-import pdb
-
 api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
@@ -90,6 +88,12 @@ class PlayerController(Resource):
     players_in_bracket_2 = get_unique_players(event.brackets[1])
     players_in_both_brackets = get_shared_players(event.brackets[0])
 
+    lists_of_players = {}
+    lists_of_players[str(event.brackets[0].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_1).json
+    lists_of_players[str(event.brackets[1].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_2).json
+    lists_of_players['both_brackets'] = bracket_players_schema.jsonify(players_in_both_brackets).json
+
+    return jsonify(lists_of_players)
 
   @api.doc('merge players')
   def post(self):
