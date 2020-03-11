@@ -76,7 +76,6 @@ class BaseTestCase(TestCase):
     challonge.tournaments.reset(bracket_1_id)
     challonge.tournaments.start(bracket_1_id)
 
-
 class TestMatchesMarkInProgress(BaseTestCase):
   def test_mark_match_as_in_progress(self):
     # make sure the match to test is not in progress before starting
@@ -88,3 +87,22 @@ class TestMatchesMarkInProgress(BaseTestCase):
     }
     response = self.client.put(MATCH_URL, json=match_data, headers=self.headers)
     self.assertTrue(response.json['match']['underway_at'] is not None)
+
+  def test_mark_in_progress_user_does_not_own_event(self):
+    password = generate_password_hash('password')
+    extra_test_user = User('extratestuser', password, 'extra@gmail.com', 'matchup', challonge_api_key)
+    db.session.add(extra_test_user)
+    db.session.commit()
+
+    valid_credentials = base64.b64encode(b'extratestuser:password').decode('utf-8')
+    login_response = self.client.post(LOGIN_URL, headers={'Authorization': 'Basic ' + valid_credentials})
+    returned = json.loads(login_response.data)
+ 
+    match_data = {
+      'event_id': self.event.id,
+      'bracket_id': self.event.brackets[0].id,
+      'match_id': self.match_to_test['id']
+    }
+
+    response = self.client.put(MATCH_URL, json=match_data, headers={'Content-Type': 'application/json', 'x-access-token': returned['token']})
+    self.assert401(response)
