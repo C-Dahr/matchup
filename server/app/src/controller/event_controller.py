@@ -3,7 +3,6 @@ from app.src.controller import get_user_from_auth_header
 from app.src.config import key
 from ..model.event import Event, EventSchema
 from..model.player import Player
-from..model.tables import BracketPlayersSchema
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from requests.exceptions import HTTPError
@@ -16,7 +15,7 @@ from ..service.event_service import *
 api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
-bracket_players_schema = BracketPlayersSchema(many=True)
+
 
 @api.route('')
 class EventController(Resource):
@@ -84,16 +83,11 @@ class PlayerController(Resource):
     if event not in current_user.events:
       api.abort(401, 'Current user cannot access this event.')
 
-    players_in_bracket_1 = get_unique_players(event.brackets[0])
-    players_in_bracket_2 = get_unique_players(event.brackets[1])
-    players_in_both_brackets = get_shared_players(event.brackets[0])
+    players_in_bracket_1, players_in_both_brackets = get_unique_players(event.brackets[0])
+    players_in_bracket_2, players_in_both_brackets = get_unique_players(event.brackets[1])
+    combined_players_list = get_combined_players_list(event, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets)
 
-    lists_of_players = {}
-    lists_of_players[str(event.brackets[0].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_1).json
-    lists_of_players[str(event.brackets[1].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_2).json
-    lists_of_players['both_brackets'] = bracket_players_schema.jsonify(players_in_both_brackets).json
-
-    return jsonify(lists_of_players)
+    return jsonify(combined_players_list)
 
   @api.doc('merge players')
   def post(self):
