@@ -1,5 +1,6 @@
 from .. import db, ma
 from ..model.user import UserSchema, User
+from ..model.bracket import Bracket
 from ..model.event import Event
 from ..service.match_service import determine_priority_for_matches, get_highest_priority_matches
 from flask import request, jsonify
@@ -8,6 +9,7 @@ from app.src.controller import get_user_from_auth_header
 from app.src.controller import xor_crypt_string
 from requests.exceptions import HTTPError
 
+import requests
 import challonge
 
 api = Namespace('challonge', description='challonge related functionality')
@@ -57,3 +59,23 @@ class MatchController(Resource):
       return jsonify(matches_called)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
+
+@api.route('/match/start')
+class MatchProgressController(Resource):
+  @api.doc('mark a match as in progress')
+  def put(self):
+    current_user = get_user_from_auth_header(request, api)
+    event_id = request.json['event_id']
+    event = Event.query.get(event_id)
+    if not event:
+      api.abort(404, 'Event not found')
+    if event not in current_user.events:
+      api.abort(401, 'Current user cannot edit this event.')
+
+    match_id = request.json['match_id']
+    bracket_id = request.json['bracket_id']
+    bracket_challonge_id = Bracket.query.get(bracket_id).bracket_id
+    challonge_path = f'https://api.challonge.com/v1/tournaments/{bracket_challonge_id}/matches/{match_id}/mark_as_underway.json'
+
+    response = requests.post(challonge_path)
+    return response
