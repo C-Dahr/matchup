@@ -88,7 +88,7 @@ class MatchProgressController(Resource):
     return get_json_data(response)
 
 def send_challonge_request(challonge_path, current_user):
-  data = {} # needed so the Request object is a "PUT" request
+  data = {} # needed so the Request object is a "POST" request
   req = Request(challonge_path, data)
 
   # use basic authentication
