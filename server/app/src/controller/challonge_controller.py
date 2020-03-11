@@ -9,13 +9,12 @@ from app.src.controller import get_user_from_auth_header
 from app.src.controller import xor_crypt_string
 from requests.exceptions import HTTPError
 
-import requests
 import json
 import challonge
 
 from urllib.parse import urlencode
 from urllib.request import Request, HTTPBasicAuthHandler, build_opener
-from urllib.error import HTTPError
+from urllib.error import HTTPError as URLLibHTTPError
 from xml.etree import cElementTree as ElementTree
 
 api = Namespace('challonge', description='challonge related functionality')
@@ -29,9 +28,8 @@ class BracketController(Resource):
   def get(self):
     current_user = get_user_from_auth_header(request, api)
     try:
-      # set the credentials for interfacing with challonge
       challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
-      # index returns a list of the user's tournaments
+      
       tournaments = challonge.tournaments.index()
       return jsonify({'tournaments' : tournaments})
     except HTTPError as e:
@@ -106,8 +104,7 @@ def send_challonge_request(challonge_path, current_user):
 
   try:
     response = opener.open(req)
-  except HTTPError as e:
-    import pdb; pdb.set_trace()
+  except URLLibHTTPError as e:
     if e.code != 422:
       raise
     # wrap up application-level errors
