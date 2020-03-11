@@ -12,7 +12,15 @@ from requests.exceptions import HTTPError
 import requests
 import challonge
 
+from urllib.parse import urlencode
+from urllib.request import Request, HTTPBasicAuthHandler, build_opener
+from urllib.error import HTTPError
+from xml.etree import cElementTree as ElementTree
+
 api = Namespace('challonge', description='challonge related functionality')
+
+class ChallongeException(Exception):
+  pass
 
 @api.route('/brackets')
 class BracketController(Resource):
@@ -77,5 +85,33 @@ class MatchProgressController(Resource):
     bracket_challonge_id = Bracket.query.get(bracket_id).bracket_id
     challonge_path = f'https://api.challonge.com/v1/tournaments/{bracket_challonge_id}/matches/{match_id}/mark_as_underway.json'
 
-    response = requests.post(challonge_path)
-    return response
+    return send_challonge_request(challonge_path, current_user)
+
+
+def send_challonge_request(challonge_path, current_user):
+  req = Request(challonge_path)
+
+  # use basic authentication
+  user, api_key = current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True)
+  auth_handler = HTTPBasicAuthHandler()
+  auth_handler.add_password(
+      realm="Application",
+      uri=req.get_full_url(),
+      user=user,
+      passwd=api_key
+  )
+  opener = build_opener(auth_handler)
+
+  try:
+      response = opener.open(req)
+  except HTTPError as e:
+      if e.code != 422:
+        raise
+      # wrap up application-level errors
+      doc = ElementTree.parse(e).getroot()
+      if doc.tag != "errors":
+        raise
+      errors = [e.text for e in doc]
+      raise ChallongeException(*errors)
+
+  return response
