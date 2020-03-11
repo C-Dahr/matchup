@@ -3,6 +3,7 @@ from app.src.controller import get_user_from_auth_header
 from app.src.config import key
 from ..model.event import Event, EventSchema
 from..model.player import Player
+from..model.tables import BracketPlayersSchema
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from requests.exceptions import HTTPError
@@ -12,9 +13,12 @@ import challonge
 import jwt
 from ..service.event_service import *
 
+import pdb
+
 api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
+bracket_players_schema = BracketPlayersSchema(many=True)
 
 @api.route('')
 class EventController(Resource):
@@ -71,8 +75,22 @@ class EventController(Resource):
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
 
-@api.route('/players/merge')
+@api.route('/players')
 class PlayerController(Resource):
+  @api.doc('return list of players')
+  def get(self):
+    current_user = get_user_from_auth_header(request, api)
+    event = Event.query.get(request.json['event_id'])
+    if not event:
+      api.abort(404, 'Event not found.')
+    if event not in current_user.events:
+      api.abort(401, 'Current user cannot access this event.')
+
+    players_in_bracket_1 = get_unique_players(event.brackets[0])
+    players_in_bracket_2 = get_unique_players(event.brackets[1])
+    players_in_both_brackets = get_shared_players(event.brackets[0])
+
+
   @api.doc('merge players')
   def post(self):
     current_user = get_user_from_auth_header(request, api)

@@ -123,3 +123,17 @@ def get_valid_players_to_merge(event, players_from_request, api):
     list_of_players.append((player1, player2))
     
   return list_of_players
+
+def get_unique_players(bracket):
+  list_of_unique_players = []
+  for player in bracket.players:
+    if isUnique(player.player_id):
+      list_of_unique_players.append(player)
+  return list_of_unique_players
+
+def get_shared_players(bracket):
+  list_of_shared_players = []
+  for player in bracket.players:
+    if not isUnique(player.player_id):
+      list_of_shared_players.append(player)
+  return list_of_shared_players
