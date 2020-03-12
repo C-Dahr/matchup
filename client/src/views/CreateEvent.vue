@@ -94,7 +94,7 @@ export default {
   },
   name: 'CreateEvent',
   created() {
-    const path = 'http://localhost:5000/challonge';
+    const path = 'http://localhost:5000/challonge/brackets';
     axios.get(path, { headers: { 'x-access-token': this.token } })
       .then((response) => {
         this.tournaments = response.data.tournaments;
@@ -136,8 +136,9 @@ export default {
     createEvent(payload) {
       const path = 'http://localhost:5000/event';
       axios.post(path, payload, { headers: { 'x-access-token': this.token } })
-        .then(() => {
-          this.$router.push('/home');
+        .then((response) => {
+          this.$store.commit('setEventID', response.data.id);
+          this.$router.push('/matches');
         })
         .catch((error) => {
           if (error.response.status === 400) {
