@@ -136,9 +136,9 @@ def get_unique_players(bracket):
       list_of_shared_players.append(player)
   return (list_of_unique_players, list_of_shared_players)
 
-def get_combined_players_list(event, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets):
+def get_combined_players_list(brackets, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets):
   combined_players_list = {}
-  combined_players_list[str(event.brackets[0].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_1).json
-  combined_players_list[str(event.brackets[1].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_2).json
+  combined_players_list[str(brackets[0].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_1).json
+  combined_players_list[str(brackets[1].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_2).json
   combined_players_list['both_brackets'] = bracket_players_schema.jsonify(players_in_both_brackets).json
   return combined_players_list

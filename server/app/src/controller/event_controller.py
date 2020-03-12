@@ -85,7 +85,7 @@ class PlayerController(Resource):
 
     players_in_bracket_1, players_in_both_brackets = get_unique_players(event.brackets[0])
     players_in_bracket_2, players_in_both_brackets = get_unique_players(event.brackets[1])
-    combined_players_list = get_combined_players_list(event, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets)
+    combined_players_list = get_combined_players_list(event.brackets, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets)
 
     return jsonify(combined_players_list)
 
