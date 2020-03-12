@@ -4,6 +4,7 @@ from ..model.user import User
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 from app.src.controller import get_user_from_auth_header
 from app.src.controller import xor_crypt_string
@@ -73,6 +74,21 @@ class UserController(Resource):
     db.session.delete(user)
     db.session.commit()
     return user_schema.jsonify(user)
+
+@api.route('/password')
+class UserPasswordController(Resource):
+  @api.doc('edit password')
+  def put(self):
+    current_password = request.json['current_password']
+    new_password = request.json['new_password']
+    hashed_new_password = generate_password_hash(new_password, method='sha256')
+    user = get_user_from_auth_header(request, api)
+
+    if check_password_hash(user.password, current_password):
+      user.password = hashed_new_password
+      db.session.commit()
+    else:
+      api.abort(401, 'Incorrect password.')
 
 @api.route('/all')
 class UserListController(Resource):

@@ -28,6 +28,13 @@
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
+                <label class="form-label">Password </label>
+                <div class="button-position">
+                  <a class="btn btn-primary edit-password"
+                  href="editPassword">Edit Password</a>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge Username</label>
               <input class="form-control" type="text"
               name="challonge_username" v-model="editProfileForm.challonge_username"
@@ -135,6 +142,18 @@ export default {
 
 .cancel-btn {
   width: 50%;
+}
+
+.edit-password {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #0066FF !important;
+}
+
+.button-position {
+  width: 100%;
+  display: flex;
+  justify-content: left;
 }
 
 </style>
