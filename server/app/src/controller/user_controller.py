@@ -83,8 +83,6 @@ class UserPasswordController(Resource):
     new_password = request.json['new_password']
     hashed_new_password = generate_password_hash(new_password, method='sha256')
     user = get_user_from_auth_header(request, api)
-    if not user:
-      api.abort(404, user_not_found)
 
     if check_password_hash(user.password, current_password):
       user.password = hashed_new_password
