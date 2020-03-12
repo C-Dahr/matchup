@@ -71,8 +71,23 @@ class EventController(Resource):
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
 
-@api.route('/players/merge')
+@api.route('/players')
 class PlayerController(Resource):
+  @api.doc('return list of players')
+  def get(self):
+    current_user = get_user_from_auth_header(request, api)
+    event = Event.query.get(request.json['event_id'])
+    if not event:
+      api.abort(404, 'Event not found.')
+    if event not in current_user.events:
+      api.abort(401, 'Current user cannot access this event.')
+
+    players_in_bracket_1, players_in_both_brackets = get_unique_players(event.brackets[0])
+    players_in_bracket_2, players_in_both_brackets = get_unique_players(event.brackets[1])
+    combined_players_list = get_combined_players_list(event.brackets, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets)
+
+    return jsonify(combined_players_list)
+
   @api.doc('merge players')
   def post(self):
     current_user = get_user_from_auth_header(request, api)
