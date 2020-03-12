@@ -16,7 +16,6 @@ api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
 
-
 @api.route('')
 class EventController(Resource):
   @api.doc('create a new event')
