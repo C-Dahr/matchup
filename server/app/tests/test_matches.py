@@ -65,7 +65,6 @@ class BaseTestCase(TestCase):
     challonge.tournaments.start(bracket_1_id)
 
     self.matches_available_bracket_1 = challonge.matches.index(bracket_1_id, state='open')
-    self.num_matches = len(self.matches_available_bracket_1)
     self.match_to_test = self.matches_available_bracket_1[0]
 
   def tearDown(self):
