@@ -25,8 +25,10 @@
                         <h3 class="card-title">Bracket One</h3>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Select Bracket</label>
-                            <b-form-select v-model="eventForm.brackets[0].bracket_id"
-                            :options="options"></b-form-select>
+                            <model-select :options="options"
+                                v-model="eventForm.brackets[0].bracket_id"
+                                placeholder="select item">
+                            </model-select>
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
@@ -43,8 +45,10 @@
                         <h3 class="card-title">Bracket Two</h3>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Select Bracket</label>
-                            <b-form-select v-model="eventForm.brackets[1].bracket_id"
-                            :options="options"></b-form-select>
+                            <model-select :options="options"
+                                v-model="eventForm.brackets[1].bracket_id"
+                                placeholder="select item">
+                            </model-select>
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
@@ -68,8 +72,12 @@
 
 <script>
 import axios from 'axios';
+import { ModelSelect } from 'vue-search-select';
 
 export default {
+  components: {
+    ModelSelect,
+  },
   data() {
     return {
       errors: [],
@@ -94,7 +102,7 @@ export default {
   },
   name: 'CreateEvent',
   created() {
-    const path = 'http://localhost:5000/challonge';
+    const path = 'http://localhost:5000/challonge/brackets';
     axios.get(path, { headers: { 'x-access-token': this.token } })
       .then((response) => {
         this.tournaments = response.data.tournaments;
