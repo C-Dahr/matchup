@@ -98,8 +98,13 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.errors = [];
+      const challongePayload = {
+        challonge_username: this.editProfileForm.challonge_username,
+        api_key: this.editProfileForm.api_key,
+      };
+      this.verifyCredentials(challongePayload);
       const payload = {
-        username: this.editProfileForm.username,
+        challonge: this.editProfileForm.username,
         email: this.editProfileForm.email,
         challonge_username: this.editProfileForm.challonge_username,
         api_key: this.editProfileForm.api_key,
@@ -118,6 +123,21 @@ export default {
           if (error.response.status === 409) {
             const field = this.getFieldForErrorMessage(error.response.data.message);
             const message = `${field} already exists`;
+            this.errors.push(message);
+          }
+        });
+    },
+    verifyCredentials(payload) {
+      const path = 'http://localhost:5000/challonge/verify';
+      const successMessageEl = document.getElementById('success-message');
+      axios.put(path, payload)
+        .then(() => {
+          successMessageEl.style.display = 'block';
+        })
+        .catch((error) => {
+          successMessageEl.style.display = 'none';
+          if (error.response.status === 401) {
+            const message = 'Invalid Challonge Credentials';
             this.errors.push(message);
           }
         });

@@ -12,6 +12,19 @@ import challonge
 
 api = Namespace('challonge', description='challonge related functionality')
 
+@api.route('/verify')
+class VerificationController(Resource):
+  @api.doc('Verify challonge credentials')
+  def get(self):
+    try:
+      # set the credentials for interfacing with challonge
+      challonge.set_credentials(request.json['challonge_username'], request.json['api_key'])
+      # index returns a list of the user's tournaments
+      tournaments = challonge.tournaments.index()
+      return jsonify({'tournaments' : tournaments})
+    except HTTPError as e:
+      api.abort(401, 'Invalid credentials.')
+
 @api.route('/brackets')
 class BracketController(Resource):
   @api.doc('get brackets')
