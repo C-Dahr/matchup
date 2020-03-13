@@ -22,21 +22,6 @@ api = Namespace('challonge', description='challonge related functionality')
 class ChallongeException(Exception):
   pass
 
-@api.route('/verify')
-class VerificationController(Resource):
-  @api.doc('Verify challonge credentials')
-  def post(self):
-    try:
-      # set the credentials for interfacing with challonge
-      challonge_username = request.json['challonge_username']
-      api_key = request.json['api_key']
-      challonge.set_credentials(challonge_username, api_key)
-      # index returns a list of the user's tournaments
-      tournaments = challonge.tournaments.index()
-      return jsonify({'tournaments' : tournaments})
-    except HTTPError as e:
-      api.abort(401, 'Invalid credentials.')
-
 @api.route('/brackets')
 class BracketController(Resource):
   @api.doc('get brackets')
@@ -80,5 +65,20 @@ class MatchController(Resource):
 
       matches_called = get_highest_priority_matches(sorted_matches, bracket_setups)
       return jsonify(matches_called)
+    except HTTPError as e:
+      api.abort(401, 'Invalid credentials.')
+
+@api.route('/verify')
+class VerificationController(Resource):
+  @api.doc('Verify challonge credentials')
+  def post(self):
+    try:
+      # set the credentials for interfacing with challonge
+      challonge_username = request.json['challonge_username']
+      api_key = request.json['api_key']
+      challonge.set_credentials(challonge_username, api_key)
+      # index returns a list of the user's tournaments
+      tournaments = challonge.tournaments.index()
+      return jsonify({'tournaments' : tournaments})
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
