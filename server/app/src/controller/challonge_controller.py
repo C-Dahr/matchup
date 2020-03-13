@@ -21,6 +21,7 @@ api = Namespace('challonge', description='challonge related functionality')
 
 class ChallongeException(Exception):
   pass
+
 @api.route('/verify')
 class VerificationController(Resource):
   @api.doc('Verify challonge credentials')
