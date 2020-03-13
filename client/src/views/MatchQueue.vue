@@ -18,7 +18,8 @@
     <b-container>
       <div v-for="data in matchData" class="match" v-bind:key="data">
         <MatchCard :player1="data.player1.name" :player2="data.player2.name"
-        :game="data.bracket.game_name">
+        :game="data.bracket.game_name" :bracket_id="data.bracket.id"
+        :match_id="data.id">
         </MatchCard>
       </div>
     </b-container>
