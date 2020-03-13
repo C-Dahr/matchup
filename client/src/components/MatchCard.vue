@@ -40,7 +40,7 @@ export default {
       const path = 'http://localhost:5000/challonge/match/start';
       axios.put(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
-          this.$parent.created();
+          this.$parent.refresh();
         })
         .catch(() => {
           this.errors.push('Invalid Challonge credentials. Ensure API key is correct');

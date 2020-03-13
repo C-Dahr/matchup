@@ -55,6 +55,19 @@ export default {
         this.link = true;
       });
   },
+  methods: {
+    refresh() {
+      const path = `http://localhost:5000/challonge/matches/${this.eventID}`;
+      axios.get(path, { headers: { 'x-access-token': this.token } })
+        .then((response) => {
+          this.matchData = response.data;
+        })
+        .catch(() => {
+          this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
+          this.link = true;
+        });
+    },
+  },
 };
 </script>
 
