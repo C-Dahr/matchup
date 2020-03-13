@@ -103,13 +103,29 @@ export default {
         api_key: this.editProfileForm.api_key,
       };
       this.verifyCredentials(challongePayload);
-      const payload = {
-        challonge: this.editProfileForm.username,
-        email: this.editProfileForm.email,
-        challonge_username: this.editProfileForm.challonge_username,
-        api_key: this.editProfileForm.api_key,
-      };
-      this.updateUser(payload);
+    },
+    verifyCredentials(payload) {
+      const path = 'http://localhost:5000/challonge/verify';
+      const successMessageEl = document.getElementById('success-message');
+      axios.post(path, payload)
+        .then(() => {
+          successMessageEl.style.display = 'block';
+          const userPayload = {
+            challonge: this.editProfileForm.username,
+            email: this.editProfileForm.email,
+            challonge_username: this.editProfileForm.challonge_username,
+            api_key: this.editProfileForm.api_key,
+          };
+          this.updateUser(userPayload);
+        })
+        .catch((error) => {
+          successMessageEl.style.display = 'none';
+          if (error.response.status === 401) {
+            const message = 'Invalid Challonge Credentials';
+            this.errors.push(message);
+          }
+          return false;
+        });
     },
     updateUser(payload) {
       const path = 'http://localhost:5000/user';
@@ -123,21 +139,6 @@ export default {
           if (error.response.status === 409) {
             const field = this.getFieldForErrorMessage(error.response.data.message);
             const message = `${field} already exists`;
-            this.errors.push(message);
-          }
-        });
-    },
-    verifyCredentials(payload) {
-      const path = 'http://localhost:5000/challonge/verify';
-      const successMessageEl = document.getElementById('success-message');
-      axios.put(path, payload)
-        .then(() => {
-          successMessageEl.style.display = 'block';
-        })
-        .catch((error) => {
-          successMessageEl.style.display = 'none';
-          if (error.response.status === 401) {
-            const message = 'Invalid Challonge Credentials';
             this.errors.push(message);
           }
         });

@@ -15,10 +15,12 @@ api = Namespace('challonge', description='challonge related functionality')
 @api.route('/verify')
 class VerificationController(Resource):
   @api.doc('Verify challonge credentials')
-  def get(self):
+  def post(self):
     try:
       # set the credentials for interfacing with challonge
-      challonge.set_credentials(request.json['challonge_username'], request.json['api_key'])
+      challonge_username = request.json['challonge_username']
+      api_key = request.json['api_key']
+      challonge.set_credentials(challonge_username, api_key)
       # index returns a list of the user's tournaments
       tournaments = challonge.tournaments.index()
       return jsonify({'tournaments' : tournaments})
