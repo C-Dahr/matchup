@@ -109,9 +109,8 @@ export default {
       const successMessageEl = document.getElementById('success-message');
       axios.post(path, payload)
         .then(() => {
-          successMessageEl.style.display = 'block';
           const userPayload = {
-            challonge: this.editProfileForm.username,
+            username: this.editProfileForm.username,
             email: this.editProfileForm.email,
             challonge_username: this.editProfileForm.challonge_username,
             api_key: this.editProfileForm.api_key,
