@@ -2,8 +2,10 @@ import challonge
 from .. import db
 from ..model.bracket import Bracket
 from ..model.player import Player
-from ..model.tables import BracketPlayers, ChallongePlayer
+from ..model.tables import BracketPlayers, ChallongePlayer, BracketPlayersSchema
 from sqlalchemy.orm.exc import MultipleResultsFound 
+
+bracket_players_schema = BracketPlayersSchema(many=True)
 
 def get_brackets_from_request(brackets_from_request, event):
   list_of_brackets = []
@@ -123,3 +125,20 @@ def get_valid_players_to_merge(event, players_from_request, api):
     list_of_players.append((player1, player2))
     
   return list_of_players
+
+def get_unique_players(bracket):
+  list_of_unique_players = []
+  list_of_shared_players = []
+  for player in bracket.players:
+    if isUnique(player.player_id):
+      list_of_unique_players.append(player)
+    else:
+      list_of_shared_players.append(player)
+  return (list_of_unique_players, list_of_shared_players)
+
+def get_combined_players_list(brackets, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets):
+  combined_players_list = {}
+  combined_players_list[str(brackets[0].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_1).json
+  combined_players_list[str(brackets[1].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_2).json
+  combined_players_list['both_brackets'] = bracket_players_schema.jsonify(players_in_both_brackets).json
+  return combined_players_list
