@@ -1,5 +1,6 @@
 from .. import db, ma
 from ..model.user import UserSchema, User
+from ..model.bracket import Bracket
 from ..model.event import Event
 from ..service.match_service import determine_priority_for_matches, get_highest_priority_matches
 from flask import request, jsonify
@@ -8,9 +9,18 @@ from app.src.controller import get_user_from_auth_header
 from app.src.controller import xor_crypt_string
 from requests.exceptions import HTTPError
 
+import json
 import challonge
 
+from urllib.parse import urlencode
+from urllib.request import Request, HTTPBasicAuthHandler, build_opener
+from urllib.error import HTTPError as URLLibHTTPError
+from xml.etree import cElementTree as ElementTree
+
 api = Namespace('challonge', description='challonge related functionality')
+
+class ChallongeException(Exception):
+  pass
 
 @api.route('/verify')
 class VerificationController(Resource):
