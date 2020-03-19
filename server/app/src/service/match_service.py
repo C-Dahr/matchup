@@ -8,13 +8,15 @@ bracket_schema = BracketSchema()
 
 def determine_priority_for_matches(matches_not_in_progress, bracket):
   for match in matches_not_in_progress:
-    player1 = build_player_data(match['player1_id'], bracket)
-    player2 = build_player_data(match['player2_id'], bracket)
+    player1_data, player1 = build_player_data(match['player1_id'], bracket)
+    player2_data, player2 = build_player_data(match['player2_id'], bracket)
 
-    match['player1'] = player1
-    match['player2'] = player2
+    # TODO: determine average round of this bracket
+
+    match['player1'] = player1_data
+    match['player2'] = player2_data
     match['bracket'] = bracket_schema.jsonify(bracket).json
-    match['priority'] = 0
+    match['priority'] = calculate_match_priority(match, player1, player2)
   
   return matches_not_in_progress
 
@@ -25,7 +27,15 @@ def build_player_data(challonge_player_id, bracket):
 
   player_data = player_schema.jsonify(player).json
   player_data['name'] = bracket_player.name
-  return player_data
+  return player_data, player
+
+def calculate_match_priority(match, player1, player2):
+  match_priority =  get_player_priority(player1) + get_player_priority(player2)
+  return match_priority
+
+def get_player_priority(player):
+  # 1 bracket: priorty = 0, 2 brackets: priority = 5
+  return (len(player.brackets) - 1) * 5
 
 def get_highest_priority_matches(matches_sorted_by_priority, bracket_setups):
   matches_called = []
