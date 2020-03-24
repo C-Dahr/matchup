@@ -60,20 +60,12 @@ class BaseTestCase(TestCase):
 
     challonge.set_credentials(self.test_user.challonge_username, xor_crypt_string(self.test_user.api_key, decode=True))
     
-    # reset bracket
-    challonge.tournaments.reset(bracket_1_id)
-    challonge.tournaments.start(bracket_1_id)
-
     self.matches_available_bracket_1 = challonge.matches.index(bracket_1_id, state='open')
     self.match_to_test = self.matches_available_bracket_1[0]
 
   def tearDown(self):
     db.session.remove()
     db.drop_all()
-
-    # reset bracket
-    challonge.tournaments.reset(bracket_1_id)
-    challonge.tournaments.start(bracket_1_id)
 
 class TestMatchesMarkInProgress(BaseTestCase):
   def test_mark_match_as_in_progress(self):

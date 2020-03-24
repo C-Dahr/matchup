@@ -118,17 +118,6 @@ class TestMatches(BaseTestCase):
     self.assert404(response)
 
 class TestMatchesSetups(BaseTestCase):
-  def setUp(self):
-    BaseTestCase.setUp(self)
-    # set the first of match event2 bracket[0] to in progress for testing
-    match_to_mark_in_progress_id = 192559354
-    match_data = {
-      'event_id': self.event2.id,
-      'bracket_id': self.event2.brackets[0].id,
-      'match_id': match_to_mark_in_progress_id
-    }
-    response = self.client.put(MATCH_START_URL, json=match_data, headers=self.headers)
-
   def test_more_setups_than_matches(self):
     event = self.event1
     event.brackets[0].number_of_setups = 5
