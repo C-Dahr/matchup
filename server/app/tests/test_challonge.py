@@ -13,6 +13,7 @@ import base64
 BASE_URL = 'http://localhost:5000/challonge'
 BRACKET_URL = BASE_URL + '/brackets'
 MATCHES_URL = BASE_URL + '/matches'
+VALIDATION_URL = BASE_URL + '/verify'
 LOGIN_URL = 'http://localhost:5000/auth'
 EVENT_URL = 'http://localhost:5000/event'
 challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
@@ -203,4 +204,20 @@ class TestCredentials(BaseTestCase):
     returned = json.loads(response.data)
     tk = returned['token']
     response = self.client.get(BRACKET_URL, headers={'Content-Type': 'application/json', 'x-access-token': tk})
+    self.assert401(response)
+  
+  def test_valid_credentials_alt(self):
+    challonge_credentials = {
+      'challonge_username': 'matchuptesting',
+      'api_key': 'lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN',
+    }
+    response = self.client.post(VALIDATION_URL, json=challonge_credentials)
+    self.assert200(response)
+  
+  def test_invalid_credentials_alt(self):
+    challonge_credentials = {
+      'challonge_username': 'matchup',
+      'api_key': 'lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN',
+    }
+    response = self.client.post(VALIDATION_URL, json=challonge_credentials)
     self.assert401(response)
