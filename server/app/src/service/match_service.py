@@ -2,7 +2,6 @@ import challonge
 from ..model.player import Player, PlayerSchema
 from ..model.bracket import Bracket, BracketSchema
 from ..model.tables import BracketPlayers, ChallongePlayer
-import statistics
 
 player_schema = PlayerSchema()
 bracket_schema = BracketSchema()
@@ -34,13 +33,12 @@ def build_player_data(challonge_player_id, bracket):
   return player_data, player
 
 def get_mean_match_round(matches):
-  rounds = []
+  round_sum = 0
+  num_matches = 0
   for match in matches:
-    rounds.append(match['round'])
-  if len(rounds) != 0:
-    return statistics.mean(rounds)
-  else:
-    -1
+    round_sum += match['round']
+    num_matches += 1
+  return round_sum / num_matches
 
 def calculate_match_priority(match, player1, player2, average_round, bracket):
   match_priority =  get_player_priority(player1) + get_player_priority(player2)
