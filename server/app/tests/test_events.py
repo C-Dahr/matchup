@@ -245,7 +245,9 @@ class TestObjectCreation(BaseTestCase):
   def test_players_in_db(self):
     self.assertEqual(len(self.test_event.brackets[0].players), 4)
     self.assertEqual(len(self.test_event.brackets[1].players), 8)
-    self.assertEqual(len(Player.query.all()), 11)
+    self.assertEqual(len(self.test_event_2.brackets[0].players), 4)
+    self.assertEqual(len(self.test_event_2.brackets[1].players), 8)
+    self.assertEqual(len(Player.query.all()), 19)
 
 class TestGetPlayers(BaseTestCase):
   def test_user_does_not_own_event(self):
