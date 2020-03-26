@@ -3,6 +3,7 @@ from ..model.user import UserSchema, User
 from ..model.bracket import Bracket
 from ..model.event import Event
 from ..service.match_service import determine_priority_for_matches, get_highest_priority_matches
+from ..service.match_service import calculate_mean_bracket_size
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from app.src.controller import get_user_from_auth_header
@@ -62,6 +63,8 @@ class MatchController(Resource):
     try:
       challonge.set_credentials(current_user.challonge_username, xor_crypt_string(current_user.api_key, decode=True))
 
+      average_bracket_size = calculate_mean_bracket_size(event.brackets)
+
       available_matches = []
       bracket_setups = {}
       for bracket in event.brackets:
@@ -69,6 +72,8 @@ class MatchController(Resource):
         matches_not_in_progress = list(filter(lambda match: match['underway_at'] == None, list_of_matches))
         number_of_setups_in_use = len(list_of_matches) - len(matches_not_in_progress)
         
+        bracket.bracket_size_ratio = bracket.number_of_players / average_bracket_size
+
         matches_for_bracket = determine_priority_for_matches(matches_not_in_progress, bracket)
 
         available_matches = available_matches + matches_for_bracket
