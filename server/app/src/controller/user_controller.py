@@ -1,6 +1,6 @@
 from .. import db, ma
-from ..model.user import UserSchema
-from ..model.user import User
+from ..model.user import UserSchema, User
+from ..model.event import EventSchema, Event
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from werkzeug.security import generate_password_hash
@@ -16,6 +16,8 @@ user_not_found = 'User not found.'
 # init schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+
+events_schema = EventSchema(many=True)
 
 @api.route('')
 class UserController(Resource):
@@ -94,3 +96,9 @@ class UserListController(Resource):
     users = User.query.all()
     return users_schema.jsonify(users)
 
+@api.route('/events')
+class EventListController(Resource):
+  @api.doc('get a list of all events the user owns')
+  def get(self):
+    user = get_user_from_auth_header(request, api)
+    return events_schema.jsonify(user.events)
