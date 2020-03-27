@@ -11,6 +11,8 @@ from app.src.controller import xor_crypt_string
 
 api = Namespace('user', description='user related operations')
 
+user_not_found = 'User not found.'
+
 # init schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -40,8 +42,7 @@ class UserController(Resource):
   @api.doc('get a user')
   def get(self):
     user = get_user_from_auth_header(request, api)
-    if not user:
-      api.abort(404, user_not_found)
+
     api_key = xor_crypt_string(user.api_key, decode=True)
     user.api_key = api_key
     return user_schema.jsonify(user)
@@ -49,8 +50,6 @@ class UserController(Resource):
   @api.doc('update a user')
   def put(self):
     user = get_user_from_auth_header(request, api)
-    if not user:
-      api.abort(404, user_not_found)
     
     try:
       user.username = request.json['username']
@@ -69,8 +68,6 @@ class UserController(Resource):
   @api.doc('delete a user')
   def delete(self):
     user = get_user_from_auth_header(request, api)
-    if not user:
-      api.abort(404, user_not_found)
     db.session.delete(user)
     db.session.commit()
     return user_schema.jsonify(user)
@@ -97,4 +94,3 @@ class UserListController(Resource):
     users = User.query.all()
     return users_schema.jsonify(users)
 
-user_not_found = 'User not found.'
