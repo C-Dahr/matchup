@@ -43,7 +43,6 @@ class BaseTestCase(TestCase):
 
     challonge.set_credentials(self.test_user.challonge_username, xor_crypt_string(self.test_user.api_key, decode=True))
     
-    # reset bracket 1
     challonge.tournaments.reset(bracket_1_id)
     challonge.tournaments.start(bracket_1_id)
 
@@ -72,7 +71,6 @@ class BaseTestCase(TestCase):
     db.session.remove()
     db.drop_all()
 
-    # reset bracket 1
     challonge.tournaments.reset(bracket_1_id)
     challonge.tournaments.start(bracket_1_id)
 

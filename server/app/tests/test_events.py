@@ -23,7 +23,6 @@ bracket_3_id = 8176881
 bracket_4_id = 8176886
 bracket_5_id = 8176890
 bracket_6_id = 8177044
-
 bracket_7_id = 8177036
 bracket_8_id = 8182048
 
