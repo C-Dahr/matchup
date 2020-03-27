@@ -14,6 +14,7 @@ BASE_URL = 'http://localhost:5000/challonge'
 BRACKET_URL = BASE_URL + '/brackets'
 MATCHES_URL = BASE_URL + '/matches'
 VALIDATION_URL = BASE_URL + '/verify'
+MATCH_START_URL = BASE_URL + '/match/start'
 LOGIN_URL = 'http://localhost:5000/auth'
 EVENT_URL = 'http://localhost:5000/event'
 challonge_api_key = xor_crypt_string('lDV85oOJLqA1ySxegdJQQcVghlA1bgWi3tUyOGNN', encode=True)
