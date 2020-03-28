@@ -27,6 +27,7 @@
                             <label class="form-label">Select Bracket</label>
                             <model-select :options="options"
                                 v-model="eventForm.brackets[0].bracket_id"
+                                required
                                 placeholder="select item">
                             </model-select>
                         </div>
@@ -47,6 +48,7 @@
                             <label class="form-label">Select Bracket</label>
                             <model-select :options="options"
                                 v-model="eventForm.brackets[1].bracket_id"
+                                required
                                 placeholder="select item">
                             </model-select>
                         </div>
@@ -150,7 +152,7 @@ export default {
         })
         .catch((error) => {
           if (error.response.status === 400) {
-            this.errors.push('Form is missing fields');
+            this.errors.push(error.response.data.message);
           } else if (error.response.status === 401) {
             this.errors.push('Invalid bracket ID');
           }

@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       errors: [],
+      polling: null,
       loggedIn: this.$store.getters.isLoggedIn,
       token: this.$store.getters.getToken,
       eventID: this.$store.getters.getEventID,
@@ -54,6 +55,10 @@ export default {
         this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
         this.link = true;
       });
+    this.pollData();
+  },
+  beforeDestroy() {
+    clearInterval(this.polling);
   },
   methods: {
     refresh() {
@@ -65,6 +70,25 @@ export default {
         .catch(() => {
           this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
           this.link = true;
+        });
+    },
+    pollData() {
+      this.polling = setInterval(() => {
+        this.refresh();
+      }, 5000);
+    },
+    onSubmit(evt) {
+      evt.preventDefault();
+      const payload = {
+        event_id: this.eventID,
+      };
+      const path = 'http://localhost:5000/event/end';
+      axios.post(path, payload, { headers: { 'x-access-token': this.token } })
+        .then(() => {
+          this.$store.commit('setEventID', '');
+          this.$router.push('/home');
+        })
+        .catch(() => {
         });
     },
   },
