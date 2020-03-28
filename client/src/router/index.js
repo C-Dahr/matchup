@@ -8,6 +8,7 @@ import MatchQueue from '../views/MatchQueue.vue';
 import store from '../store';
 import EditProfile from '../views/EditProfile.vue';
 import EditPassword from '../views/EditPassword.vue';
+import ReviewPlayers from '../views/ReviewPlayers.vue';
 
 Vue.use(VueRouter);
 
@@ -72,6 +73,11 @@ const routes = [
     path: '/matches',
     name: 'matchQueue',
     component: MatchQueue,
+  },
+  {
+    path: '/review',
+    name: 'reviewPlayers',
+    component: ReviewPlayers,
   },
 ];
 
