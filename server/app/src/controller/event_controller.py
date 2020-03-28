@@ -70,6 +70,22 @@ class EventController(Resource):
       api.abort(400, 'Invalid bracket specified.')
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
+  
+  def delete(self):
+    current_user = get_user_from_auth_header(request, api)
+    event = Event.query.get(request.json['event_id'])
+    if not event:
+      api.abort(404, 'Event not found')
+    
+    player_ids_to_delete = get_player_ids_to_delete(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
+    
+    delete_challonge_players(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
+    delete_bracket_players(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
+    delete_brackets(event.id)
+    delete_players_by_id(player_ids_to_delete)
+    
+    db.session.delete(event)
+    db.session.commit()
 
 @api.route('/players')
 class PlayerController(Resource):
