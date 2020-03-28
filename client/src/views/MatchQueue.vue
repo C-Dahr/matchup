@@ -17,7 +17,9 @@
     </b-container>
     <b-container>
       <div v-for="data in matchData" class="match" v-bind:key="data">
-        <MatchCard :player1="data.player1" :player2="data.player2" :game="data.game">
+        <MatchCard :player1="data.player1.name" :player2="data.player2.name"
+        :game="data.bracket.game_name" :bracket_id="data.bracket.id"
+        :match_id="data.id">
         </MatchCard>
       </div>
     </b-container>
@@ -25,6 +27,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import MatchCard from '../components/MatchCard.vue';
 
 export default {
@@ -35,13 +38,60 @@ export default {
   data() {
     return {
       errors: [],
+      polling: null,
       loggedIn: this.$store.getters.isLoggedIn,
-      matchData: [
-        { player1: 'ZachAtk', player2: 'CamBlam', game: 'Game 1' },
-        { player1: 'DannyGranE', player2: 'TaylerMailr', game: 'Game 2' },
-        { player1: 'ZachAtk', player2: 'TaylerMailr', game: 'Game 2' },
-      ],
+      token: this.$store.getters.getToken,
+      eventID: this.$store.getters.getEventID,
+      matchData: [],
     };
+  },
+  created() {
+    const path = `http://localhost:5000/challonge/matches/${this.eventID}`;
+    axios.get(path, { headers: { 'x-access-token': this.token } })
+      .then((response) => {
+        this.matchData = response.data;
+      })
+      .catch(() => {
+        this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
+        this.link = true;
+      });
+    this.pollData();
+  },
+  beforeDestroy() {
+    clearInterval(this.polling);
+  },
+  methods: {
+    refresh() {
+      const path = `http://localhost:5000/challonge/matches/${this.eventID}`;
+      axios.get(path, { headers: { 'x-access-token': this.token } })
+        .then((response) => {
+          this.matchData = response.data;
+        })
+        .catch(() => {
+          this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
+          this.link = true;
+        });
+    },
+    pollData() {
+      this.polling = setInterval(() => {
+        this.refresh();
+      }, 5000);
+    },
+    onSubmit(evt) {
+      evt.preventDefault();
+      const payload = {
+        event_id: this.eventID,
+      };
+      const path = 'http://localhost:5000/event';
+      axios.delete(path, payload, { headers: { 'x-access-token': this.token } })
+        .then(() => {
+          this.$store.commit('setEventID', '');
+          this.$router.push('/home');
+        })
+        .catch((error) => {
+          this.errors.push(error.response.data.message);
+        });
+    },
   },
 };
 </script>

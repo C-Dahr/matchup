@@ -27,6 +27,7 @@
                             <label class="form-label">Select Bracket</label>
                             <model-select :options="options"
                                 v-model="eventForm.brackets[0].bracket_id"
+                                required
                                 placeholder="select item">
                             </model-select>
                         </div>
@@ -47,6 +48,7 @@
                             <label class="form-label">Select Bracket</label>
                             <model-select :options="options"
                                 v-model="eventForm.brackets[1].bracket_id"
+                                required
                                 placeholder="select item">
                             </model-select>
                         </div>
@@ -144,12 +146,13 @@ export default {
     createEvent(payload) {
       const path = 'http://localhost:5000/event';
       axios.post(path, payload, { headers: { 'x-access-token': this.token } })
-        .then(() => {
-          this.$router.push('/home');
+        .then((response) => {
+          this.$store.commit('setEventID', response.data.id);
+          this.$router.push('/matches');
         })
         .catch((error) => {
           if (error.response.status === 400) {
-            this.errors.push('Form is missing fields');
+            this.errors.push(error.response.data.message);
           } else if (error.response.status === 401) {
             this.errors.push('Invalid bracket ID');
           }
