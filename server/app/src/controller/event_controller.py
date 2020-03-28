@@ -82,7 +82,7 @@ class EventController(Resource):
     player_ids_to_delete = get_player_ids_to_delete(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
     
     delete_challonge_players(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
-    delete_bracket_players(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
+    delete_bracket_players(event.brackets[0].id, event.brackets[1].id)
     delete_brackets(event.id)
     delete_players_by_id(player_ids_to_delete)
     
