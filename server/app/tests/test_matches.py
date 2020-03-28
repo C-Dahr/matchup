@@ -41,6 +41,11 @@ class BaseTestCase(TestCase):
     self.tk_valid_user = returned['token']
     self.headers = {'Content-Type': 'application/json', 'x-access-token': self.tk_valid_user}
 
+    challonge.set_credentials(self.test_user.challonge_username, xor_crypt_string(self.test_user.api_key, decode=True))
+    
+    challonge.tournaments.reset(bracket_1_id)
+    challonge.tournaments.start(bracket_1_id)
+
     event_data = {
       'event_name': 'Test Event',
       'brackets': [
@@ -58,12 +63,7 @@ class BaseTestCase(TestCase):
     response = self.client.post(EVENT_URL, json=event_data, headers=self.headers)
     self.event = Event.query.get(json.loads(response.data)['id'])
 
-    challonge.set_credentials(self.test_user.challonge_username, xor_crypt_string(self.test_user.api_key, decode=True))
     
-    # reset bracket
-    challonge.tournaments.reset(bracket_1_id)
-    challonge.tournaments.start(bracket_1_id)
-
     self.matches_available_bracket_1 = challonge.matches.index(bracket_1_id, state='open')
     self.match_to_test = self.matches_available_bracket_1[0]
 
@@ -71,7 +71,6 @@ class BaseTestCase(TestCase):
     db.session.remove()
     db.drop_all()
 
-    # reset bracket
     challonge.tournaments.reset(bracket_1_id)
     challonge.tournaments.start(bracket_1_id)
 

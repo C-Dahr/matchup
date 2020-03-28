@@ -22,6 +22,10 @@ bracket_2_id = 8061653
 bracket_3_id = 8176881
 bracket_4_id = 8176886
 bracket_5_id = 8176890
+bracket_6_id = 8177044
+bracket_7_id = 8177036
+bracket_8_id = 8182048
+
 cameron_TestTournament_id = 1
 danny_TestTournament_id = 2
 tayler_TestTournament_id = 3
@@ -105,7 +109,7 @@ class TestCreateEvent(BaseTestCase):
       'event_name': 'The Guard 22',
       'brackets': [
         {
-          'bracket_id': bracket_3_id,
+          'bracket_id': bracket_6_id,
           'number_of_setups': 4
         },
         {
@@ -240,7 +244,9 @@ class TestObjectCreation(BaseTestCase):
   def test_players_in_db(self):
     self.assertEqual(len(self.test_event.brackets[0].players), 4)
     self.assertEqual(len(self.test_event.brackets[1].players), 8)
-    self.assertEqual(len(Player.query.all()), 11)
+    self.assertEqual(len(self.test_event_2.brackets[0].players), 4)
+    self.assertEqual(len(self.test_event_2.brackets[1].players), 8)
+    self.assertEqual(len(Player.query.all()), 19)
 
 class TestGetPlayers(BaseTestCase):
   def test_user_does_not_own_event(self):
@@ -371,11 +377,11 @@ class TestMergePlayers(BaseTestCase):
       'event_name': 'The Guard 22',
       'brackets': [
         {
-          'bracket_id': bracket_3_id,
+          'bracket_id': bracket_7_id,
           'number_of_setups': 4
         },
         {
-          'bracket_id': bracket_4_id,
+          'bracket_id': bracket_8_id,
           'number_of_setups': 5
         }
       ]
