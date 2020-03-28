@@ -43,8 +43,6 @@ export default {
           this.$parent.refresh();
         })
         .catch(() => {
-          this.errors.push('Invalid Challonge credentials. Ensure API key is correct');
-          this.link = true;
         });
     },
   },

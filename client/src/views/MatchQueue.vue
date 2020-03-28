@@ -82,13 +82,18 @@ export default {
       const payload = {
         event_id: this.eventID,
       };
-      const path = 'http://localhost:5000/event/end';
-      axios.post(path, payload, { headers: { 'x-access-token': this.token } })
+      const path = 'http://localhost:5000/event';
+      axios.delete(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
           this.$store.commit('setEventID', '');
           this.$router.push('/home');
         })
-        .catch(() => {
+        .catch((error) => {
+          if (error.response.status === 404) {
+            this.errors.push(error.response.data.message);
+          } else if (error.response.status === 401) {
+            this.errors.push(error.response.data.message);
+          }
         });
     },
   },
