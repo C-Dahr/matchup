@@ -76,6 +76,8 @@ class EventController(Resource):
     event = Event.query.get(request.json['event_id'])
     if not event:
       api.abort(404, 'Event not found')
+    if event not in current_user.events:
+      api.abort(401, 'Current user cannot access this event.')
     
     player_ids_to_delete = get_player_ids_to_delete(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
     
@@ -111,7 +113,7 @@ class PlayerController(Resource):
     if not event:
       api.abort(404, 'Event not found.')
     if event not in current_user.events:
-      api.abort(401, 'Current user cannot edit this event.')
+      api.abort(401, 'Current user cannot access this event.')
 
     players_from_request = request.json['players']
 
