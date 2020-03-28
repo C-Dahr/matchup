@@ -236,6 +236,27 @@ class TestUpdateEvent(BaseTestCase):
     response = self.client.put(BASE_URL, json=event_data, headers=self.headers)
     self.assert400(response)
 
+class TestDeleteEvent(BaseTestCase):
+  def test_delete_event(self):
+    data = {
+      'event_id': self.test_event.id,
+    }
+    response = self.client.delete(BASE_URL, json=data, headers=self.headers)
+
+  def test_user_does_not_own_event(self):
+    data = {
+      'event_id': self.test_event.id,
+    }
+    response = self.client.delete(BASE_URL, json=data, headers=self.headers_2)
+    self.assert401(response)
+
+  def test_event_does_not_exist(self):
+    data = {
+      'event_id': self.test_event.id,
+    }
+    response = self.client.delete(BASE_URL, json=data, headers=self.headers_2)
+    self.assert404(response)
+
 class TestObjectCreation(BaseTestCase):
   def test_brackets_in_db(self):
     self.assertEqual(self.test_event.brackets[0].bracket_id, bracket_1_id)
