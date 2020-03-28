@@ -89,11 +89,7 @@ export default {
           this.$router.push('/home');
         })
         .catch((error) => {
-          if (error.response.status === 404) {
-            this.errors.push(error.response.data.message);
-          } else if (error.response.status === 401) {
-            this.errors.push(error.response.data.message);
-          }
+          this.errors.push(error.response.data.message);
         });
     },
   },
