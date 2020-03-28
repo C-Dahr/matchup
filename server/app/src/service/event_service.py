@@ -55,6 +55,35 @@ def create_player():
   db.session.commit()
   return merged_player
 
+def get_player_ids_to_delete(bracket_1, bracket_2):
+  player_ids = []
+  players_in_bracket_1 = ChallongePlayer.query.filter_by(bracket_id=bracket_1)
+  players_in_bracket_2 = ChallongePlayer.query.filter_by(bracket_id=bracket_2)
+  for player in players_in_bracket_1:
+    player_ids.append(player.player_id)
+  for player in players_in_bracket_2:
+    if player.player_id not in player_ids:
+      player_ids.append(player.player_id)
+  return player_ids
+
+def delete_challonge_players(bracket_1, bracket_2):
+  ChallongePlayer.query.filter_by(bracket_id=bracket_1).delete()
+  ChallongePlayer.query.filter_by(bracket_id=bracket_2).delete()
+  db.session.commit()
+
+def delete_bracket_players(bracket_1, bracket_2):
+  BracketPlayers.query.filter_by(bracket_id=bracket_1).delete()
+  BracketPlayers.query.filter_by(bracket_id=bracket_2).delete()
+  db.session.commit()
+
+def delete_brackets(event_id):
+  Bracket.query.filter_by(event_id=event_id).delete()
+  db.session.commit()
+
+def delete_players_by_id(list_of_player_ids):
+  for player_id in list_of_player_ids:
+      db.session.delete(Player.query.get(player_id))
+
 def update_challonge_players(player1, player2, merged_player):
   old_challonge_player1 = player1.challonge_players[0]
   old_challonge_player2 = player2.challonge_players[0]
