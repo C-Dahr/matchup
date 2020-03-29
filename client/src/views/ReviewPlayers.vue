@@ -4,9 +4,9 @@
       <div class="form-title">
         Review Players
         <input class="btn btn-primary btn-lg btn-next"
-        onclick="onSubmit()" type="submit" value="Next"/>
+            onclick="onSubmit()" type="submit" value="Next"/>
       </div>
-      <b-row align-h="between" align-v="center">
+      <b-row align-h="between">
           <b-col sm-4>
               <div class="form-group d-flex justify-content-center">
                 <label class="form-label">Melee Player</label>
@@ -32,7 +32,7 @@
               </div>
           </b-col>
       </b-row>
-      <b-row align-h="between" align-v="center">
+      <b-row align-h="between">
         <b-col sm-4>
           <h2 class="review-header">Melee</h2>
         </b-col>
@@ -43,11 +43,11 @@
           <h2 class="review-header">Both</h2>
         </b-col>
       </b-row>
-      <b-row align-h="between" align-v="center">
+      <b-row align-h="between">
         <b-col sm-4>
           <b-row align-h="between" align-v="center">
             <b-col sm-4>
-              <div v-for="player in melee" class="player-name" v-bind:key="player">
+              <div v-for="player in melee" class="player-name" v-bind:key="player.value">
                   {{ player.text }}
               </div>
             </b-col>
@@ -56,7 +56,7 @@
         <b-col sm-4>
           <b-row align-h="between" align-v="center">
             <b-col sm-4>
-              <div v-for="player in ultimate" class="player-name" v-bind:key="player">
+              <div v-for="player in ultimate" class="player-name" v-bind:key="player.value">
                   {{ player.text }}
               </div>
             </b-col>
@@ -65,7 +65,7 @@
         <b-col sm-4>
             <b-row align-h="between" align-v="center">
             <b-col sm-4>
-              <div v-for="player in both" class="player-name" v-bind:key="player">
+              <div v-for="player in both" class="player-name" v-bind:key="player.value">
                   {{ player.name_1 }}/{{ player.name_2 }}
               </div>
             </b-col>
@@ -89,8 +89,8 @@ export default {
     return {
       errors: [],
       token: this.$store.getters.getToken,
-      selectedMelee: [],
-      selectedUltimate: [],
+      selectedMelee: {},
+      selectedUltimate: {},
       melee: [
         { text: 'DannyGranE', value: 'DannyGranE' },
         { text: 'ZachAtk', value: 'ZachAtk' },
@@ -100,8 +100,8 @@ export default {
         { text: 'TaylerMailr', value: 'TaylerMailr' },
       ],
       both: [
-        { name_1: 'Scoot', name_2: 'Scoot', value: 'CamBlam' },
-        { name_1: 'GreenTiger', name_2: 'GrnTgr', value: 'CamBlam' },
+        { name_1: 'Scoot', name_2: 'Scoot', value: 'Scoot' },
+        { name_1: 'GreenTiger', name_2: 'GrnTgr', value: 'Green' },
       ],
       player_data: {
         event_id: this.$store.getters.getEventID,
