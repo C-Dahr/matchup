@@ -89,7 +89,6 @@ export default {
     return {
       errors: [],
       token: this.$store.getters.getToken,
-      loggedIn: this.$store.getters.isLoggedIn,
       selectedMelee: [],
       selectedUltimate: [],
       melee: [
@@ -132,14 +131,6 @@ export default {
         .catch((error, msg) => {
           this.errors.push(error + msg);
         });
-    },
-  },
-  computed: {
-    meleeCount() {
-      return this.selectedMelee.length === 1;
-    },
-    UltCount() {
-      return this.selectedUltimate.length === 1;
     },
   },
 };
