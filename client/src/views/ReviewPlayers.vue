@@ -2,7 +2,7 @@
   <div class="review-players">
     <b-container>
       <div class="form-title">
-        Review Players {{ this.token }}
+        Review Players
         <input class="btn btn-primary btn-lg btn-next"
             onclick="onSubmit()" type="submit" value="Next"/>
       </div>
@@ -116,11 +116,8 @@ export default {
     };
   },
   created() {
-    const path = 'http://localhost:5000/event/players';
-    const payload = {
-      event_id: this.$store.getters.getEventID,
-    };
-    axios.get(path, payload, { headers: { 'x-access-token': this.token } })
+    const path = `http://localhost:5000/event/players/${this.$store.getters.getEventID}`;
+    axios.get(path, { headers: { 'x-access-token': this.token } })
       .then((response) => {
         this.player_list = response.data;
       })
