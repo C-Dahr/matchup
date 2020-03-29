@@ -36,6 +36,8 @@ player3_Test2_id = 7
 player4_Test2_id = 8
 danny_merged_TestTournament_id = 13
 
+invalid_event_id = 200
+
 class BaseTestCase(TestCase):  
   def create_app(self):
     app.config.from_object('app.src.config.TestingConfig')
@@ -238,41 +240,26 @@ class TestUpdateEvent(BaseTestCase):
 
 class TestDeleteEvent(BaseTestCase):
   def test_delete_event(self):
-    event_data = {
-      'event_name': 'Event to Delete',
-      'brackets': [
-        {
-          'bracket_id': bracket_6_id,
-          'number_of_setups': 4
-        },
-        {
-          'bracket_id': bracket_4_id,
-          'number_of_setups': 5
-        }
-      ]
-    }
-    response = self.client.post(BASE_URL, json=event_data, headers=self.headers)
-    self.assert200(response)
-    event_returned = json.loads(response.data)
-    event_from_db = Event.query.get(event_returned['id'])
-    bracket_1 = event_from_db.brackets[0].bracket_id
-    bracket_2 = event_from_db.brackets[1].bracket_id
-    bracket_1_id = event_from_db.brackets[0].id
-    bracket_2_id = event_from_db.brackets[1].id
+    bracket_1 = self.test_event.brackets[0].bracket_id
+    bracket_2 = self.test_event.brackets[1].bracket_id
+    bracket_1_id = self.test_event.brackets[0].id
+    bracket_2_id = self.test_event.brackets[1].id
     
     data = {
-      'event_id': event_from_db.id,
+      'event_id': self.test_event.id,
     }
+    
     response = self.client.delete(BASE_URL, json=data, headers=self.headers)
     self.assert200(response)
+    
     challonge_players_b1 = ChallongePlayer.query.filter_by(bracket_id=bracket_1).first()
     challonge_players_b2 = ChallongePlayer.query.filter_by(bracket_id=bracket_2).first()
     bracket_players_b1 = ChallongePlayer.query.filter_by(bracket_id=bracket_1_id).first()
     bracket_players_b2 = ChallongePlayer.query.filter_by(bracket_id=bracket_2_id).first()
     self.assertEqual(None, challonge_players_b1, challonge_players_b2)
     self.assertEqual(None, bracket_players_b1, bracket_players_b2)
-    self.assertEqual(None, Bracket.query.filter_by(event_id=event_from_db.id).first())
-    self.assertEqual(None, Event.query.get(event_from_db.id))
+    self.assertEqual(None, Bracket.query.filter_by(event_id=self.test_event.id).first())
+    self.assertEqual(None, Event.query.get(self.test_event.id))
 
   def test_user_does_not_own_event(self):
     data = {
@@ -283,7 +270,7 @@ class TestDeleteEvent(BaseTestCase):
 
   def test_event_does_not_exist(self):
     data = {
-      'event_id': 200,
+      'event_id': invalid_event_id,
     }
     response = self.client.delete(BASE_URL, json=data, headers=self.headers)
     self.assert404(response)

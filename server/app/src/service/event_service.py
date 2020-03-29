@@ -57,8 +57,8 @@ def create_player():
 
 def get_player_ids_to_delete(bracket_1, bracket_2):
   player_ids = []
-  players_in_bracket_1 = ChallongePlayer.query.filter_by(bracket_id=bracket_1)
-  players_in_bracket_2 = ChallongePlayer.query.filter_by(bracket_id=bracket_2)
+  players_in_bracket_1 = bracket_1.players
+  players_in_bracket_2 = bracket_2.players
   for player in players_in_bracket_1:
     player_ids.append(player.player_id)
   for player in players_in_bracket_2:

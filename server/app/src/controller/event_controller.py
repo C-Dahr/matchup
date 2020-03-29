@@ -79,7 +79,7 @@ class EventController(Resource):
     if event not in current_user.events:
       api.abort(401, 'Current user cannot access this event.')
     
-    player_ids_to_delete = get_player_ids_to_delete(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
+    player_ids_to_delete = get_player_ids_to_delete(event.brackets[0], event.brackets[1])
     
     delete_challonge_players(event.brackets[0].bracket_id, event.brackets[1].bracket_id)
     delete_bracket_players(event.brackets[0].id, event.brackets[1].id)
