@@ -83,6 +83,7 @@ def delete_brackets(event_id):
 def delete_players_by_id(list_of_player_ids):
   for player_id in list_of_player_ids:
       db.session.delete(Player.query.get(player_id))
+  db.session.commit()
 
 def update_challonge_players(player1, player2, merged_player):
   old_challonge_player1 = player1.challonge_players[0]
