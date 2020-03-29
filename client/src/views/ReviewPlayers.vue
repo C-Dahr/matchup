@@ -2,7 +2,7 @@
   <div class="review-players">
     <b-container>
       <div class="form-title">
-        Review Players
+        Review Players {{ this.token }}
         <input class="btn btn-primary btn-lg btn-next"
             onclick="onSubmit()" type="submit" value="Next"/>
       </div>
@@ -91,6 +91,7 @@ export default {
       token: this.$store.getters.getToken,
       selectedMelee: {},
       selectedUltimate: {},
+      player_list: {},
       melee: [
         { text: 'DannyGranE', value: 'DannyGranE' },
         { text: 'ZachAtk', value: 'ZachAtk' },
@@ -113,6 +114,19 @@ export default {
         ],
       },
     };
+  },
+  created() {
+    const path = 'http://localhost:5000/event/players';
+    const payload = {
+      event_id: this.$store.getters.getEventID,
+    };
+    axios.get(path, payload, { headers: { 'x-access-token': this.token } })
+      .then((response) => {
+        this.player_list = response.data;
+      })
+      .catch((error, msg) => {
+        this.errors.push(error + msg);
+      });
   },
   methods: {
     onSubmit(evt) {
