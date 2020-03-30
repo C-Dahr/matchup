@@ -12,7 +12,8 @@ def get_brackets_from_request(brackets_from_request, event):
   for bracket in brackets_from_request:
     bracket_info = challonge.tournaments.show(bracket['bracket_id'])
     new_bracket = Bracket(bracket['bracket_id'], event.id, 'challonge',
-                          bracket_info['game_name'], bracket['number_of_setups'])
+                          bracket_info['game_name'], bracket['number_of_setups'],
+                          bracket_info['name'])
     list_of_brackets.append(new_bracket)
     db.session.add(new_bracket)
   db.session.commit()
@@ -168,7 +169,7 @@ def get_unique_players(bracket):
 
 def get_combined_players_list(brackets, players_in_bracket_1, players_in_bracket_2, players_in_both_brackets):
   combined_players_list = {}
-  combined_players_list[str(brackets[0].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_1).json
-  combined_players_list[str(brackets[1].bracket_id)] = bracket_players_schema.jsonify(players_in_bracket_2).json
+  combined_players_list[brackets[0].name] = bracket_players_schema.jsonify(players_in_bracket_1).json
+  combined_players_list[brackets[1].name] = bracket_players_schema.jsonify(players_in_bracket_2).json
   combined_players_list['both_brackets'] = bracket_players_schema.jsonify(players_in_both_brackets).json
   return combined_players_list

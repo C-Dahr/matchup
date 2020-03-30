@@ -17,15 +17,17 @@ class Bracket(db.Model):
   number_of_setups = db.Column(db.Integer, nullable=False)
   number_of_players = db.Column(db.Integer, nullable=False)
   players = db.relationship('BracketPlayers', back_populates='bracket')
+  name = db.Column(db.String(100), nullable=False)
 
-  def __init__(self, bracket_id, event_id, source, game_name, number_of_setups):
+  def __init__(self, bracket_id, event_id, source, game_name, number_of_setups, name):
     self.bracket_id = bracket_id
     self.event_id = event_id
     self.source = BracketSource(source).name # makes sure the source is a valid enum
     self.game_name = game_name
     self.number_of_setups = number_of_setups
     self.number_of_players = 0
+    self.name = name
 
 class BracketSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'bracket_id', 'game_name', 'number_of_setups', 'number_of_players')
+    fields = ('id', 'name', 'bracket_id', 'game_name', 'number_of_setups', 'number_of_players')
