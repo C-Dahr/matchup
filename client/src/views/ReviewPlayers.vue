@@ -3,32 +3,40 @@
     <b-container>
       <div class="form-title">
         Review Players
-        <input class="btn btn-primary btn-lg btn-next"
-            onclick="onSubmit()" type="submit" value="Next"/>
+        <button class="btn btn-primary btn-lg btn-next"
+            v-on:click="onSubmit()">
+            Next
+        </button>
       </div>
       <b-row align-h="between">
           <b-col sm-4>
               <div class="form-group d-flex justify-content-center">
                 <label class="form-label">Melee Player</label>
-                <model-select :options="melee"
+                <model-list-select :list="melee"
                     v-model="selectedMelee"
+                    option-text="name"
+                    option-value="player_id"
                     placeholder="Select Player">
-                </model-select>
+                </model-list-select>
             </div>
           </b-col>
           <b-col sm-4>
               <div class="form-group d-flex justify-content-center">
                 <label class="form-label">Ultimate Player</label>
-                <model-select :options="ultimate"
+                <model-list-select :list="ultimate"
                     v-model="selectedUltimate"
+                    option-text="name"
+                    option-value="player_id"
                     placeholder="Select Player">
-                </model-select>
+                </model-list-select>
             </div>
           </b-col>
           <b-col sm-4>
               <div class="form-group d-flex justify-content-center">
-                  <input class="btn btn-primary btn-lg merge-form-submit"
-                  type="submit" value="Merge"/>
+                <button type="button" v-on:click="merge()"
+                class="btn btn-primary btn-lg merge-form-submit">
+                  Merge
+                </button>
               </div>
           </b-col>
       </b-row>
@@ -47,8 +55,8 @@
         <b-col sm-4>
           <b-row align-h="between" align-v="center">
             <b-col sm-4>
-              <div v-for="player in melee" class="player-name" v-bind:key="player.value">
-                  {{ player.text }}
+              <div v-for="player in melee" class="player-name" v-bind:key="player.player_id">
+                  {{ player.name }}
               </div>
             </b-col>
           </b-row>
@@ -56,8 +64,8 @@
         <b-col sm-4>
           <b-row align-h="between" align-v="center">
             <b-col sm-4>
-              <div v-for="player in ultimate" class="player-name" v-bind:key="player.value">
-                  {{ player.text }}
+              <div v-for="player in ultimate" class="player-name" v-bind:key="player.player_id">
+                  {{ player.name }}
               </div>
             </b-col>
           </b-row>
@@ -65,8 +73,8 @@
         <b-col sm-4>
             <b-row align-h="between" align-v="center">
             <b-col sm-4>
-              <div v-for="player in both" class="player-name" v-bind:key="player.value">
-                  {{ player.name_1 }}/{{ player.name_2 }}
+              <div v-for="player in both" class="player-name" v-bind:key="player.player_id">
+                  {{ player.name }}
               </div>
             </b-col>
           </b-row>
@@ -78,12 +86,12 @@
 
 <script>
 import axios from 'axios';
-import { ModelSelect } from 'vue-search-select';
+import { ModelListSelect } from 'vue-search-select';
 
 export default {
   name: 'ReviewPlayers',
   components: {
-    ModelSelect,
+    ModelListSelect,
   },
   data() {
     return {
@@ -91,34 +99,20 @@ export default {
       token: this.$store.getters.getToken,
       selectedMelee: {},
       selectedUltimate: {},
-      player_list: {},
-      melee: [
-        { text: 'DannyGranE', value: 'DannyGranE' },
-        { text: 'ZachAtk', value: 'ZachAtk' },
-      ],
-      ultimate: [
-        { text: 'CamBlam', value: 'CamBlam' },
-        { text: 'TaylerMailr', value: 'TaylerMailr' },
-      ],
-      both: [
-        { name_1: 'Scoot', name_2: 'Scoot', value: 'Scoot' },
-        { name_1: 'GreenTiger', name_2: 'GrnTgr', value: 'Green' },
-      ],
-      player_data: {
-        event_id: this.$store.getters.getEventID,
-        players: [
-          {
-            id_1: '',
-            id_2: '',
-          },
-        ],
-      },
+      melee: [],
+      ultimate: [],
+      both: [],
+      players: [],
     };
   },
   created() {
     const path = `http://localhost:5000/event/players/${this.$store.getters.getEventID}`;
     axios.get(path, { headers: { 'x-access-token': this.token } })
       .then((response) => {
+        const keys = Object.keys(response.data);
+        this.melee = response.data[keys[0]];
+        this.ultimate = response.data[keys[1]];
+        this.both = response.data.both_brackets;
         this.player_list = response.data;
       })
       .catch((error, msg) => {
@@ -126,15 +120,40 @@ export default {
       });
   },
   methods: {
-    onSubmit(evt) {
-      evt.preventDefault();
+    merge() {
+      if (this.notEmptyObject(this.selectedMelee) && this.notEmptyObject(this.selectedUltimate)) {
+        this.players.push({
+          id_1: this.selectedMelee.player_id,
+          id_2: this.selectedUltimate.player_id,
+        });
+        this.both.push({
+          bracket_id: this.selectedMelee.bracket_id,
+          name: `${this.selectedMelee.name} / ${this.selectedUltimate.name}`,
+          player_id: this.selectedMelee.player_id,
+        });
+        const indexMelee = this.melee.indexOf(this.selectedMelee);
+        if (indexMelee > -1) {
+          this.melee.splice(indexMelee, 1);
+        }
+        const indexUlt = this.ultimate.indexOf(this.selectedUltimate);
+        if (indexUlt > -1) {
+          this.ultimate.splice(indexUlt, 1);
+        }
+        this.selectedMelee = {};
+        this.selectedUltimate = {};
+      }
+    },
+    notEmptyObject(obj) {
+      return Object.keys(obj).length > 0;
+    },
+    onSubmit() {
       const payload = {
-        player_data: this.player_data,
+        players: this.players,
       };
       this.mergePlayers(payload);
     },
     mergePlayers(payload) {
-      const path = 'http://localhost:5000/event/players';
+      const path = `http://localhost:5000/event/players/${this.$store.getters.getEventID}`;
       axios.post(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
           this.$router.push('/matches');
