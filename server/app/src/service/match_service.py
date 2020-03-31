@@ -14,13 +14,14 @@ losers_bracket_match_round_offset = 0.5
 
 def determine_priority_for_matches(matches_not_in_progress, bracket):
   average_round = get_mean_match_round(matches_not_in_progress)
+  bracket_data = bracket_schema.jsonify(bracket).json
   for match in matches_not_in_progress:
     player1_data, player1 = build_player_data(match['player1_id'], bracket)
     player2_data, player2 = build_player_data(match['player2_id'], bracket)
 
     match['player1'] = player1_data
     match['player2'] = player2_data
-    match['bracket'] = bracket_schema.jsonify(bracket).json
+    match['bracket'] = bracket_data
     match['priority'] = calculate_match_priority(match, player1, player2, average_round, bracket)
   
   return matches_not_in_progress
@@ -33,6 +34,17 @@ def build_player_data(challonge_player_id, bracket):
   player_data = player_schema.jsonify(player).json
   player_data['name'] = bracket_player.name
   return player_data, player
+
+def get_player_data_for_matches(list_of_matches, bracket):
+  bracket_data = bracket_schema.jsonify(bracket).json
+  for match in list_of_matches:
+    player1_data, player1 = build_player_data(match['player1_id'], bracket)
+    player2_data, player2 = build_player_data(match['player2_id'], bracket)
+
+    match['player1'] = player1_data
+    match['player2'] = player2_data
+    match['bracket'] = bracket_data
+
 
 def get_mean_match_round(matches):
   round_sum = 0
