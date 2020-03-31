@@ -10,6 +10,8 @@ player_overlap_priority_constant = 5
 round_priority_constant = 2
 bracket_size_priority_constant = 2
 
+losers_bracket_match_round_offset = 0.5
+
 def determine_priority_for_matches(matches_not_in_progress, bracket):
   average_round = get_mean_match_round(matches_not_in_progress)
   for match in matches_not_in_progress:
@@ -36,6 +38,9 @@ def get_mean_match_round(matches):
   round_sum = 0
   num_matches = 0
   for match in matches:
+    if match['round'] < 0:
+      match['round'] = abs(match['round']) + losers_bracket_match_round_offset
+
     round_sum += match['round']
     num_matches += 1
   return round_sum / num_matches
