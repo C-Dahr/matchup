@@ -10,12 +10,14 @@ export default new Vuex.Store({
     username: localStorage.getItem('username') || '',
     userToken: localStorage.getItem('user-token') || '',
     eventID: localStorage.getItem('event-id') || '',
+    eventName: localStorage.getItem('event-name') || '',
   },
   getters: {
     isLoggedIn: state => !!state.userToken,
     getToken: state => state.userToken,
     authStatus: state => state.status,
     getEventID: state => state.eventID,
+    getEventName: state => state.eventName,
   },
   mutations: {
     auth_request(state) {
@@ -35,6 +37,10 @@ export default new Vuex.Store({
     setEventID(state, eventID) {
       state.eventID = eventID;
       localStorage.setItem('event-id', eventID);
+    },
+    setEventName(state, eventName) {
+      state.eventName = eventName;
+      localStorage.setItem('event-name', eventName);
     },
   },
   actions: {

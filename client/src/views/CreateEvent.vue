@@ -148,6 +148,7 @@ export default {
       axios.post(path, payload, { headers: { 'x-access-token': this.token } })
         .then((response) => {
           this.$store.commit('setEventID', response.data.id);
+          this.$store.commit('setEventName', payload.event_name);
           this.$router.push('/review');
         })
         .catch((error) => {
