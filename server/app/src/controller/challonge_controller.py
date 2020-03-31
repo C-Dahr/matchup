@@ -2,8 +2,7 @@ from .. import db, ma
 from ..model.user import UserSchema, User
 from ..model.bracket import Bracket
 from ..model.event import Event
-from ..service.match_service import determine_priority_for_matches, get_highest_priority_matches
-from ..service.match_service import calculate_mean_bracket_size
+from ..service.match_service import *
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from app.src.controller import get_user_from_auth_header
@@ -67,11 +66,16 @@ class MatchController(Resource):
 
       available_matches = []
       bracket_setups = {}
+      matches_in_progress = []
       for bracket in event.brackets:
         list_of_matches = challonge.matches.index(bracket.bracket_id, state='open')
         matches_not_in_progress = list(filter(lambda match: match['underway_at'] == None, list_of_matches))
         number_of_setups_in_use = len(list_of_matches) - len(matches_not_in_progress)
-        
+
+        bracket_matches_in_progress = list(filter(lambda match: match['underway_at'] is not None, list_of_matches))
+        get_player_data_for_matches(bracket_matches_in_progress, bracket)
+        matches_in_progress = matches_in_progress + bracket_matches_in_progress
+
         bracket.bracket_size_ratio = bracket.number_of_players / average_bracket_size
 
         matches_for_bracket = determine_priority_for_matches(matches_not_in_progress, bracket)
@@ -82,7 +86,7 @@ class MatchController(Resource):
       # sort matches by priority (descending)
       sorted_matches = sorted(available_matches, key=lambda match: match['priority'], reverse=True)
 
-      matches_called = get_highest_priority_matches(sorted_matches, bracket_setups)
+      matches_called = get_highest_priority_matches(sorted_matches, bracket_setups, matches_in_progress)
       return jsonify(matches_called)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')

@@ -10,16 +10,15 @@ player_overlap_priority_constant = 5
 round_priority_constant = 2
 bracket_size_priority_constant = 2
 
+losers_bracket_match_round_offset = 0.5
+
 def determine_priority_for_matches(matches_not_in_progress, bracket):
   average_round = get_mean_match_round(matches_not_in_progress)
-  for match in matches_not_in_progress:
-    player1_data, player1 = build_player_data(match['player1_id'], bracket)
-    player2_data, player2 = build_player_data(match['player2_id'], bracket)
+  
+  get_player_data_for_matches(matches_not_in_progress, bracket)
 
-    match['player1'] = player1_data
-    match['player2'] = player2_data
-    match['bracket'] = bracket_schema.jsonify(bracket).json
-    match['priority'] = calculate_match_priority(match, player1, player2, average_round, bracket)
+  for match in matches_not_in_progress:
+    match['priority'] = calculate_match_priority(match, average_round, bracket)
   
   return matches_not_in_progress
 
@@ -30,17 +29,32 @@ def build_player_data(challonge_player_id, bracket):
 
   player_data = player_schema.jsonify(player).json
   player_data['name'] = bracket_player.name
-  return player_data, player
+  return player_data
+
+def get_player_data_for_matches(list_of_matches, bracket):
+  bracket_data = bracket_schema.jsonify(bracket).json
+  for match in list_of_matches:
+    player1_data = build_player_data(match['player1_id'], bracket)
+    player2_data = build_player_data(match['player2_id'], bracket)
+
+    match['player1'] = player1_data
+    match['player2'] = player2_data
+    match['bracket'] = bracket_data
 
 def get_mean_match_round(matches):
   round_sum = 0
   num_matches = 0
   for match in matches:
+    if match['round'] < 0:
+      match['round'] = abs(match['round']) + losers_bracket_match_round_offset
+
     round_sum += match['round']
     num_matches += 1
   return round_sum / num_matches
 
-def calculate_match_priority(match, player1, player2, average_round, bracket):
+def calculate_match_priority(match, average_round, bracket):
+  player1 = Player.query.get(match['player1']['id'])
+  player2 = Player.query.get(match['player2']['id'])
   match_priority =  get_player_priority(player1) + get_player_priority(player2)
   match_priority += get_bracket_priority(bracket)
   match_priority += get_round_priority(match['round'], average_round)
@@ -56,10 +70,10 @@ def get_round_priority(match_round, average_round):
   scale_factor = average_round / match_round
   return scale_factor * round_priority_constant
 
-def get_highest_priority_matches(matches_sorted_by_priority, bracket_setups):
+def get_highest_priority_matches(matches_sorted_by_priority, bracket_setups, matches_in_progress):
   matches_called = []
   for match in matches_sorted_by_priority:
-    if bracket_has_setups_available(match['bracket'], bracket_setups) and both_players_have_not_been_called(match, matches_called):
+    if bracket_has_setups_available(match['bracket'], bracket_setups) and both_players_have_not_been_called(match, matches_called, matches_in_progress):
       take_setup_from_bracket(bracket_setups, match['bracket'])
       matches_called.append(match)
   return matches_called
@@ -70,9 +84,12 @@ def bracket_has_setups_available(bracket, bracket_setups):
 def take_setup_from_bracket(bracket_setups, bracket):
   bracket_setups[bracket['id']] = bracket_setups[bracket['id']] - 1
 
-def both_players_have_not_been_called(match, matches_called):
+def both_players_have_not_been_called(match, matches_called, matches_in_progress):
   player1 = match['player1']
   player2 = match['player2']
+  for match in matches_in_progress:
+    if match_contains_player(match, player1) or match_contains_player(match, player2):
+      return False
   for match in matches_called:
     if match_contains_player(match, player1) or match_contains_player(match, player2):
       return False

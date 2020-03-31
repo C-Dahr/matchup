@@ -295,8 +295,10 @@ class TestGetPlayers(BaseTestCase):
   def test_valid_get(self):
     response = self.client.get(PLAYER_URL+str(self.test_event_2.id), headers=self.headers)
     lists_returned = json.loads(response.data)
-    self.assertEqual(len(lists_returned[str(bracket_3_id)]), 0)
-    self.assertEqual(len(lists_returned[str(bracket_5_id)]), 4)
+    bracket1_name = "B1"
+    bracket2_name = "B3"
+    self.assertEqual(len(lists_returned[bracket1_name]), 0)
+    self.assertEqual(len(lists_returned[bracket2_name]), 4)
     self.assertEqual(len(lists_returned['both_brackets']), 4)
     self.assert200(response)
 
