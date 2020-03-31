@@ -6,17 +6,17 @@
         <b-col sm="8">
           <div class="form-title">
             <p>Event Name
-              <a v-if=loggedIn href="editEvent"><font-awesome-icon icon="cog" size=""/></a>
+              <a v-if=loggedIn href="editEvent"><font-awesome-icon icon="cog"/></a>
             </p>
           </div>
         </b-col>
         <b-col sm="2">
-          <input class="btn btn-danger" v-if=loggedIn type="submit" value="End Event"/>
+          <input class="btn btn-danger" v-if=loggedIn v-on:click="endEvent()" value="End Event"/>
         </b-col>
       </b-row>
     </b-container>
     <b-container>
-      <div v-for="data in matchData" class="match" v-bind:key="data">
+      <div v-for="data in matchData" class="match" v-bind:key="data.id">
         <MatchCard :player1="data.player1.name" :player2="data.player2.name"
         :game="data.bracket.game_name" :bracket_id="data.bracket.id"
         :match_id="data.id">
@@ -77,13 +77,12 @@ export default {
         this.refresh();
       }, 5000);
     },
-    onSubmit(evt) {
-      evt.preventDefault();
+    endEvent() {
       const payload = {
         event_id: this.eventID,
       };
       const path = 'http://localhost:5000/event';
-      axios.delete(path, payload, { headers: { 'x-access-token': this.token } })
+      axios.delete(path, { data: payload, headers: { 'x-access-token': this.token } })
         .then(() => {
           this.$store.commit('setEventID', '');
           this.$router.push('/home');
