@@ -61,10 +61,10 @@ def get_round_priority(match_round, average_round):
   scale_factor = average_round / match_round
   return scale_factor * round_priority_constant
 
-def get_highest_priority_matches(matches_sorted_by_priority, bracket_setups):
+def get_highest_priority_matches(matches_sorted_by_priority, bracket_setups, matches_in_progress):
   matches_called = []
   for match in matches_sorted_by_priority:
-    if bracket_has_setups_available(match['bracket'], bracket_setups) and both_players_have_not_been_called(match, matches_called):
+    if bracket_has_setups_available(match['bracket'], bracket_setups) and both_players_have_not_been_called(match, matches_called, matches_in_progress):
       take_setup_from_bracket(bracket_setups, match['bracket'])
       matches_called.append(match)
   return matches_called
@@ -75,9 +75,12 @@ def bracket_has_setups_available(bracket, bracket_setups):
 def take_setup_from_bracket(bracket_setups, bracket):
   bracket_setups[bracket['id']] = bracket_setups[bracket['id']] - 1
 
-def both_players_have_not_been_called(match, matches_called):
+def both_players_have_not_been_called(match, matches_called, matches_in_progress):
   player1 = match['player1']
   player2 = match['player2']
+  for match in matches_in_progress:
+    if match_contains_player(match, player1) or match_contains_player(match, player2):
+      return False
   for match in matches_called:
     if match_contains_player(match, player1) or match_contains_player(match, player2):
       return False

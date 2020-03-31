@@ -67,11 +67,15 @@ class MatchController(Resource):
 
       available_matches = []
       bracket_setups = {}
+      matches_in_progress = []
       for bracket in event.brackets:
         list_of_matches = challonge.matches.index(bracket.bracket_id, state='open')
         matches_not_in_progress = list(filter(lambda match: match['underway_at'] == None, list_of_matches))
         number_of_setups_in_use = len(list_of_matches) - len(matches_not_in_progress)
-        
+
+        bracket_matches_in_progress = list(filter(lambda match: match['underway_at'] is not None, list_of_matches))
+        matches_in_progress = matches_in_progress + bracket_matches_in_progress
+
         bracket.bracket_size_ratio = bracket.number_of_players / average_bracket_size
 
         matches_for_bracket = determine_priority_for_matches(matches_not_in_progress, bracket)
@@ -82,7 +86,7 @@ class MatchController(Resource):
       # sort matches by priority (descending)
       sorted_matches = sorted(available_matches, key=lambda match: match['priority'], reverse=True)
 
-      matches_called = get_highest_priority_matches(sorted_matches, bracket_setups)
+      matches_called = get_highest_priority_matches(sorted_matches, bracket_setups, matches_in_progress)
       return jsonify(matches_called)
     except HTTPError as e:
       api.abort(401, 'Invalid credentials.')
