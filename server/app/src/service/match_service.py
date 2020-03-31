@@ -14,15 +14,11 @@ losers_bracket_match_round_offset = 0.5
 
 def determine_priority_for_matches(matches_not_in_progress, bracket):
   average_round = get_mean_match_round(matches_not_in_progress)
-  bracket_data = bracket_schema.jsonify(bracket).json
-  for match in matches_not_in_progress:
-    player1_data, player1 = build_player_data(match['player1_id'], bracket)
-    player2_data, player2 = build_player_data(match['player2_id'], bracket)
+  
+  get_player_data_for_matches(matches_not_in_progress, bracket)
 
-    match['player1'] = player1_data
-    match['player2'] = player2_data
-    match['bracket'] = bracket_data
-    match['priority'] = calculate_match_priority(match, player1, player2, average_round, bracket)
+  for match in matches_not_in_progress:
+    match['priority'] = calculate_match_priority(match, average_round, bracket)
   
   return matches_not_in_progress
 
@@ -33,18 +29,17 @@ def build_player_data(challonge_player_id, bracket):
 
   player_data = player_schema.jsonify(player).json
   player_data['name'] = bracket_player.name
-  return player_data, player
+  return player_data
 
 def get_player_data_for_matches(list_of_matches, bracket):
   bracket_data = bracket_schema.jsonify(bracket).json
   for match in list_of_matches:
-    player1_data, player1 = build_player_data(match['player1_id'], bracket)
-    player2_data, player2 = build_player_data(match['player2_id'], bracket)
+    player1_data = build_player_data(match['player1_id'], bracket)
+    player2_data = build_player_data(match['player2_id'], bracket)
 
     match['player1'] = player1_data
     match['player2'] = player2_data
     match['bracket'] = bracket_data
-
 
 def get_mean_match_round(matches):
   round_sum = 0
@@ -57,7 +52,9 @@ def get_mean_match_round(matches):
     num_matches += 1
   return round_sum / num_matches
 
-def calculate_match_priority(match, player1, player2, average_round, bracket):
+def calculate_match_priority(match, average_round, bracket):
+  player1 = Player.query.get(match['player1']['id'])
+  player2 = Player.query.get(match['player2']['id'])
   match_priority =  get_player_priority(player1) + get_player_priority(player2)
   match_priority += get_bracket_priority(bracket)
   match_priority += get_round_priority(match['round'], average_round)
