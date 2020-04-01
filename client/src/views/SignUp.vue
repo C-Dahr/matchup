@@ -92,15 +92,32 @@ export default {
         this.signUpForm.confirm_password = '';
         this.errors.push('Passwords do not match');
       } else {
-        const payload = {
-          username: this.signUpForm.username,
-          email: this.signUpForm.email,
-          password: this.signUpForm.password,
+        const challongePayload = {
           challonge_username: this.signUpForm.challonge_username,
           api_key: this.signUpForm.api_key,
         };
-        this.createUser(payload);
+        this.verifyCredentials(challongePayload);
       }
+    },
+    verifyCredentials(payload) {
+      const path = 'http://localhost:5000/challonge/verify';
+      axios.post(path, payload)
+        .then(() => {
+          const userPayload = {
+            username: this.signUpForm.username,
+            email: this.signUpForm.email,
+            password: this.signUpForm.password,
+            challonge_username: this.signUpForm.challonge_username,
+            api_key: this.signUpForm.api_key,
+          };
+          this.createUser(userPayload);
+        })
+        .catch((error) => {
+          if (error.response.status === 401) {
+            const message = 'Invalid Challonge Credentials';
+            this.errors.push(message);
+          }
+        });
     },
     createUser(payload) {
       const path = 'http://localhost:5000/user';

@@ -28,6 +28,13 @@
               <span class="Error"></span>
             </div>
             <div class="form-group d-flex justify-content-left">
+                <label class="form-label">Password </label>
+                <div class="button-position">
+                  <a class="btn btn-primary edit-password"
+                  href="editPassword">Edit Password</a>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-left">
               <label class="form-label">Challonge Username</label>
               <input class="form-control" type="text"
               name="challonge_username" v-model="editProfileForm.challonge_username"
@@ -91,13 +98,33 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.errors = [];
-      const payload = {
-        username: this.editProfileForm.username,
-        email: this.editProfileForm.email,
+      const challongePayload = {
         challonge_username: this.editProfileForm.challonge_username,
         api_key: this.editProfileForm.api_key,
       };
-      this.updateUser(payload);
+      this.verifyCredentials(challongePayload);
+    },
+    verifyCredentials(payload) {
+      const path = 'http://localhost:5000/challonge/verify';
+      const successMessageEl = document.getElementById('success-message');
+      axios.post(path, payload)
+        .then(() => {
+          const userPayload = {
+            username: this.editProfileForm.username,
+            email: this.editProfileForm.email,
+            challonge_username: this.editProfileForm.challonge_username,
+            api_key: this.editProfileForm.api_key,
+          };
+          this.updateUser(userPayload);
+        })
+        .catch((error) => {
+          successMessageEl.style.display = 'none';
+          if (error.response.status === 401) {
+            const message = 'Invalid Challonge Credentials';
+            this.errors.push(message);
+          }
+          return false;
+        });
     },
     updateUser(payload) {
       const path = 'http://localhost:5000/user';
@@ -135,6 +162,18 @@ export default {
 
 .cancel-btn {
   width: 50%;
+}
+
+.edit-password {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #0066FF !important;
+}
+
+.button-position {
+  width: 100%;
+  display: flex;
+  justify-content: left;
 }
 
 </style>

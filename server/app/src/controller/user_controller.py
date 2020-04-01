@@ -1,18 +1,23 @@
 from .. import db, ma
-from ..model.user import UserSchema
-from ..model.user import User
+from ..model.user import UserSchema, User
+from ..model.event import EventSchema, Event
 from flask import request, jsonify
 from flask_restplus import Resource, Namespace
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 from app.src.controller import get_user_from_auth_header
 from app.src.controller import xor_crypt_string
 
 api = Namespace('user', description='user related operations')
 
+user_not_found = 'User not found.'
+
 # init schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+
+events_schema = EventSchema(many=True)
 
 @api.route('')
 class UserController(Resource):
@@ -39,15 +44,14 @@ class UserController(Resource):
   @api.doc('get a user')
   def get(self):
     user = get_user_from_auth_header(request, api)
-    if not user:
-      api.abort(404, user_not_found)
+
+    api_key = xor_crypt_string(user.api_key, decode=True)
+    user.api_key = api_key
     return user_schema.jsonify(user)
     
   @api.doc('update a user')
   def put(self):
     user = get_user_from_auth_header(request, api)
-    if not user:
-      api.abort(404, user_not_found)
     
     try:
       user.username = request.json['username']
@@ -66,11 +70,24 @@ class UserController(Resource):
   @api.doc('delete a user')
   def delete(self):
     user = get_user_from_auth_header(request, api)
-    if not user:
-      api.abort(404, user_not_found)
     db.session.delete(user)
     db.session.commit()
     return user_schema.jsonify(user)
+
+@api.route('/password')
+class UserPasswordController(Resource):
+  @api.doc('edit password')
+  def put(self):
+    current_password = request.json['current_password']
+    new_password = request.json['new_password']
+    hashed_new_password = generate_password_hash(new_password, method='sha256')
+    user = get_user_from_auth_header(request, api)
+
+    if check_password_hash(user.password, current_password):
+      user.password = hashed_new_password
+      db.session.commit()
+    else:
+      api.abort(401, 'Incorrect password.')
 
 @api.route('/all')
 class UserListController(Resource):
@@ -79,4 +96,9 @@ class UserListController(Resource):
     users = User.query.all()
     return users_schema.jsonify(users)
 
-user_not_found = 'User not found.'
+@api.route('/events')
+class EventListController(Resource):
+  @api.doc('get a list of all events the user owns')
+  def get(self):
+    user = get_user_from_auth_header(request, api)
+    return events_schema.jsonify(user.events)

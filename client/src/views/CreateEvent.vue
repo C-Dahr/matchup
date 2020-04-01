@@ -7,7 +7,8 @@
       <ul class="form-error">
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>
-      <p v-if="link === true">Generate or find an existing API key for Challonge <b-link class="text-warning" href="https://challonge.com/settings/developer" target="_blank">here</b-link></p>
+      <p v-if="link === true">Add or edit your API key on your
+        <b-link class="text-warning" href="/editprofile">profile</b-link></p>
     </div>
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit" method="post" class="event-form">
@@ -24,8 +25,11 @@
                         <h3 class="card-title">Bracket One</h3>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Select Bracket</label>
-                            <b-form-select v-model="eventForm.brackets[0].bracket_id"
-                            :options="options"></b-form-select>
+                            <model-select :options="options"
+                                v-model="eventForm.brackets[0].bracket_id"
+                                required
+                                placeholder="select item">
+                            </model-select>
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
@@ -42,8 +46,11 @@
                         <h3 class="card-title">Bracket Two</h3>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Select Bracket</label>
-                            <b-form-select v-model="eventForm.brackets[1].bracket_id"
-                            :options="options"></b-form-select>
+                            <model-select :options="options"
+                                v-model="eventForm.brackets[1].bracket_id"
+                                required
+                                placeholder="select item">
+                            </model-select>
                         </div>
                         <div class="form-group d-flex justify-content-left">
                             <label class="form-label">Number of setups</label>
@@ -67,8 +74,12 @@
 
 <script>
 import axios from 'axios';
+import { ModelSelect } from 'vue-search-select';
 
 export default {
+  components: {
+    ModelSelect,
+  },
   data() {
     return {
       errors: [],
@@ -93,7 +104,7 @@ export default {
   },
   name: 'CreateEvent',
   created() {
-    const path = 'http://localhost:5000/challonge';
+    const path = 'http://localhost:5000/challonge/brackets';
     axios.get(path, { headers: { 'x-access-token': this.token } })
       .then((response) => {
         this.tournaments = response.data.tournaments;
@@ -135,12 +146,14 @@ export default {
     createEvent(payload) {
       const path = 'http://localhost:5000/event';
       axios.post(path, payload, { headers: { 'x-access-token': this.token } })
-        .then(() => {
-          this.$router.push('/home');
+        .then((response) => {
+          this.$store.commit('setEventID', response.data.id);
+          this.$store.commit('setEventName', payload.event_name);
+          this.$router.push('/review');
         })
         .catch((error) => {
           if (error.response.status === 400) {
-            this.errors.push('Form is missing fields');
+            this.errors.push(error.response.data.message);
           } else if (error.response.status === 401) {
             this.errors.push('Invalid bracket ID');
           }

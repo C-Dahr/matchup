@@ -5,10 +5,13 @@ from flask import Flask
 from app.src.config import basedir
 from app.src.model.user import User
 from werkzeug.security import generate_password_hash
+from app.src.controller import xor_crypt_string
+from werkzeug.security import check_password_hash
 import json
 import base64
 
 BASE_URL = 'http://localhost:5000/user'
+PASSWORD_URL = 'http://localhost:5000/user/password'
 LOGIN_URL = 'http://localhost:5000/auth'
 invalid_id = 69 # nice
 
@@ -19,7 +22,8 @@ class BaseTestCase(TestCase):
   
   def setUp(self):
     password = generate_password_hash('password')
-    test_user = User('testuser', password, 'test@gmail.com', 'testuser', 'challonge123')
+    challonge_api_key = xor_crypt_string('challonge123', encode=True)
+    test_user = User('testuser', password, 'test@gmail.com', 'testuser', challonge_api_key)
     self.test_user = test_user
 
     db.drop_all()
@@ -143,6 +147,28 @@ class TestUpdateUser(BaseTestCase):
     response = self.client.put(BASE_URL, json=new_info, headers=self.headers)
     self.assert_status(response, 409)
 
+class TestUpdatePassword(BaseTestCase):
+  def test_update_password(self):
+    user_id = self.test_user.id
+    password_info = {
+      'current_password': 'password',
+      'new_password': 'newPassword',
+    }
+    response = self.client.put(PASSWORD_URL, json=password_info, headers=self.headers)
+    user_returned = json.loads(response.data)
+    # get the user in the database, confirm they are equal
+    user_from_db = User.query.get(user_id)
+    self.assertEqual(user_from_db.password, self.test_user.password)
+    self.assertTrue(check_password_hash(user_from_db.password,password_info['new_password']))
+
+  def test_update_password_wrong_password(self):
+    user_id = self.test_user.id
+    password_info = {
+      'current_password': 'wrongPassword',
+      'new_password': 'newPassword',
+    }
+    response = self.client.put(PASSWORD_URL, json=password_info, headers=self.headers)
+    self.assert401(response, 'Incorrect Password.')
 
 class TestGetUsers(BaseTestCase):
   def test_get_user_by_id(self):
