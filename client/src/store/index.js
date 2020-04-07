@@ -34,6 +34,10 @@ export default new Vuex.Store({
       state.status = '';
       state.userToken = '';
     },
+    updateUser(state, newUsername) {
+      state.username = newUsername;
+      localStorage.setItem('username', newUsername);
+    },
     setEventID(state, eventID) {
       state.eventID = eventID;
       localStorage.setItem('event-id', eventID);
@@ -74,6 +78,12 @@ export default new Vuex.Store({
         localStorage.removeItem('username');
         localStorage.removeItem('user-token');
         delete axios.defaults.headers.common.authorization;
+        resolve();
+      });
+    },
+    update_user({ commit }, username) {
+      return new Promise((resolve) => {
+        commit('updateUser', username);
         resolve();
       });
     },
