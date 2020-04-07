@@ -132,6 +132,7 @@ export default {
       axios.put(path, payload, { headers: { 'x-access-token': this.token } })
         .then(() => {
           successMessageEl.style.display = 'block';
+          this.$store.dispatch('update_user', payload.username);
         })
         .catch((error) => {
           successMessageEl.style.display = 'none';
