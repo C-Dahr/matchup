@@ -25,7 +25,8 @@ class EventController(Resource):
 
     try:
       event_name = request.json['event_name']
-      event = Event(event_name, current_user.id)
+      url = request.json['event_url']
+      event = Event(event_name, current_user.id, url)
       db.session.add(event)
       db.session.commit()
 
