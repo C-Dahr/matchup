@@ -47,6 +47,7 @@ class BaseTestCase(TestCase):
 
     event_data = {
       'event_name': 'Test Event',
+      'event_url': 'testevent',
       'brackets': [
         {
           'bracket_id': bracket_1_id,

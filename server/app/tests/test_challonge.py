@@ -52,6 +52,7 @@ class BaseTestCase(TestCase):
 
     event1_data = {
       'event_name': 'Test Event 1',
+      'event_url': 'testevent1',
       'brackets': [
         {
           'bracket_id': b1_id,
@@ -66,6 +67,7 @@ class BaseTestCase(TestCase):
 
     event2_data = {
       'event_name': 'Test Event 2',
+      'event_url': 'testevent2',
       'brackets': [
         {
           'bracket_id': b3_id,
@@ -80,6 +82,7 @@ class BaseTestCase(TestCase):
 
     event3_data = {
       'event_name': 'Test Event 3',
+      'event_url': 'testevent3',
       'brackets': [
         {
           'bracket_id': b5_id,
