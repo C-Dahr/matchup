@@ -23,7 +23,8 @@
               <label class="form-label">Event URL</label>
               <input class="form-control" type="text"
               name="eventurl" v-model="eventForm.event_url"
-              required placeholder="Enter Event URL" :maxlength="50"/>
+              required placeholder="Enter Event URL" :maxlength="50"
+              @keydown.space.prevent/>
               <span class="Error"></span>
             </div>
             <label id="url-preview">matchup.com/event/{{ eventForm.event_url }}</label>
