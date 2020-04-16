@@ -205,7 +205,7 @@ export default {
   letter-spacing: 1.5px;
   margin-bottom: 20px;
   font-family: "Lucida Console";
-  overflow: scroll;
+  overflow: hidden;
 }
 
 @media only screen and (max-width: 600px) {
