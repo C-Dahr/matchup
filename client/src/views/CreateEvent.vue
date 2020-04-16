@@ -12,15 +12,15 @@
     </div>
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit" method="post" class="event-form">
-            <div id="event-input" class="form-group d-flex justify-content-center">
+            <div class="event-input form-group d-flex justify-content-center">
               <label class="form-label">Event Name</label>
               <input class="form-control" type="text"
               name="eventname" v-model="eventForm.event_name"
               required placeholder="Enter Event Name"/>
               <span class="Error"></span>
             </div>
-            <div id="event-url-input" class="form-group d-flex justify-content-center">
-              <label class="form-label">Event URL: www.matchup.com/event/</label>
+            <div class="event-input form-group d-flex justify-content-center">
+              <label class="form-label">Event URL</label>
               <input class="form-control" type="text"
               name="eventurl" v-model="eventForm.event_url"
               required placeholder="Enter Event URL"/>
@@ -202,7 +202,7 @@ export default {
 .text-warning {
     text-decoration: underline;
 }
-#event-input {
+.event-input {
   max-width: 800px;
 }
 
