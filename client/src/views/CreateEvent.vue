@@ -23,9 +23,10 @@
               <label class="form-label">Event URL</label>
               <input class="form-control" type="text"
               name="eventurl" v-model="eventForm.event_url"
-              required placeholder="Enter Event URL"/>
+              required placeholder="Enter Event URL" :maxlength="50"/>
               <span class="Error"></span>
             </div>
+            <label id="url-preview">matchup.com/event/{{ eventForm.event_url }}</label>
             <div class="card-deck">
                 <div class="card border-light">
                     <div class="card-body">
@@ -204,6 +205,13 @@ export default {
 }
 .event-input {
   max-width: 800px;
+}
+
+#url-preview {
+  font-size: 1.25em;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+  font-family: "Lucida Console";
 }
 
 </style>
