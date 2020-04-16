@@ -186,15 +186,7 @@ export default {
   width: 60%;
   min-width: 500px;
 }
-@media only screen and (max-width: 600px) {
-  .event-form {
-    width: 95%;
-    min-width: auto;
-  }
-  .card {
-    width: auto;
-}
-}
+
 .event-form-submit {
   width: 30%;
   background-color: #0066FF !important;
@@ -209,10 +201,26 @@ export default {
 }
 
 #url-preview {
-  font-size: 1.25em;
+  font-size: 1em;
   letter-spacing: 1.5px;
   margin-bottom: 20px;
   font-family: "Lucida Console";
+  overflow: scroll;
+}
+
+@media only screen and (max-width: 600px) {
+  .event-form {
+    width: 95%;
+    min-width: auto;
+  }
+
+  .card {
+    width: auto;
+  }
+
+  #url-preview {
+    font-size: 0.75em;
+  }
 }
 
 </style>
