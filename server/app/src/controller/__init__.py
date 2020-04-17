@@ -25,7 +25,7 @@ def get_user_from_auth_header(request, api):
 # xor encrypt/decrypt
 def xor_crypt_string(data, encode = False, decode = False):
   if decode: 
-    data = base64.decodestring(data.encode('utf-8'))
+    data = base64.decodebytes(data.encode('utf-8'))
     data = data.decode('utf-8')
   xored = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(data, cycle(key)))
    
