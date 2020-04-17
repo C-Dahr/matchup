@@ -16,6 +16,16 @@ api = Namespace('event', description='handles CRUD operations for events')
 
 event_schema = EventSchema()
 
+@api.route('/<event_url>')
+class EventInfoController(Resource):
+  @api.doc('get an event by url')
+  def get(self, event_url):
+    event = Event.query.filter_by(url=event_url).first()
+    if not event:
+      api.abort(404, 'Event not found')
+    else:
+      return event_schema.jsonify(event)
+
 @api.route('')
 class EventController(Resource):
   @api.doc('create a new event')
