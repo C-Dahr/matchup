@@ -72,3 +72,15 @@ class TestUserEvents(BaseTestCase):
     response = self.client.get(GET_EVENTS_URL, headers=self.headers)
     response_json = json.loads(response.data)
     self.assertEqual(len(response_json), NUMBER_OF_EVENTS)
+
+class TestGetEvents(BaseTestCase):
+  def test_get_event_by_url(self):
+    url_of_event = 'testevent'
+    response = self.client.get(CREATE_EVENT_URL + '/' + url_of_event, headers=self.headers)
+    response_json = json.loads(response.data)
+    self.assertEqual(self.test_event.event_name, response_json['event_name'])
+
+  def test_get_event_invalid_url(self):
+    url_of_event = 'thisisinvalid'
+    response = self.client.get(CREATE_EVENT_URL + '/' + url_of_event, headers=self.headers)
+    self.assert404(response)
