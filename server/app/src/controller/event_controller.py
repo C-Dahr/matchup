@@ -105,12 +105,12 @@ class EventController(Resource):
     db.session.delete(event)
     db.session.commit()
 
-@api.route('/players/<event_id>')
+@api.route('/players/<event_url>')
 class PlayerController(Resource):
   @api.doc('return list of players')
-  def get(self, event_id):
+  def get(self, event_url):
     current_user = get_user_from_auth_header(request, api)
-    event = Event.query.get(event_id)
+    event = Event.query.filter_by(url=event_url).first()
     if not event:
       api.abort(404, 'Event not found.')
     if event not in current_user.events:
@@ -123,9 +123,9 @@ class PlayerController(Resource):
     return jsonify(combined_players_list)
 
   @api.doc('merge players')
-  def post(self, event_id):
+  def post(self, event_url):
     current_user = get_user_from_auth_header(request, api)
-    event = Event.query.get(event_id)
+    event = Event.query.filter_by(url=event_url).first()
     if not event:
       api.abort(404, 'Event not found.')
     if event not in current_user.events:
