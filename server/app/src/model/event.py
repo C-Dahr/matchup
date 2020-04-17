@@ -8,10 +8,12 @@ class Event(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
   user = db.relationship('User', back_populates='events')
   brackets = db.relationship('Bracket', back_populates='event')
+  url = db.Column(db.String(100), nullable=False, unique=True)
 
-  def __init__(self, event_name, user_id):
+  def __init__(self, event_name, user_id, url):
     self.event_name = event_name
     self.user_id = user_id
+    self.url = url
 
   def update_number_of_setups_in_brackets(self, brackets_from_request):
     for bracket in brackets_from_request:
@@ -21,4 +23,4 @@ class Event(db.Model):
 
 class EventSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'event_name', 'user_id')
+    fields = ('id', 'event_name', 'user_id', 'url')

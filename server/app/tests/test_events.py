@@ -71,6 +71,7 @@ class BaseTestCase(TestCase):
 
     event_data = {
       'event_name': 'Test Event',
+      'event_url': 'testevent',
       'brackets': [
         {
           'bracket_id': bracket_1_id,
@@ -87,6 +88,7 @@ class BaseTestCase(TestCase):
 
     event_data = {
       'event_name': 'Test Event 2',
+      'event_url': 'testevent2',
       'brackets': [
         {
           'bracket_id': bracket_3_id,
@@ -109,6 +111,7 @@ class TestCreateEvent(BaseTestCase):
   def test_create_event(self):
     event_data = {
       'event_name': 'The Guard 22',
+      'event_url': 'theguard22',
       'brackets': [
         {
           'bracket_id': bracket_6_id,
@@ -128,6 +131,7 @@ class TestCreateEvent(BaseTestCase):
   def test_create_event_missing_fields(self):
     event_data = {
       'event_name': 'The Guard 22',
+      'event_url': 'theguard22',
       'brackets': [
         {
           'bracket_id': 1
@@ -143,6 +147,7 @@ class TestCreateEvent(BaseTestCase):
   def test_create_event_invalid_bracket(self):
     event_data = {
       'event_name': 'The Guard 22',
+      'event_url': 'theguard22',
       'brackets': [
         {
           'bracket_id': -1,

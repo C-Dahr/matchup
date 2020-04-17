@@ -12,13 +12,22 @@
     </div>
     <div class="d-flex justify-content-center">
       <form @submit="onSubmit" method="post" class="event-form">
-            <div id ="event-input" class="form-group d-flex justify-content-center">
+            <div class="event-input form-group d-flex justify-content-center">
               <label class="form-label">Event Name</label>
               <input class="form-control" type="text"
               name="eventname" v-model="eventForm.event_name"
               required placeholder="Enter Event Name"/>
               <span class="Error"></span>
             </div>
+            <div class="event-input form-group d-flex justify-content-center">
+              <label class="form-label">Event URL</label>
+              <input class="form-control" type="text"
+              name="eventurl" v-model="eventForm.event_url"
+              required placeholder="Enter Event URL" :maxlength="50"
+              @keydown.space.prevent/>
+              <span class="Error"></span>
+            </div>
+            <label id="url-preview">matchup.com/event/{{ eventForm.event_url }}</label>
             <div class="card-deck">
                 <div class="card border-light">
                     <div class="card-body">
@@ -85,6 +94,7 @@ export default {
       errors: [],
       eventForm: {
         event_name: '',
+        event_url: '',
         brackets: [
           {
             bracket_id: '',
@@ -129,6 +139,7 @@ export default {
       } else {
         const payload = {
           event_name: this.eventForm.event_name,
+          event_url: this.eventForm.event_url,
           brackets: [
             {
               bracket_id: this.eventForm.brackets[0].bracket_id,
@@ -175,15 +186,7 @@ export default {
   width: 60%;
   min-width: 500px;
 }
-@media only screen and (max-width: 600px) {
-  .event-form {
-    width: 95%;
-    min-width: auto;
-  }
-  .card {
-    width: auto;
-}
-}
+
 .event-form-submit {
   width: 30%;
   background-color: #0066FF !important;
@@ -193,8 +196,31 @@ export default {
 .text-warning {
     text-decoration: underline;
 }
-#event-input {
+.event-input {
   max-width: 800px;
+}
+
+#url-preview {
+  font-size: 1em;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+  font-family: "Lucida Console";
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 600px) {
+  .event-form {
+    width: 95%;
+    min-width: auto;
+  }
+
+  .card {
+    width: auto;
+  }
+
+  #url-preview {
+    font-size: 0.75em;
+  }
 }
 
 </style>
